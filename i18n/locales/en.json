@@ -1,0 +1,80 @@
+{
+  "brand": "Autiqa",
+  "meta": {
+    "home": {
+      "title": "Home",
+      "description": "Fleet and car rental operations for taxi and logistics."
+    },
+    "login": {
+      "title": "Sign in",
+      "description": "Sign in to Autiqa fleet CRM."
+    },
+    "register": {
+      "title": "Register",
+      "description": "Create your Autiqa fleet account."
+    },
+    "app": {
+      "title": "App",
+      "description": "Autiqa main application."
+    }
+  },
+  "landing": {
+    "cta": "Sign in"
+  },
+  "login": {
+    "asideHeadline": "Command every vehicle. Calm every shift.",
+    "asideLede": "One place to see trips, utilization, and risk — built for taxi and rental fleets that cannot afford blind spots.",
+    "pluses": {
+      "liveMap": "Unified live map and status for every car you run — taxis, rentals, or mixed.",
+      "kpis": "Operational KPIs that update as your fleet moves, not when someone exports a sheet.",
+      "roles": "Role-based access so dispatch, finance, and partners see exactly what they need.",
+      "margins": "Designed for high churn and thin margins: fewer tools, fewer context switches."
+    },
+    "formTitle": "Sign in to your account",
+    "formSubtitle": "Enter your credentials to access the control center.",
+    "continueGoogle": "Continue with Google",
+    "dividerOr": "Or",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "name{'@'}company.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Forgot password?",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "errors": {
+      "required": "Enter your email and password.",
+      "invalid": "Invalid email or password.",
+      "generic": "Could not sign you in. Please try again."
+    },
+    "footerLead": "Don’t have an account?",
+    "requestAccess": "Register!"
+  },
+  "register": {
+    "formTitle": "Create your account",
+    "formSubtitle": "Fill in the form to get started with Autiqa.",
+    "nameLabel": "Full name",
+    "namePlaceholder": "Jane Doe",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "name{'@'}company.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "passwordHint": "At least 8 characters.",
+    "passwordRepeatLabel": "Confirm password",
+    "passwordRepeatPlaceholder": "••••••••",
+    "submit": "Create account",
+    "footerLead": "Already have an account?",
+    "footerLogin": "Sign in",
+    "errors": {
+      "nameRequired": "Enter your name.",
+      "emailRequired": "Enter your email address.",
+      "emailInvalid": "Enter a valid email address.",
+      "passwordShort": "Password must be at least 8 characters.",
+      "passwordMismatch": "Passwords must match."
+    }
+  },
+  "appShell": {
+    "title": "Autiqa app",
+    "lead": "The main product UI (fleet, vehicles, reports) will live here.",
+    "backHome": "Home"
+  }
+}

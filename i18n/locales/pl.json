@@ -1,0 +1,80 @@
+{
+  "brand": "Autiqa",
+  "meta": {
+    "home": {
+      "title": "Strona główna",
+      "description": "Operacje flotowe i wynajmu aut pod taxi i logistykę."
+    },
+    "login": {
+      "title": "Logowanie",
+      "description": "Zaloguj się do CRM floty Autiqa."
+    },
+    "register": {
+      "title": "Rejestracja",
+      "description": "Załóż konto w Autiqa — CRM floty."
+    },
+    "app": {
+      "title": "Panel",
+      "description": "Główna aplikacja Autiqa."
+    }
+  },
+  "landing": {
+    "cta": "Zaloguj się"
+  },
+  "login": {
+    "asideHeadline": "Panuj nad każdym pojazdem. Spokój na każdej zmianie.",
+    "asideLede": "Jedno miejsce na przejazdy, wykorzystanie floty i ryzyko — z myślą o taxi i wypożyczalniach, które nie mogą sobie pozwolić na ślepe plamy.",
+    "pluses": {
+      "liveMap": "Spójny podgląd mapy i statusu dla każdego auta — taxi, wynajem lub mix.",
+      "kpis": "KPI operacyjne aktualizują się wraz z ruchem floty, a nie po eksporcie arkusza.",
+      "roles": "Dostępy wg ról: dyspozytornia, finanse i partnerzy widzą tylko to, czego potrzebują.",
+      "margins": "Dla dużej rotacji i cienkich marż: mniej narzędzi, mniej przełączania kontekstu."
+    },
+    "formTitle": "Zaloguj się do konta",
+    "formSubtitle": "Wpisz dane logowania, aby wejść do panelu sterowania.",
+    "continueGoogle": "Kontynuuj z Googlem",
+    "dividerOr": "Lub",
+    "emailLabel": "Adres e-mail",
+    "emailPlaceholder": "jan{'@'}firma.pl",
+    "passwordLabel": "Hasło",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Nie pamiętasz hasła?",
+    "submit": "Zaloguj się",
+    "submitting": "Logowanie…",
+    "errors": {
+      "required": "Podaj adres e-mail i hasło.",
+      "invalid": "Nieprawidłowy e-mail lub hasło.",
+      "generic": "Nie udało się zalogować. Spróbuj ponownie."
+    },
+    "footerLead": "Nie masz konta?",
+    "requestAccess": "Zarejestruj się!"
+  },
+  "register": {
+    "formTitle": "Utwórz konto",
+    "formSubtitle": "Wypełnij formularz, aby rozpocząć pracę z panelem Autiqa.",
+    "nameLabel": "Imię i nazwisko",
+    "namePlaceholder": "Jan Kowalski",
+    "emailLabel": "Adres e-mail",
+    "emailPlaceholder": "jan{'@'}firma.pl",
+    "passwordLabel": "Hasło",
+    "passwordPlaceholder": "••••••••",
+    "passwordHint": "Minimum 8 znaków.",
+    "passwordRepeatLabel": "Powtórz hasło",
+    "passwordRepeatPlaceholder": "••••••••",
+    "submit": "Zarejestruj się",
+    "footerLead": "Masz już konto?",
+    "footerLogin": "Zaloguj się",
+    "errors": {
+      "nameRequired": "Podaj imię i nazwisko.",
+      "emailRequired": "Podaj adres e-mail.",
+      "emailInvalid": "Podaj prawidłowy adres e-mail.",
+      "passwordShort": "Hasło musi mieć co najmniej 8 znaków.",
+      "passwordMismatch": "Hasła muszą być takie same."
+    }
+  },
+  "appShell": {
+    "title": "Panel Autiqa",
+    "lead": "Tu powstanie główna aplikacja (flota, pojazdy, raporty).",
+    "backHome": "Strona główna"
+  }
+}
