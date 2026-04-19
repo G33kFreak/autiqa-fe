@@ -16,6 +16,10 @@
     "app": {
       "title": "Panel",
       "description": "Główna aplikacja Autiqa."
+    },
+    "verifyEmail": {
+      "title": "Potwierdzenie e-maila",
+      "description": "Wpisz kod z wiadomości, aby aktywować konto."
     }
   },
   "landing": {
@@ -62,6 +66,7 @@
     "passwordRepeatLabel": "Powtórz hasło",
     "passwordRepeatPlaceholder": "••••••••",
     "submit": "Zarejestruj się",
+    "submitting": "Tworzenie konta…",
     "footerLead": "Masz już konto?",
     "footerLogin": "Zaloguj się",
     "errors": {
@@ -69,12 +74,95 @@
       "emailRequired": "Podaj adres e-mail.",
       "emailInvalid": "Podaj prawidłowy adres e-mail.",
       "passwordShort": "Hasło musi mieć co najmniej 8 znaków.",
-      "passwordMismatch": "Hasła muszą być takie same."
+      "passwordMismatch": "Hasła muszą być takie same.",
+      "conflict": "Konto z tym adresem e-mail już istnieje.",
+      "badRequest": "Nie udało się zarejestrować. Sprawdź dane i spróbuj ponownie.",
+      "generic": "Coś poszło nie tak. Spróbuj ponownie."
+    }
+  },
+  "layout": {
+    "appTagline": "Inteligencja floty",
+    "openMenu": "Otwórz menu nawigacji",
+    "userFallback": "Konto"
+  },
+  "nav": {
+    "dashboard": "Pulpit",
+    "fleet": "Flota",
+    "liveMap": "Mapa na żywo",
+    "finance": "Finanse",
+    "drivers": "Kierowcy",
+    "maintenance": "Serwis",
+    "settings": "Ustawienia"
+  },
+  "appSections": {
+    "dashboard": {
+      "title": "Przegląd operacyjny",
+      "lead": "Stan floty, wykorzystanie i ryzyko — dla taxi i wynajmu, gdzie liczy się sygnał, nie szum."
+    },
+    "fleet": {
+      "title": "Flota",
+      "lead": "Pojazdy, przydziały i status w jednym miejscu. Szczegóły VIN i tablic przygotujemy tutaj.",
+      "loading": "Ładowanie pojazdów…",
+      "emptyTitle": "Twoja flota zaczyna się tutaj",
+      "emptyBody": "Wszystko, czego potrzebujesz, by prowadzić i rozwijać flotę — w jednym miejscu.",
+      "emptyCta": "Dodaj pierwszy pojazd",
+      "importSpreadsheetCta": "Importuj z arkusza",
+      "importSpreadsheetSoon": "Wkrótce",
+      "fleetCount": "Zarejestrowane pojazdy: {count}",
+      "addVehicleTitle": "Nowy pojazd",
+      "addVehicleModel": "Model",
+      "addVehicleModelPlaceholder": "np. Toyota Camry",
+      "addVehicleVin": "VIN",
+      "addVehicleVinPlaceholder": "Opcjonalnie",
+      "addVehiclePlate": "Numer rejestracyjny",
+      "addVehiclePlatePlaceholder": "Opcjonalnie",
+      "addVehicleSubmit": "Zapisz pojazd",
+      "addVehicleCancel": "Anuluj",
+      "addVehicleError": "Nie udało się zapisać pojazdu. Sprawdź dane i spróbuj ponownie."
+    },
+    "map": {
+      "title": "Mapa na żywo",
+      "lead": "Pozycje w czasie rzeczywistym i kontekst przejazdów dla każdego aktywnego zasobu."
+    },
+    "finance": {
+      "title": "Finanse",
+      "lead": "Przychody, koszty i marże w podziale na pojazdy i kategorie."
+    },
+    "drivers": {
+      "title": "Kierowcy",
+      "lead": "Umowy, wyniki i zgodność dla każdego za kierownicą."
+    },
+    "maintenance": {
+      "title": "Serwis",
+      "lead": "Zlecenia, przestoje i koszty — utrzymanie floty w gotowości."
+    },
+    "settings": {
+      "title": "Ustawienia",
+      "lead": "Preferencje przestrzeni, integracje i kontrola dostępu."
     }
   },
   "appShell": {
     "title": "Panel Autiqa",
     "lead": "Tu powstanie główna aplikacja (flota, pojazdy, raporty).",
-    "backHome": "Strona główna"
+    "backHome": "Strona główna",
+    "logoutDebug": "Wyloguj (debug)"
+  },
+  "verifyEmail": {
+    "eyebrow": "Potwierdź adres e-mail",
+    "title": "Wpisz kod",
+    "subtitle": "Wysłaliśmy 6-cyfrowy kod na {email}. Wklej go lub wpisz poniżej, aby wejść do Autiqa.",
+    "emailUnknown": "Twoją skrzynkę",
+    "otpLabel": "Kod jednorazowy",
+    "otpAria": "Sześciocyfrowy kod weryfikacyjny",
+    "digitAria": "Cyfra {n} z 6",
+    "submit": "Potwierdź i przejdź dalej",
+    "resendLead": "Nie dostałeś wiadomości?",
+    "resendAction": "Wyślij kod ponownie",
+    "logout": "Wyloguj się",
+    "footerHint": "Sprawdź folder spam lub oferty — czasem wiadomość tam trafia.",
+    "errors": {
+      "invalidCode": "Ten kod jest nieprawidłowy lub wygasł. Sprawdź wiadomość i spróbuj ponownie.",
+      "generic": "Nie udało się potwierdzić adresu e-mail. Spróbuj ponownie."
+    }
   }
 }

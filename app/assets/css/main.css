@@ -74,3 +74,33 @@ body {
 #__nuxt {
   min-height: 100dvh;
 }
+
+/* Shared typography for authenticated app section pages */
+.app-page__title {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 2.5vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--color-on-surface);
+  line-height: 1.15;
+}
+
+.app-page__lead {
+  margin: 0 0 1.75rem;
+  max-width: 40rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+  line-height: 1.55;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+  vertical-align: middle;
+}

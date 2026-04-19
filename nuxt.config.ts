@@ -5,6 +5,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      /** API origin for browser `$fetch` and Nitro proxy (no trailing slash). */
       apiBase: 'http://localhost:3001',
     },
   },
@@ -19,6 +20,12 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      ],
+      link: [
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0',
+        },
       ],
     },
   },
@@ -40,5 +47,18 @@ export default defineNuxtConfig({
       { name: 'Manrope', provider: 'google', weights: [500, 600, 700, 800] },
       { name: 'Inter', provider: 'google', weights: [400, 500, 600] },
     ],
+  },
+
+  /**
+   * Central layout assignment (see layouts/dashboard.vue for the app chrome).
+   * More specific paths must come before wildcards. i18n: default locale (pl) has no prefix; `en` uses `/en/...`.
+   */
+  routeRules: {
+    '/app/verify-email': { appLayout: false },
+    '/en/app/verify-email': { appLayout: false },
+    '/app': { appLayout: 'dashboard' },
+    '/en/app': { appLayout: 'dashboard' },
+    '/app/**': { appLayout: 'dashboard' },
+    '/en/app/**': { appLayout: 'dashboard' },
   },
 })

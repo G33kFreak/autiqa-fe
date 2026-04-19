@@ -1,19 +1,19 @@
 import { defineStore } from 'pinia';
+import type { RegisterDto } from '#shared/dto/register.dto';
+import type { RegisterResponseDto } from '#shared/dto/register-response.dto';
+import type { UserDto } from '#shared/dto/user.dto';
 import {
   login as loginRequest,
   logoutSession,
+  registerAccount,
   refreshSession as refreshSessionRequest,
+  verifyEmail as verifyEmailRequest,
 } from '../api/auth';
-
-export interface AuthUser {
-  id: string;
-  email: string;
-  name: string;
-}
+import { getMe } from '../api/users';
 
 export const useAuthStore = defineStore('auth', () => {
-  const { api } = useApi();
-  const user = ref<AuthUser | null>(null);
+  const { nuxtApi, authenticatedApi } = useApi();
+  const user = ref<UserDto | null>(null);
   const accessToken = ref<string | null>(null);
   const isRefreshing = ref(false);
   /** In-flight refresh; reused so parallel 401s do not spawn multiple refresh calls */
@@ -23,18 +23,21 @@ export const useAuthStore = defineStore('auth', () => {
   const getAccessToken = computed(() => accessToken.value);
 
   async function login(email: string, password: string) {
-    const data = await loginRequest(api, { email, password });
+    const data = await loginRequest(nuxtApi, { email, password });
     accessToken.value = data.accessToken;
-    user.value = {
-      id: data.user.id,
-      email: data.user.email,
-      name: data.user.name,
-    };
+    user.value = data.user;
+  }
+
+  async function register(payload: RegisterDto): Promise<RegisterResponseDto> {
+    const data = await registerAccount(nuxtApi, payload);
+    accessToken.value = data.tokens.accessToken;
+    user.value = data.user;
+    return data;
   }
 
   async function logout() {
     try {
-      await logoutSession(api);
+      await logoutSession(nuxtApi);
     } finally {
       accessToken.value = null;
       user.value = null;
@@ -48,16 +51,30 @@ export const useAuthStore = defineStore('auth', () => {
     return refresh();
   }
 
+  async function fetchUser() {
+    user.value = await getMe(authenticatedApi);
+  }
+
+  async function verifyEmail(code: string) {
+    await verifyEmailRequest(authenticatedApi, { otpCode: code });
+    await fetchUser();
+  }
+
   async function refresh(): Promise<boolean> {
     if (refreshPromise.value !== null) {
       return refreshPromise.value;
     }
 
+    const performRefresh = async () => {
+      const tokens = await refreshSessionRequest(nuxtApi);
+      accessToken.value = tokens.accessToken;
+      await fetchUser();
+    };
+
     isRefreshing.value = true;
 
-    const promise = refreshSessionRequest(api)
-      .then((data) => {
-        accessToken.value = data.accessToken;
+    const promise = performRefresh()
+      .then(() => {
         return true;
       })
       .catch(() => {
@@ -82,8 +99,11 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     getAccessToken,
     login,
+    register,
     logout,
     initAuth,
     refresh,
+    fetchUser,
+    verifyEmail,
   };
 });

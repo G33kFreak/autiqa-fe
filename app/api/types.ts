@@ -3,8 +3,8 @@ import type { $Fetch } from 'ofetch';
 /**
  * Injected HTTP client for API modules.
  *
- * Pass **`authenticatedApi`** from `useAuthenticatedApi()` for app calls (Bearer + 401 refresh),
- * or **`$fetch.create({ baseURL: '/api', credentials: 'include' })`** (and optional headers) for
- * unauthenticated routes — paths in request functions stay relative to `/api`.
+ * Pass **`authenticatedApi`** from **`useApi()`** for app calls (Bearer + 401 refresh),
+ * **`useApi().nuxtApi`** for same-origin Nitro **`/api/*`**, or **`useApi().api`** for
+ * **`runtimeConfig.public.apiBase`** (**`NUXT_PUBLIC_API_BASE`**).
  */
 export type ApiClient = $Fetch;

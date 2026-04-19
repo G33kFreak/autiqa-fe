@@ -16,6 +16,10 @@
     "app": {
       "title": "App",
       "description": "Autiqa main application."
+    },
+    "verifyEmail": {
+      "title": "Verify email",
+      "description": "Enter the code we emailed you to activate your account."
     }
   },
   "landing": {
@@ -62,6 +66,7 @@
     "passwordRepeatLabel": "Confirm password",
     "passwordRepeatPlaceholder": "••••••••",
     "submit": "Create account",
+    "submitting": "Creating account…",
     "footerLead": "Already have an account?",
     "footerLogin": "Sign in",
     "errors": {
@@ -69,12 +74,95 @@
       "emailRequired": "Enter your email address.",
       "emailInvalid": "Enter a valid email address.",
       "passwordShort": "Password must be at least 8 characters.",
-      "passwordMismatch": "Passwords must match."
+      "passwordMismatch": "Passwords must match.",
+      "conflict": "An account with this email already exists.",
+      "badRequest": "Registration could not be completed. Check your details and try again.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "layout": {
+    "appTagline": "Fleet intelligence",
+    "openMenu": "Open navigation menu",
+    "userFallback": "Account"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "fleet": "Fleet",
+    "liveMap": "Live map",
+    "finance": "Finance",
+    "drivers": "Drivers",
+    "maintenance": "Maintenance",
+    "settings": "Settings"
+  },
+  "appSections": {
+    "dashboard": {
+      "title": "Operational overview",
+      "lead": "High-level fleet health, utilization, and risk — tuned for taxi and rental operations that need signal without noise."
+    },
+    "fleet": {
+      "title": "Fleet",
+      "lead": "Vehicles, assignments, and status in one place. Detailed VIN and plate views will connect here.",
+      "loading": "Loading vehicles…",
+      "emptyTitle": "Your Fleet Starts Here",
+      "emptyBody": "Everything you need to manage and grow your fleet, all in one place.",
+      "emptyCta": "Add your first vehicle",
+      "importSpreadsheetCta": "Import from spreadsheet",
+      "importSpreadsheetSoon": "Coming soon",
+      "fleetCount": "{count} vehicles registered",
+      "addVehicleTitle": "Add vehicle",
+      "addVehicleModel": "Model",
+      "addVehicleModelPlaceholder": "e.g. Toyota Camry",
+      "addVehicleVin": "VIN",
+      "addVehicleVinPlaceholder": "Optional",
+      "addVehiclePlate": "Plate number",
+      "addVehiclePlatePlaceholder": "Optional",
+      "addVehicleSubmit": "Save vehicle",
+      "addVehicleCancel": "Cancel",
+      "addVehicleError": "Could not save this vehicle. Check the fields and try again."
+    },
+    "map": {
+      "title": "Live map",
+      "lead": "Real-time positions and trip context for every active asset."
+    },
+    "finance": {
+      "title": "Finance",
+      "lead": "Revenue, costs, and margin intelligence across vehicles and categories."
+    },
+    "drivers": {
+      "title": "Drivers",
+      "lead": "Contracts, performance, and compliance for everyone behind the wheel."
+    },
+    "maintenance": {
+      "title": "Maintenance",
+      "lead": "Work orders, downtime, and spend — keep the fleet road-ready."
+    },
+    "settings": {
+      "title": "Settings",
+      "lead": "Workspace preferences, integrations, and access controls."
     }
   },
   "appShell": {
     "title": "Autiqa app",
     "lead": "The main product UI (fleet, vehicles, reports) will live here.",
-    "backHome": "Home"
+    "backHome": "Home",
+    "logoutDebug": "Log out (debug)"
+  },
+  "verifyEmail": {
+    "eyebrow": "Confirm your email",
+    "title": "Enter your code",
+    "subtitle": "We sent a 6-digit code to {email}. Paste or type it below to unlock Autiqa.",
+    "emailUnknown": "your inbox",
+    "otpLabel": "One-time code",
+    "otpAria": "Six-digit verification code",
+    "digitAria": "Digit {n} of 6",
+    "submit": "Verify & continue",
+    "resendLead": "Didn’t receive it?",
+    "resendAction": "Resend code",
+    "logout": "Sign out",
+    "footerHint": "Check spam or promotions — sometimes the message lands there.",
+    "errors": {
+      "invalidCode": "That code is invalid or expired. Check the message and try again.",
+      "generic": "We could not verify your email. Please try again."
+    }
   }
 }

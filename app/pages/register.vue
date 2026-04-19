@@ -1,11 +1,17 @@
 <script setup lang="ts">
+import { FetchError } from 'ofetch';
+import { StatusCodes } from 'http-status-codes';
+
 const { t } = useI18n();
 const localePath = useLocalePath();
+const route = useRoute();
+const authStore = useAuthStore();
 
 const name = ref('');
 const email = ref('');
 const password = ref('');
 const passwordConfirm = ref('');
+const pending = ref(false);
 const formError = ref('');
 
 useSeoMeta({
@@ -43,9 +49,35 @@ function validate(): boolean {
   return true;
 }
 
-function submit() {
+async function submit() {
   if (!validate()) return;
-  /* Register API — wire when backend is ready */
+
+  pending.value = true;
+  try {
+    await authStore.register({
+      name: name.value.trim(),
+      email: email.value.trim(),
+      password: password.value,
+    });
+
+    const q = route.query.redirect;
+    const afterRegister =
+      typeof q === 'string' && q.startsWith('/') && !q.startsWith('//')
+        ? q
+        : localePath('/app');
+    await navigateTo(afterRegister, { replace: true });
+  } catch (e: unknown) {
+    const status = e instanceof FetchError ? (e.status ?? e.statusCode) : 0;
+    if (status === StatusCodes.CONFLICT) {
+      formError.value = t('register.errors.conflict');
+    } else if (status === StatusCodes.BAD_REQUEST) {
+      formError.value = t('register.errors.badRequest');
+    } else {
+      formError.value = t('register.errors.generic');
+    }
+  } finally {
+    pending.value = false;
+  }
 }
 </script>
 
@@ -64,7 +96,11 @@ function submit() {
           <p class="register__subtitle">{{ t('register.formSubtitle') }}</p>
         </header>
 
-        <form class="register__form" @submit.prevent="submit">
+        <form
+          class="register__form"
+          :aria-busy="pending"
+          @submit.prevent="submit"
+        >
           <p v-if="formError" class="register__error" role="alert">
             {{ formError }}
           </p>
@@ -81,6 +117,7 @@ function submit() {
               name="name"
               autocomplete="name"
               required
+              :disabled="pending"
               :placeholder="t('register.namePlaceholder')"
             >
           </div>
@@ -97,6 +134,7 @@ function submit() {
               name="email"
               autocomplete="email"
               required
+              :disabled="pending"
               :placeholder="t('register.emailPlaceholder')"
             >
           </div>
@@ -114,6 +152,7 @@ function submit() {
               autocomplete="new-password"
               required
               minlength="8"
+              :disabled="pending"
               :placeholder="t('register.passwordPlaceholder')"
             >
             <p class="register__hint">{{ t('register.passwordHint') }}</p>
@@ -131,12 +170,18 @@ function submit() {
               name="passwordConfirm"
               autocomplete="new-password"
               required
+              :disabled="pending"
               :placeholder="t('register.passwordRepeatPlaceholder')"
             >
           </div>
 
-          <button type="submit" class="register__submit">
-            {{ t('register.submit') }}
+          <button
+            type="submit"
+            class="register__submit"
+            :disabled="pending"
+            :aria-busy="pending"
+          >
+            {{ pending ? t('register.submitting') : t('register.submit') }}
           </button>
         </form>
 
@@ -319,6 +364,11 @@ function submit() {
 .register__submit:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--color-secondary) 35%, transparent);
   outline-offset: 2px;
+}
+
+.register__submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
 .register__footer {

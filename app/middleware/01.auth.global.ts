@@ -1,3 +1,5 @@
+import { stripLocalePrefix } from '../utils/strip-locale-prefix';
+
 const PUBLIC_PATHS = new Set([
   '/',
   '/login',
@@ -5,18 +7,6 @@ const PUBLIC_PATHS = new Set([
   '/forgot-password',
   '/about',
 ]);
-
-/** `/login` and `/en/login` → `/login` (same for other prefixed locales). */
-function stripLocalePrefix(path: string): string {
-  const { defaultLocale, locales } = useRuntimeConfig().public.i18n;
-  for (const { code } of locales as { code: string }[]) {
-    if (code === defaultLocale) continue;
-    const prefix = `/${code}`;
-    if (path === prefix) return '/';
-    if (path.startsWith(`${prefix}/`)) return path.slice(prefix.length) || '/';
-  }
-  return path;
-}
 
 export default defineNuxtRouteMiddleware((to) => {
   const authStore = useAuthStore();
