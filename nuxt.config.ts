@@ -56,6 +56,8 @@ export default defineNuxtConfig({
   routeRules: {
     '/app/verify-email': { appLayout: false },
     '/en/app/verify-email': { appLayout: false },
+    '/app/onboarding-org': { appLayout: false },
+    '/en/app/onboarding-org': { appLayout: false },
     '/app': { appLayout: 'dashboard' },
     '/en/app': { appLayout: 'dashboard' },
     '/app/**': { appLayout: 'dashboard' },

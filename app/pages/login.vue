@@ -19,6 +19,21 @@ const pluses = computed(() =>
   LOGIN_PLUS_KEYS.map((key) => t(`login.pluses.${key}`)),
 );
 
+const showAuthLoader = ref(!authStore.getIsInitialized);
+
+onMounted(async () => {
+  if (authStore.getIsInitialized) return;
+
+  const isAuthenticated = await authStore.initAuth();
+  if (!isAuthenticated) {
+    showAuthLoader.value = false;
+    return;
+  }
+
+  const { redirect } = route.query;
+  navigateTo(redirect?.toString() ?? '/app');
+});
+
 useSeoMeta({
   title: computed(() => t('meta.login.title')),
   description: computed(() => t('meta.login.description')),
@@ -55,7 +70,9 @@ async function submit() {
 </script>
 
 <template>
-  <div class="login">
+  <TiFullScreenLoader v-if="showAuthLoader" />
+
+  <div v-else class="login">
     <section class="login__aside" aria-labelledby="login-aside-title">
       <div class="login__aside-inner">
         <header class="login__brand">

@@ -4,7 +4,6 @@ import type { CreateCarDto } from '#shared/dto/create-car.dto';
 const { t } = useI18n();
 const carsStore = useCarsStore();
 
-const hasLoaded = ref(false);
 const addDialog = ref<HTMLDialogElement | null>(null);
 const formError = ref<string | null>(null);
 
@@ -15,15 +14,20 @@ const form = reactive({
 });
 
 const showEmpty = computed(
-  () => hasLoaded.value && !carsStore.loading && carsStore.items.length === 0,
+  () =>
+    carsStore.listResolved &&
+    !carsStore.loading &&
+    carsStore.items.length === 0,
 );
 
 const showInitialLoading = computed(
-  () => !hasLoaded.value || (carsStore.loading && carsStore.items.length === 0),
+  () =>
+    !carsStore.listResolved ||
+    (carsStore.loading && carsStore.items.length === 0),
 );
 
 const showFleetSummary = computed(
-  () => hasLoaded.value && carsStore.items.length > 0,
+  () => carsStore.listResolved && carsStore.items.length > 0,
 );
 
 useSeoMeta({
@@ -32,11 +36,7 @@ useSeoMeta({
 });
 
 onMounted(async () => {
-  try {
-    await carsStore.fetchCars();
-  } finally {
-    hasLoaded.value = true;
-  }
+  await carsStore.getViewModel();
 });
 
 function openAddVehicle() {

@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import type { CarDto } from '#shared/dto/car.dto';
 import type { CreateCarDto } from '#shared/dto/create-car.dto';
-import type { PaginationMetaDto } from '#shared/dto/pagination-meta.dto';
+import type { PaginatedCarsResponseDto } from '#shared/dto/paginated-cars-response.dto';
 import type { PaginationQueryDto } from '#shared/dto/pagination-query.dto';
 import { createCar as createCarRequest, getCars } from '../api/cars';
 
@@ -11,30 +11,40 @@ const DEFAULT_LIMIT = 20;
 export const useCarsStore = defineStore('cars', () => {
   const { authenticatedApi } = useApi();
 
-  const items = ref<CarDto[]>([]);
-  const meta = ref<PaginationMetaDto | null>(null);
-  const loading = ref(false);
-  const creating = ref(false);
   const page = ref(DEFAULT_PAGE);
   const limit = ref(DEFAULT_LIMIT);
 
-  async function fetchCars(overrides?: Partial<PaginationQueryDto>) {
-    if (overrides?.page !== undefined) page.value = overrides.page;
-    if (overrides?.limit !== undefined) limit.value = overrides.limit;
-
+  async function loadCars(): Promise<PaginatedCarsResponseDto | null> {
     const query: PaginationQueryDto = {
       page: page.value,
       limit: limit.value,
     };
+    return await getCars(authenticatedApi, query);
+  }
 
-    loading.value = true;
-    try {
-      const res = await getCars(authenticatedApi, query);
-      items.value = res.data;
-      meta.value = res.meta;
-    } finally {
-      loading.value = false;
-    }
+  const vm = useLazyViewModel<PaginatedCarsResponseDto>({
+    load: loadCars,
+  });
+
+  const items = computed(() => vm.data.value?.data ?? []);
+  const meta = computed(() => vm.data.value?.meta ?? null);
+  /** True after the list has been loaded at least once (success or empty page). */
+  const listResolved = computed(() => vm.data.value !== undefined);
+
+  const creating = ref(false);
+
+  async function getViewModel(): Promise<PaginatedCarsResponseDto | null> {
+    return vm.getViewModel();
+  }
+
+  /**
+   * Refetch for the current (or overridden) page/limit — clears the lazy cache first.
+   */
+  async function fetchCars(overrides?: Partial<PaginationQueryDto>) {
+    if (overrides?.page !== undefined) page.value = overrides.page;
+    if (overrides?.limit !== undefined) limit.value = overrides.limit;
+    vm.reset();
+    return vm.getViewModel();
   }
 
   async function createCar(payload: CreateCarDto): Promise<CarDto> {
@@ -51,10 +61,12 @@ export const useCarsStore = defineStore('cars', () => {
   return {
     items,
     meta,
-    loading,
+    loading: vm.loading,
     creating,
     page,
     limit,
+    listResolved,
+    getViewModel,
     fetchCars,
     createCar,
   };

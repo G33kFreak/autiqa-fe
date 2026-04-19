@@ -13,8 +13,12 @@ export default defineNuxtRouteMiddleware((to) => {
   const localePath = useLocalePath();
   const path = stripLocalePrefix(to.path);
 
-  if (authStore.isAuthenticated && (path === '/login' || path === '/register')) {
-    return navigateTo('/app');
+  if (
+    authStore.isAuthenticated &&
+    (path === '/login' || path === '/register')
+  ) {
+    const { redirect } = to.query;
+    return navigateTo(redirect?.toString() ?? '/app');
   }
 
   if (PUBLIC_PATHS.has(path)) return;

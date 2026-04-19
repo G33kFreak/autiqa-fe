@@ -1,5 +1,8 @@
 {
   "brand": "Autiqa",
+  "common": {
+    "loading": "Loading"
+  },
   "meta": {
     "home": {
       "title": "Home",
@@ -20,6 +23,10 @@
     "verifyEmail": {
       "title": "Verify email",
       "description": "Enter the code we emailed you to activate your account."
+    },
+    "onboardingOrg": {
+      "title": "Let's Get You Set Up",
+      "description": "Tell us about your business so we can tailor Autiqa to your needs."
     }
   },
   "landing": {
@@ -146,6 +153,24 @@
     "lead": "The main product UI (fleet, vehicles, reports) will live here.",
     "backHome": "Home",
     "logoutDebug": "Log out (debug)"
+  },
+  "onboardingOrg": {
+    "eyebrow": "Welcome",
+    "title": "Let's Get You Set Up",
+    "lede": "Tell us a bit about your business so we can tailor the experience to your needs.",
+    "progressAria": "Onboarding steps",
+    "stepOf": "Step {current} of {total}",
+    "orgNameLabel": "Organization name",
+    "orgNamePlaceholder": "e.g. North City Taxi",
+    "orgTypeLabel": "Organization type",
+    "orgTypePlaceholder": "e.g. Taxi fleet, rental, logistics…",
+    "continue": "Continue",
+    "back": "Back",
+    "finish": "Finish",
+    "errors": {
+      "nameRequired": "Enter your organization name.",
+      "generic": "Could not create your organization. Please try again."
+    }
   },
   "verifyEmail": {
     "eyebrow": "Confirm your email",

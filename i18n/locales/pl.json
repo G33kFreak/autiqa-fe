@@ -1,5 +1,8 @@
 {
   "brand": "Autiqa",
+  "common": {
+    "loading": "Ładowanie"
+  },
   "meta": {
     "home": {
       "title": "Strona główna",
@@ -20,6 +23,10 @@
     "verifyEmail": {
       "title": "Potwierdzenie e-maila",
       "description": "Wpisz kod z wiadomości, aby aktywować konto."
+    },
+    "onboardingOrg": {
+      "title": "Zacznijmy od konfiguracji",
+      "description": "Opowiedz o swojej firmie, abyśmy mogli dopasować Autiqę do Twoich potrzeb."
     }
   },
   "landing": {
@@ -146,6 +153,24 @@
     "lead": "Tu powstanie główna aplikacja (flota, pojazdy, raporty).",
     "backHome": "Strona główna",
     "logoutDebug": "Wyloguj (debug)"
+  },
+  "onboardingOrg": {
+    "eyebrow": "Witamy",
+    "title": "Zacznijmy od konfiguracji",
+    "lede": "Opowiedz nam krótko o swojej firmie, abyśmy mogli dopasować działanie aplikacji do Twoich potrzeb.",
+    "progressAria": "Kroki wdrożenia",
+    "stepOf": "Krok {current} z {total}",
+    "orgNameLabel": "Nazwa organizacji",
+    "orgNamePlaceholder": "np. Taxi Północne Miasto",
+    "orgTypeLabel": "Typ organizacji",
+    "orgTypePlaceholder": "np. flota taxi, wynajem, logistyka…",
+    "continue": "Dalej",
+    "back": "Wstecz",
+    "finish": "Zakończ",
+    "errors": {
+      "nameRequired": "Podaj nazwę organizacji.",
+      "generic": "Nie udało się utworzyć organizacji. Spróbuj ponownie."
+    }
   },
   "verifyEmail": {
     "eyebrow": "Potwierdź adres e-mail",

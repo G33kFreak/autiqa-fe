@@ -10,17 +10,19 @@ import {
   verifyEmail as verifyEmailRequest,
 } from '../api/auth';
 import { getMe } from '../api/users';
+import { useOrganizationStore } from './organization';
 
 export const useAuthStore = defineStore('auth', () => {
   const { nuxtApi, authenticatedApi } = useApi();
   const user = ref<UserDto | null>(null);
   const accessToken = ref<string | null>(null);
   const isRefreshing = ref(false);
+  const isInitialized = ref(false);
   /** In-flight refresh; reused so parallel 401s do not spawn multiple refresh calls */
   const refreshPromise = ref<Promise<boolean> | null>(null);
 
   const isAuthenticated = computed(() => !!accessToken.value);
-  const getAccessToken = computed(() => accessToken.value);
+  const getIsInitialized = computed(() => isInitialized.value);
 
   async function login(email: string, password: string) {
     const data = await loginRequest(nuxtApi, { email, password });
@@ -42,13 +44,17 @@ export const useAuthStore = defineStore('auth', () => {
       accessToken.value = null;
       user.value = null;
       refreshPromise.value = null;
+      useOrganizationStore().reset();
       await navigateTo('/login');
     }
   }
 
   async function initAuth(): Promise<boolean> {
-    if (accessToken.value) return true;
-    return refresh();
+    if (accessToken.value) {
+      isInitialized.value = true;
+      return true;
+    }
+    return refresh().finally(() => (isInitialized.value = true));
   }
 
   async function fetchUser() {
@@ -80,6 +86,7 @@ export const useAuthStore = defineStore('auth', () => {
       .catch(() => {
         accessToken.value = null;
         user.value = null;
+        useOrganizationStore().reset();
         return false;
       })
       .finally(() => {
@@ -97,7 +104,7 @@ export const useAuthStore = defineStore('auth', () => {
     isRefreshing,
     refreshPromise,
     isAuthenticated,
-    getAccessToken,
+    getIsInitialized,
     login,
     register,
     logout,
