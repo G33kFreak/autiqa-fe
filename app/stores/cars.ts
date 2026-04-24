@@ -3,7 +3,14 @@ import type { CarDto } from '#shared/dto/car.dto';
 import type { CreateCarDto } from '#shared/dto/create-car.dto';
 import type { PaginatedCarsResponseDto } from '#shared/dto/paginated-cars-response.dto';
 import type { PaginationQueryDto } from '#shared/dto/pagination-query.dto';
-import { createCar as createCarRequest, getCars } from '../api/cars';
+import {
+  assignDriverToCar as assignDriverToCarRequest,
+  createCarsBatch as createCarsBatchRequest,
+  getCarById,
+  getCars,
+  updateCar as updateCarRequest,
+} from '../api/cars';
+import { toCarsBatchCreateError } from '../utils/cars-batch-error';
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 20;
@@ -32,9 +39,26 @@ export const useCarsStore = defineStore('cars', () => {
   const listResolved = computed(() => vm.data.value !== undefined);
 
   const creating = ref(false);
+  const updating = ref(false);
 
   async function getViewModel(): Promise<PaginatedCarsResponseDto | null> {
     return vm.getViewModel();
+  }
+
+  async function getViewModelById(id: string): Promise<CarDto | null> {
+    const car = await getCarById(authenticatedApi, id);
+    if (vm.data.value) {
+      const exists = vm.data.value.data.some((item) => item.id === car.id);
+      if (exists) {
+        vm.data.value = {
+          ...vm.data.value,
+          data: vm.data.value.data.map((item) =>
+            item.id === car.id ? car : item,
+          ),
+        };
+      }
+    }
+    return car;
   }
 
   /**
@@ -48,13 +72,68 @@ export const useCarsStore = defineStore('cars', () => {
   }
 
   async function createCar(payload: CreateCarDto): Promise<CarDto> {
+    const cars = await createCars([payload]);
+    return cars[0]!;
+  }
+
+  async function createCars(payloads: CreateCarDto[]): Promise<CarDto[]> {
+    if (payloads.length === 0) return [];
     creating.value = true;
     try {
-      const car = await createCarRequest(authenticatedApi, payload);
+      const cars = await createCarsBatchRequest(authenticatedApi, {
+        cars: payloads,
+      });
       await fetchCars();
-      return car;
+      return cars;
+    } catch (e) {
+      const batchErr = toCarsBatchCreateError(e);
+      if (batchErr) throw batchErr;
+      throw e;
     } finally {
       creating.value = false;
+    }
+  }
+
+  async function updateCar(id: string, payload: CreateCarDto): Promise<CarDto> {
+    updating.value = true;
+    try {
+      const updated = await updateCarRequest(authenticatedApi, id, payload);
+      if (vm.data.value) {
+        vm.data.value = {
+          ...vm.data.value,
+          data: vm.data.value.data.map((car) =>
+            car.id === updated.id ? updated : car,
+          ),
+        };
+      }
+      return updated;
+    } finally {
+      updating.value = false;
+    }
+  }
+
+  async function assignDriverToCar(
+    carId: string,
+    driverId: string,
+  ): Promise<CarDto> {
+    updating.value = true;
+    try {
+      const updated = await assignDriverToCarRequest(
+        authenticatedApi,
+        carId,
+        driverId,
+      );
+      if (vm.data.value) {
+        vm.data.value = {
+          ...vm.data.value,
+          data: vm.data.value.data.map((car) =>
+            car.id === updated.id ? updated : car,
+          ),
+        };
+      }
+      return updated;
+    } finally {
+      updating.value = false;
     }
   }
 
@@ -63,11 +142,16 @@ export const useCarsStore = defineStore('cars', () => {
     meta,
     loading: vm.loading,
     creating,
+    updating,
     page,
     limit,
     listResolved,
     getViewModel,
+    getViewModelById,
     fetchCars,
     createCar,
+    createCars,
+    updateCar,
+    assignDriverToCar,
   };
 });
