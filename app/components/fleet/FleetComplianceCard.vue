@@ -23,7 +23,6 @@ const { t } = useI18n();
   <section class="fleet-card compliance-card">
     <div class="fleet-card__header">
       <h2 class="fleet-card__title">{{ t('appSections.fleet.vehicleDetails.complianceStatus') }}</h2>
-      <span class="compliance-card__icon" aria-hidden="true">✓</span>
     </div>
     <div class="compliance-row">
       <template v-if="complianceItems.length > 0">
@@ -75,19 +74,6 @@ const { t } = useI18n();
 
 .compliance-card {
   padding-bottom: 1rem;
-}
-
-.compliance-card__icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 900;
-  color: var(--color-on-surface-variant);
-  background: var(--color-surface-container-high);
 }
 
 .compliance-row {

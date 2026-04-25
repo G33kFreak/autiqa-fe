@@ -165,7 +165,7 @@
         "carFeesTitle": "Mandaty pojazdu",
         "thisMonthFees": "W tym miesiącu: {total}",
         "dueDate": "Termin: {date}",
-        "complianceStatus": "Status zgodności",
+        "complianceStatus": "Przypisania i terminy",
         "assignedDriver": "Przypisany kierowca",
         "assignOther": "Przypisz innego",
         "removeDriver": "Usuń",

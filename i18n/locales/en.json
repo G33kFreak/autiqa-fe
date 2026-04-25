@@ -165,7 +165,7 @@
         "carFeesTitle": "Vehicle tickets",
         "thisMonthFees": "This month: {total}",
         "dueDate": "Due {date}",
-        "complianceStatus": "Compliance Status",
+        "complianceStatus": "Assignments & deadlines",
         "assignedDriver": "Assigned driver",
         "assignOther": "Assign other",
         "removeDriver": "Remove",
