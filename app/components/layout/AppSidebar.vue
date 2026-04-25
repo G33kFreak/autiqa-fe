@@ -50,6 +50,11 @@ function onNavClick() {
         <span>{{ t(item.i18nKey) }}</span>
       </NuxtLink>
     </nav>
+
+    <div class="app-sidebar__footer" aria-label="Build information">
+      <p class="app-sidebar__footer-copy">© 2026 Autiqa. All rights reserved.</p>
+      <p class="app-sidebar__footer-version">Alpha version</p>
+    </div>
   </aside>
 </template>
 
@@ -183,5 +188,24 @@ function onNavClick() {
 
 .app-sidebar__link-icon--filled {
   font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+}
+
+.app-sidebar__footer {
+  padding: 0.85rem 1rem 1rem;
+  color: color-mix(in srgb, var(--color-on-surface-variant) 65%, transparent);
+}
+
+.app-sidebar__footer-copy,
+.app-sidebar__footer-version {
+  margin: 0;
+  font-size: 0.625rem;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+}
+
+.app-sidebar__footer-version {
+  margin-top: 0.2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 </style>

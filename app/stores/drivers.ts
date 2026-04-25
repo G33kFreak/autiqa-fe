@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia';
 import type { DriverDto } from '#shared/dto/driver.dto';
+import type { DriverDetailsDto } from '#shared/dto/driver-details.dto';
 import type { CreateDriverDto } from '#shared/dto/create-driver.dto';
+import type { FileDto } from '#shared/dto/file.dto';
 import type { PaginatedDriversResponseDto } from '#shared/dto/paginated-drivers-response.dto';
 import type { DriversPaginationQueryDto } from '#shared/dto/drivers-pagination-query.dto';
 import {
   createDriversBatch as createDriversBatchRequest,
+  deleteDriverDocument as deleteDriverDocumentRequest,
+  getDriverById,
   getDrivers,
+  uploadDriverDocuments as uploadDriverDocumentsRequest,
+  updateDriver as updateDriverRequest,
 } from '../api/drivers';
 import { toDriversBatchCreateError } from '../utils/drivers-batch-error';
 
@@ -14,6 +20,8 @@ const DEFAULT_LIMIT = 20;
 
 export const useDriversStore = defineStore('drivers', () => {
   const { authenticatedApi } = useApi();
+  const carsStore = useCarsStore();
+
   const page = ref(DEFAULT_PAGE);
   const limit = ref(DEFAULT_LIMIT);
   const search = ref('');
@@ -38,13 +46,35 @@ export const useDriversStore = defineStore('drivers', () => {
 
   const creating = ref(false);
   const updating = ref(false);
+  const uploadingDocuments = ref(false);
+  const deletingDocumentId = ref<string | null>(null);
 
   async function getViewModel(): Promise<PaginatedDriversResponseDto | null> {
     return vm.getViewModel();
   }
 
-  async function getViewModelById(_id: string): Promise<DriverDto | null> {
-    throw new Error('drivers.getViewModelById is not implemented yet');
+  function reset() {
+    vm.reset();
+    creating.value = false;
+    updating.value = false;
+    uploadingDocuments.value = false;
+    deletingDocumentId.value = null;
+  }
+
+  async function getViewModelById(id: string): Promise<DriverDetailsDto | null> {
+    const fetched = await getDriverById(authenticatedApi, id);
+    if (vm.data.value) {
+      const exists = vm.data.value.data.some((item) => item.id === fetched.id);
+      if (exists) {
+        vm.data.value = {
+          ...vm.data.value,
+          data: vm.data.value.data.map((item) =>
+            item.id === fetched.id ? fetched : item,
+          ),
+        };
+      }
+    }
+    return fetched;
   }
 
   async function fetchDrivers(overrides?: Partial<DriversPaginationQueryDto>) {
@@ -55,7 +85,10 @@ export const useDriversStore = defineStore('drivers', () => {
     return vm.getViewModel();
   }
 
-  async function searchDrivers(searchTerm: string, searchLimit = 10): Promise<DriverDto[]> {
+  async function searchDrivers(
+    searchTerm: string,
+    searchLimit = 10,
+  ): Promise<DriverDto[]> {
     const query = searchTerm.trim();
     if (!query.length) return [];
     const response = await getDrivers(authenticatedApi, {
@@ -74,7 +107,9 @@ export const useDriversStore = defineStore('drivers', () => {
     return response.data;
   }
 
-  async function createDrivers(payloads: CreateDriverDto[]): Promise<DriverDto[]> {
+  async function createDrivers(
+    payloads: CreateDriverDto[],
+  ): Promise<DriverDto[]> {
     if (payloads.length === 0) return [];
     creating.value = true;
     try {
@@ -99,12 +134,47 @@ export const useDriversStore = defineStore('drivers', () => {
     }
   }
 
-  async function update(_id: string, _payload: CreateDriverDto): Promise<DriverDto> {
+  async function update(
+    id: string,
+    payload: CreateDriverDto,
+  ): Promise<DriverDto> {
     updating.value = true;
     try {
-      throw new Error('drivers.update is not implemented yet');
+      const updated = await updateDriverRequest(authenticatedApi, id, payload);
+      if (vm.data.value) {
+        vm.data.value = {
+          ...vm.data.value,
+          data: vm.data.value.data.map((item) =>
+            item.id === updated.id ? updated : item,
+          ),
+        };
+      }
+      return updated;
     } finally {
+      carsStore.reset();
       updating.value = false;
+    }
+  }
+
+  async function uploadDocuments(
+    driverId: string,
+    files: readonly File[],
+  ): Promise<FileDto[]> {
+    if (files.length === 0) return [];
+    uploadingDocuments.value = true;
+    try {
+      return await uploadDriverDocumentsRequest(authenticatedApi, driverId, files);
+    } finally {
+      uploadingDocuments.value = false;
+    }
+  }
+
+  async function deleteDocument(driverId: string, docId: string): Promise<void> {
+    deletingDocumentId.value = docId;
+    try {
+      await deleteDriverDocumentRequest(authenticatedApi, driverId, docId);
+    } finally {
+      deletingDocumentId.value = null;
     }
   }
 
@@ -114,16 +184,21 @@ export const useDriversStore = defineStore('drivers', () => {
     loading: vm.loading,
     creating,
     updating,
+    uploadingDocuments,
+    deletingDocumentId,
     page,
     limit,
     search,
     listResolved,
     getViewModel,
+    reset,
     getViewModelById,
     searchDrivers,
     getDriverSuggestions,
     fetchDrivers,
     createDrivers,
     update,
+    uploadDocuments,
+    deleteDocument,
   };
 });

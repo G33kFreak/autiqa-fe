@@ -43,3 +43,9 @@ export function assignDriverToCar(
     method: 'POST',
   });
 }
+
+export function unassignDriverFromCar(client: ApiClient, carId: string) {
+  return client<CarDto>(`/cars/${carId}/driver`, {
+    method: 'DELETE',
+  });
+}

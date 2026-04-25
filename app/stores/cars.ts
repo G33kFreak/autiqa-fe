@@ -8,6 +8,7 @@ import {
   createCarsBatch as createCarsBatchRequest,
   getCarById,
   getCars,
+  unassignDriverFromCar as unassignDriverFromCarRequest,
   updateCar as updateCarRequest,
 } from '../api/cars';
 import { toCarsBatchCreateError } from '../utils/cars-batch-error';
@@ -17,6 +18,8 @@ const DEFAULT_LIMIT = 20;
 
 export const useCarsStore = defineStore('cars', () => {
   const { authenticatedApi } = useApi();
+
+  const driversStore = useDriversStore();
 
   const page = ref(DEFAULT_PAGE);
   const limit = ref(DEFAULT_LIMIT);
@@ -45,6 +48,12 @@ export const useCarsStore = defineStore('cars', () => {
     return vm.getViewModel();
   }
 
+  function reset() {
+    vm.reset();
+    creating.value = false;
+    updating.value = false;
+  }
+
   async function getViewModelById(id: string): Promise<CarDto | null> {
     const car = await getCarById(authenticatedApi, id);
     if (vm.data.value) {
@@ -71,11 +80,6 @@ export const useCarsStore = defineStore('cars', () => {
     return vm.getViewModel();
   }
 
-  async function createCar(payload: CreateCarDto): Promise<CarDto> {
-    const cars = await createCars([payload]);
-    return cars[0]!;
-  }
-
   async function createCars(payloads: CreateCarDto[]): Promise<CarDto[]> {
     if (payloads.length === 0) return [];
     creating.value = true;
@@ -90,6 +94,7 @@ export const useCarsStore = defineStore('cars', () => {
       if (batchErr) throw batchErr;
       throw e;
     } finally {
+      driversStore.reset();
       creating.value = false;
     }
   }
@@ -133,6 +138,26 @@ export const useCarsStore = defineStore('cars', () => {
       }
       return updated;
     } finally {
+      driversStore.reset();
+      updating.value = false;
+    }
+  }
+
+  async function unassignDriverFromCar(carId: string): Promise<CarDto> {
+    updating.value = true;
+    try {
+      const updated = await unassignDriverFromCarRequest(authenticatedApi, carId);
+      if (vm.data.value) {
+        vm.data.value = {
+          ...vm.data.value,
+          data: vm.data.value.data.map((car) =>
+            car.id === updated.id ? updated : car,
+          ),
+        };
+      }
+      return updated;
+    } finally {
+      driversStore.reset();
       updating.value = false;
     }
   }
@@ -147,11 +172,12 @@ export const useCarsStore = defineStore('cars', () => {
     limit,
     listResolved,
     getViewModel,
+    reset,
     getViewModelById,
     fetchCars,
-    createCar,
     createCars,
     updateCar,
     assignDriverToCar,
+    unassignDriverFromCar,
   };
 });

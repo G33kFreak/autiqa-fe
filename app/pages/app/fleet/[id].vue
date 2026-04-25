@@ -119,8 +119,10 @@ function handleAssignOther() {
   });
 }
 
-function handleRemoveDriver() {
-  // placeholder for future driver removal flow
+async function handleRemoveDriver() {
+  if (!car.value) return;
+  const updated = await carsStore.unassignDriverFromCar(car.value.id);
+  car.value = updated;
 }
 
 function resetAssignDialogState() {
