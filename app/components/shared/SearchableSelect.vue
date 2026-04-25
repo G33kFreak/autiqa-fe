@@ -167,6 +167,15 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.searchable-select {
+  position: relative;
+  z-index: 1;
+}
+
+.searchable-select:focus-within {
+  z-index: 80;
+}
+
 .searchable-select__trigger {
   width: 100%;
   min-height: 2.5rem;
@@ -227,7 +236,11 @@ onBeforeUnmount(() => {
 }
 
 .searchable-select__dropdown {
-  margin-top: 0.35rem;
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 0;
+  right: 0;
+  z-index: 90;
   border-radius: 0.65rem;
   padding: 0.45rem;
   border: 1px solid color-mix(in srgb, var(--color-outline) 18%, transparent);

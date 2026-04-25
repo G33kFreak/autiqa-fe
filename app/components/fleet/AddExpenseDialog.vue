@@ -42,10 +42,14 @@ type ExpenseFormModel = {
   carPaymentKind: string;
 };
 
+function getTodayDateInputValue(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
 const form = reactive<ExpenseFormModel>({
   type: 'MAINTENANCE',
   amount: '',
-  occurredAt: '',
+  occurredAt: getTodayDateInputValue(),
   title: '',
   notes: '',
   carPaymentKind: '',
@@ -62,12 +66,26 @@ const expenseTypeOptions = [
 const carPaymentKindOptions = ['BUY', 'LEASE'] as const;
 
 const isCarPaymentType = computed(() => form.type === 'CAR_PAYMENT');
+const showsDriverRelation = computed(
+  () => form.type === 'FEE' || form.type === 'OTHER',
+);
+const requiresCarRelation = computed(
+  () =>
+    form.type === 'MAINTENANCE'
+    || form.type === 'FEE'
+    || form.type === 'CAR_PAYMENT'
+    || form.type === 'INSURANCE',
+);
+const requiresDriverRelation = computed(() => form.type === 'FEE');
 
 watch(
   () => form.type,
   () => {
     if (!isCarPaymentType.value) {
       form.carPaymentKind = '';
+    }
+    if (!showsDriverRelation.value) {
+      clearDriver();
     }
   },
 );
@@ -90,7 +108,7 @@ function resetForm() {
   formError.value = null;
   form.type = 'MAINTENANCE';
   form.amount = '';
-  form.occurredAt = '';
+  form.occurredAt = getTodayDateInputValue();
   form.title = '';
   form.notes = '';
   form.carPaymentKind = '';
@@ -223,6 +241,14 @@ async function onSubmit() {
     formError.value = t('appSections.fleet.vehicleDetails.expenseDialog.validation');
     return;
   }
+  if (requiresCarRelation.value && !localCarId.value) {
+    formError.value = t('appSections.fleet.vehicleDetails.expenseDialog.validation');
+    return;
+  }
+  if (requiresDriverRelation.value && !localDriverId.value) {
+    formError.value = t('appSections.fleet.vehicleDetails.expenseDialog.validation');
+    return;
+  }
 
   const payload: CreateExpenseDto = {
     type: form.type,
@@ -233,7 +259,7 @@ async function onSubmit() {
     notes: form.notes.trim() || undefined,
     carPaymentKind: isCarPaymentType.value ? form.carPaymentKind.trim() || undefined : undefined,
     carId: localCarId.value || undefined,
-    driverId: localDriverId.value || undefined,
+    driverId: showsDriverRelation.value ? localDriverId.value || undefined : undefined,
   };
 
   try {
@@ -269,11 +295,29 @@ defineExpose({ showModal, close });
             </div>
           </div>
 
+          <label class="expense-dialog__field expense-dialog__field--full">
+            <span>{{ t('appSections.fleet.vehicleDetails.expenseDialog.type') }}</span>
+            <select
+              id="expense-type"
+              v-model="form.type"
+              class="ti-input expense-dialog__input expense-dialog__select"
+              required
+            >
+              <option
+                v-for="option in expenseTypeOptions"
+                :key="option"
+                :value="option"
+              >
+                {{ t(`appSections.fleet.vehicleDetails.expenseDialog.expenseTypes.${option}`) }}
+              </option>
+            </select>
+          </label>
+
           <div class="expense-dialog__field expense-dialog__field--full expense-dialog__related-block">
             <div class="expense-dialog__grid expense-dialog__grid--selectors">
               <div class="expense-dialog__field">
                 <span class="expense-dialog__field-label">
-                  {{ t('appSections.fleet.vehicleDetails.expenseDialog.linkedCar') }}
+                  {{ `${t('appSections.fleet.vehicleDetails.expenseDialog.linkedCar')}${requiresCarRelation ? ' *' : ''}` }}
                 </span>
                 <SearchableSelect
                   :model-value="localCarId"
@@ -300,9 +344,9 @@ defineExpose({ showModal, close });
                 />
               </div>
 
-              <div class="expense-dialog__field">
+              <div v-if="showsDriverRelation" class="expense-dialog__field">
                 <span class="expense-dialog__field-label">
-                  {{ t('appSections.fleet.vehicleDetails.expenseDialog.linkedDriver') }}
+                  {{ `${t('appSections.fleet.vehicleDetails.expenseDialog.linkedDriver')}${requiresDriverRelation ? ' *' : ''}` }}
                 </span>
                 <SearchableSelect
                   :model-value="localDriverId"
@@ -332,24 +376,6 @@ defineExpose({ showModal, close });
           </div>
 
           <div class="expense-dialog__grid">
-            <label class="expense-dialog__field">
-              <span>{{ t('appSections.fleet.vehicleDetails.expenseDialog.type') }}</span>
-              <select
-                id="expense-type"
-                v-model="form.type"
-                class="ti-input expense-dialog__input expense-dialog__select"
-                required
-              >
-                <option
-                  v-for="option in expenseTypeOptions"
-                  :key="option"
-                  :value="option"
-                >
-                  {{ t(`appSections.fleet.vehicleDetails.expenseDialog.expenseTypes.${option}`) }}
-                </option>
-              </select>
-            </label>
-
             <label v-if="isCarPaymentType" class="expense-dialog__field">
               <span>{{ t('appSections.fleet.vehicleDetails.expenseDialog.carPaymentKind') }}</span>
               <select

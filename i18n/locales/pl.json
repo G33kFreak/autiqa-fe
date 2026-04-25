@@ -156,11 +156,13 @@
       "vehicleDetails": {
         "commandView": "Widok dowodzenia pojazdem",
         "financialSummary": "Podsumowanie finansowe",
-        "totalIncome": "Suma przychodów",
-        "totalFees": "Suma opłat",
-        "totalMaintenance": "Suma serwisu",
+        "totalIncome": "Przychody",
+        "totalFees": "Mandaty",
+        "totalMaintenance": "Serwis",
+        "totalOtherExpenses": "Inne wydatki",
+        "totalCombinedExpenses": "Wszystkie wydatki",
         "totalProfitLoss": "Łączny zysk/strata",
-        "carFeesTitle": "Opłaty pojazdu",
+        "carFeesTitle": "Mandaty pojazdu",
         "thisMonthFees": "W tym miesiącu: {total}",
         "dueDate": "Termin: {date}",
         "complianceStatus": "Status zgodności",
@@ -174,8 +176,8 @@
         "emptyPlate": "Brak numeru rejestracyjnego",
         "emptyVin": "Brak numeru VIN",
         "emptyFinancialSummary": "Brak danych finansowych.",
-        "emptyFeesTitle": "Brak aktywnych opłat",
-        "emptyFeesCopy": "Ten pojazd nie ma jeszcze kar ani opłat.",
+        "emptyFeesTitle": "Brak aktywnych mandatów",
+        "emptyFeesCopy": "Ten pojazd nie ma jeszcze żadnych mandatów.",
         "emptyComplianceTitle": "Brak danych zgodności",
         "emptyComplianceCopy": "Dodaj daty polis lub przeglądów, aby śledzić terminy.",
         "emptyDriverCopy": "Aktualnie nie przypisano kierowcy.",
@@ -184,6 +186,7 @@
         "dateNotSet": "Brak daty",
         "maintenanceHistory": "Historia serwisowa",
         "addExpense": "Dodaj wydatek",
+        "loadMore": "Wczytaj więcej",
         "validUntil": "Ważne do {date}",
         "attachments": "Załączniki",
         "complianceItems": {
@@ -192,7 +195,7 @@
         },
         "demoFees": {
           "speedingTicketA4": "Mandat za prędkość (A4)",
-          "wrongParkingFeeZoneB": "Opłata za złe parkowanie (strefa miejska B)",
+          "wrongParkingFeeZoneB": "Mandat za złe parkowanie (strefa miejska B)",
           "busLaneViolation": "Naruszenie pasa dla autobusów",
           "noValidTollPayment": "Brak ważnej opłaty drogowej"
         },
@@ -218,7 +221,7 @@
             "MAINTENANCE": "Serwis",
             "CAR_PAYMENT": "Płatność za auto",
             "INSURANCE": "Ubezpieczenie",
-            "FEE": "Opłata",
+            "FEE": "Mandat",
             "OTHER": "Inne"
           },
           "carPaymentKinds": {

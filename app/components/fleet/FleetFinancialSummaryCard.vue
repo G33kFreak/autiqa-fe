@@ -3,6 +3,8 @@ const props = defineProps<{
   totalIncome: number;
   totalFees: number;
   totalMaintenance: number;
+  totalOtherExpenses: number;
+  totalCombinedExpenses: number;
   totalProfitLoss: number;
   isProfit: boolean;
 }>();
@@ -13,6 +15,8 @@ const hasNoData = computed(
     props.totalIncome === 0 &&
     props.totalFees === 0 &&
     props.totalMaintenance === 0 &&
+    props.totalOtherExpenses === 0 &&
+    props.totalCombinedExpenses === 0 &&
     props.totalProfitLoss === 0,
 );
 
@@ -53,6 +57,14 @@ function formatCurrency(value: number): string {
       <div class="spend-card__row">
         <span>{{ t('appSections.fleet.vehicleDetails.totalMaintenance') }}</span>
         <strong class="spend-card__value--expense">-{{ formatCurrency(props.totalMaintenance) }}</strong>
+      </div>
+      <div class="spend-card__row">
+        <span>{{ t('appSections.fleet.vehicleDetails.totalOtherExpenses') }}</span>
+        <strong class="spend-card__value--expense">-{{ formatCurrency(props.totalOtherExpenses) }}</strong>
+      </div>
+      <div class="spend-card__row">
+        <span>{{ t('appSections.fleet.vehicleDetails.totalCombinedExpenses') }}</span>
+        <strong class="spend-card__value--expense">-{{ formatCurrency(props.totalCombinedExpenses) }}</strong>
       </div>
       <div class="spend-card__row spend-card__row--emphasis">
         <span>{{ t('appSections.fleet.vehicleDetails.totalProfitLoss') }}</span>

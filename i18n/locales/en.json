@@ -156,11 +156,13 @@
       "vehicleDetails": {
         "commandView": "Vehicle Command View",
         "financialSummary": "Financial Summary",
-        "totalIncome": "Total income",
-        "totalFees": "Total fees",
-        "totalMaintenance": "Total maintenance",
+        "totalIncome": "Income",
+        "totalFees": "Tickets",
+        "totalMaintenance": "Maintenance",
+        "totalOtherExpenses": "Other expenses",
+        "totalCombinedExpenses": "All expenses",
         "totalProfitLoss": "Total profit/loss",
-        "carFeesTitle": "Car Fees",
+        "carFeesTitle": "Vehicle tickets",
         "thisMonthFees": "This month: {total}",
         "dueDate": "Due {date}",
         "complianceStatus": "Compliance Status",
@@ -174,8 +176,8 @@
         "emptyPlate": "Plate not set",
         "emptyVin": "VIN not set",
         "emptyFinancialSummary": "No financial data yet.",
-        "emptyFeesTitle": "No open fees",
-        "emptyFeesCopy": "This vehicle has no penalty or fee records yet.",
+        "emptyFeesTitle": "No open tickets",
+        "emptyFeesCopy": "This vehicle has no ticket records yet.",
         "emptyComplianceTitle": "No compliance records",
         "emptyComplianceCopy": "Add policy or inspection dates to track deadlines.",
         "emptyDriverCopy": "No driver is currently assigned.",
@@ -184,6 +186,7 @@
         "dateNotSet": "Date not set",
         "maintenanceHistory": "Maintenance History",
         "addExpense": "Add expense",
+        "loadMore": "Load more",
         "validUntil": "Valid until {date}",
         "attachments": "Attachments",
         "complianceItems": {
@@ -192,7 +195,7 @@
         },
         "demoFees": {
           "speedingTicketA4": "Speeding ticket (A4)",
-          "wrongParkingFeeZoneB": "Wrong parking fee (city zone B)",
+          "wrongParkingFeeZoneB": "Wrong parking ticket (city zone B)",
           "busLaneViolation": "Bus lane violation",
           "noValidTollPayment": "No valid toll payment"
         },
@@ -218,7 +221,7 @@
             "MAINTENANCE": "Maintenance",
             "CAR_PAYMENT": "Car payment",
             "INSURANCE": "Insurance",
-            "FEE": "Fee",
+            "FEE": "Ticket",
             "OTHER": "Other"
           },
           "carPaymentKinds": {

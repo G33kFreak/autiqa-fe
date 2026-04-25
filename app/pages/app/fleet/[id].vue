@@ -3,6 +3,7 @@ import type { CarDto } from '#shared/dto/car.dto';
 import type { CreateCarDto } from '#shared/dto/create-car.dto';
 import type { DriverDto } from '#shared/dto/driver.dto';
 import type { ExpenseDto } from '#shared/dto/expense.dto';
+import type { ExpenseSummaryItemDto } from '#shared/dto/expense-summary-item.dto';
 import AddExpenseDialog from '~/components/fleet/AddExpenseDialog.vue';
 import EntityDialogShell from '~/components/shared/EntityDialogShell.vue';
 
@@ -33,24 +34,38 @@ const insurance = {
 };
 
 const addExpenseDialog = ref<InstanceType<typeof AddExpenseDialog> | null>(null);
+const feeExpenses = ref<ExpenseDto[]>([]);
+const maintenanceExpenses = ref<ExpenseDto[]>([]);
+const feesPage = ref(1);
+const maintenancePage = ref(1);
+const feesLimit = 10;
+const maintenanceLimit = 10;
+const feesHasMore = ref(false);
+const maintenanceHasMore = ref(false);
+const feesLoadingMore = ref(false);
+const maintenanceLoadingMore = ref(false);
+const expenseSummaryItems = ref<ExpenseSummaryItemDto[]>([]);
 
-const maintenanceSpend = {
-  total: 3240.5,
-};
+const carFees = computed(() =>
+  [...feeExpenses.value]
+    .sort(
+      (a: ExpenseDto, b: ExpenseDto) =>
+        new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
+    )
+    .map((expense: ExpenseDto) => ({
+      label: expense.title,
+      dueDate: expense.occurredAt.slice(0, 10),
+      value: Math.abs(Number(expense.amount) || 0),
+    })),
+);
 
-const carFees = {
-  items: [
-    { label: t('appSections.fleet.vehicleDetails.demoFees.speedingTicketA4'), dueDate: '2026-05-10', value: 320 },
-    { label: t('appSections.fleet.vehicleDetails.demoFees.wrongParkingFeeZoneB'), dueDate: '2026-05-16', value: 140 },
-    { label: t('appSections.fleet.vehicleDetails.demoFees.busLaneViolation'), dueDate: '2026-05-22', value: 220 },
-    { label: t('appSections.fleet.vehicleDetails.demoFees.noValidTollPayment'), dueDate: '2026-05-29', value: 100 },
-  ],
-};
-
-const totalIncome = 9840.0;
+const totalIncome = computed(() => {
+  const summaryItem = expenseSummaryItems.value.find((item) => item.type === 'INCOME');
+  return Number(summaryItem?.totalAmount ?? 0) || 0;
+});
 
 const maintenanceHistory = computed(() =>
-  [...expensesStore.items]
+  [...maintenanceExpenses.value]
     .sort(
       (a: ExpenseDto, b: ExpenseDto) =>
         new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
@@ -63,9 +78,28 @@ const maintenanceHistory = computed(() =>
     })),
 );
 
-const totalFees = computed(() => carFees.items.reduce((sum, item) => sum + item.value, 0));
-const totalMaintenance = computed(() => maintenanceSpend.total);
-const totalProfitLoss = computed(() => totalIncome - totalFees.value - totalMaintenance.value);
+const totalFees = computed(() => {
+  const summaryItem = expenseSummaryItems.value.find((item) => item.type === 'FEE');
+  return Number(summaryItem?.totalAmount ?? 0) || 0;
+});
+const totalMaintenance = computed(() => {
+  const summaryItem = expenseSummaryItems.value.find(
+    (item) => item.type === 'MAINTENANCE',
+  );
+  return Number(summaryItem?.totalAmount ?? 0) || 0;
+});
+const totalOtherExpenses = computed(() =>
+  expenseSummaryItems.value.reduce((sum, item) => {
+    if (item.type === 'INCOME' || item.type === 'MAINTENANCE' || item.type === 'FEE') {
+      return sum;
+    }
+    return sum + (Number(item.totalAmount ?? 0) || 0);
+  }, 0),
+);
+const totalCombinedExpenses = computed(
+  () => totalFees.value + totalMaintenance.value + totalOtherExpenses.value,
+);
+const totalProfitLoss = computed(() => totalIncome.value - totalCombinedExpenses.value);
 const isProfit = computed(() => totalProfitLoss.value >= 0);
 
 const complianceItems = [
@@ -88,6 +122,41 @@ const driverCard = computed(() => {
   };
 });
 
+async function fetchFees(page: number, append = false): Promise<void> {
+  const response = await expensesStore.fetchExpenses({
+    page,
+    limit: feesLimit,
+    carId: carId.value,
+    type: 'FEE',
+  });
+  feeExpenses.value = append
+    ? [...feeExpenses.value, ...response.data]
+    : response.data;
+  feesPage.value = response.meta.page;
+  feesHasMore.value = response.meta.hasNextPage;
+}
+
+async function fetchMaintenance(page: number, append = false): Promise<void> {
+  const response = await expensesStore.fetchExpenses({
+    page,
+    limit: maintenanceLimit,
+    carId: carId.value,
+    type: 'MAINTENANCE',
+  });
+  maintenanceExpenses.value = append
+    ? [...maintenanceExpenses.value, ...response.data]
+    : response.data;
+  maintenancePage.value = response.meta.page;
+  maintenanceHasMore.value = response.meta.hasNextPage;
+}
+
+async function fetchExpensesSummary(): Promise<void> {
+  const response = await expensesStore.fetchExpensesSummary({
+    carId: carId.value,
+  });
+  expenseSummaryItems.value = response.items;
+}
+
 useSeoMeta({
   title: computed(() => `${t('appSections.fleet.vehicleDetailsTitle')} #${carId.value}`),
   description: computed(() => t('appSections.fleet.vehicleDetailsLead')),
@@ -98,11 +167,9 @@ onMounted(async () => {
   try {
     const [fetchedCar] = await Promise.all([
       carsStore.getViewModelById(carId.value),
-      expensesStore.fetchExpenses({
-        page: 1,
-        limit: 20,
-        carId: carId.value,
-      }),
+      fetchFees(1),
+      fetchMaintenance(1),
+      fetchExpensesSummary(),
     ]);
     car.value = fetchedCar;
     carName.value = car.value?.model ?? '';
@@ -169,11 +236,31 @@ function handleOpenAddExpenseDialog() {
 }
 
 async function handleExpenseCreated() {
-  await expensesStore.fetchExpenses({
-    page: 1,
-    limit: expensesStore.limit,
-    carId: carId.value,
-  });
+  await Promise.all([
+    fetchFees(1),
+    fetchMaintenance(1),
+    fetchExpensesSummary(),
+  ]);
+}
+
+async function handleLoadMoreFees() {
+  if (feesLoadingMore.value || !feesHasMore.value) return;
+  feesLoadingMore.value = true;
+  try {
+    await fetchFees(feesPage.value + 1, true);
+  } finally {
+    feesLoadingMore.value = false;
+  }
+}
+
+async function handleLoadMoreMaintenance() {
+  if (maintenanceLoadingMore.value || !maintenanceHasMore.value) return;
+  maintenanceLoadingMore.value = true;
+  try {
+    await fetchMaintenance(maintenancePage.value + 1, true);
+  } finally {
+    maintenanceLoadingMore.value = false;
+  }
 }
 
 async function assignDriver(driver: DriverDto) {
@@ -240,10 +327,21 @@ async function handleUpdateVehicleInfo(payload: {
           :total-income="totalIncome"
           :total-fees="totalFees"
           :total-maintenance="totalMaintenance"
+          :total-other-expenses="totalOtherExpenses"
+          :total-combined-expenses="totalCombinedExpenses"
           :total-profit-loss="totalProfitLoss"
           :is-profit="isProfit"
         />
-        <FleetFeesCard :items="carFees.items" />
+        <FleetFeesCard :items="carFees" />
+        <button
+          v-if="feesHasMore"
+          type="button"
+          class="fleet-load-more-btn"
+          :disabled="feesLoadingMore"
+          @click="handleLoadMoreFees"
+        >
+          {{ feesLoadingMore ? t('common.loading') : t('appSections.fleet.vehicleDetails.loadMore') }}
+        </button>
       </div>
 
       <div class="fleet-layout__right">
@@ -265,6 +363,15 @@ async function handleUpdateVehicleInfo(payload: {
             </button>
           </template>
         </FleetMaintenanceTimeline>
+        <button
+          v-if="maintenanceHasMore"
+          type="button"
+          class="fleet-load-more-btn"
+          :disabled="maintenanceLoadingMore"
+          @click="handleLoadMoreMaintenance"
+        >
+          {{ maintenanceLoadingMore ? t('common.loading') : t('appSections.fleet.vehicleDetails.loadMore') }}
+        </button>
       </div>
     </section>
 
@@ -484,5 +591,22 @@ async function handleUpdateVehicleInfo(payload: {
 
 .fleet-maintenance-action .material-symbols-outlined {
   font-size: 0.95rem;
+}
+
+.fleet-load-more-btn {
+  align-self: flex-start;
+  border: none;
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  background: var(--color-surface-container-high);
+  cursor: pointer;
+}
+
+.fleet-load-more-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 </style>
