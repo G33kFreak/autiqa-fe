@@ -53,7 +53,6 @@ function openDriverDetails(driverId: string) {
             <th>{{ t('appSections.drivers.table.driver') }}</th>
             <th>{{ t('appSections.drivers.table.email') }}</th>
             <th>{{ t('appSections.drivers.table.phone') }}</th>
-            <th>{{ t('appSections.drivers.table.assignedCarId') }}</th>
             <th>{{ t('appSections.drivers.table.createdAt') }}</th>
           </tr>
         </thead>
@@ -85,11 +84,6 @@ function openDriverDetails(driverId: string) {
             <td>
               <span :class="{ 'drivers-page__muted': !driver.phoneNumber }">
                 {{ driver.phoneNumber || '—' }}
-              </span>
-            </td>
-            <td>
-              <span class="drivers-page__mono" :class="{ 'drivers-page__muted': !driver.carId }">
-                {{ driver.carId || '—' }}
               </span>
             </td>
             <td>
@@ -222,13 +216,6 @@ function openDriverDetails(driverId: string) {
   font-family: var(--font-display);
   font-size: 0.95rem;
   font-weight: 700;
-}
-
-.drivers-page__mono {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
-    'Courier New', monospace;
-  font-size: 0.8125rem;
-  font-weight: 600;
 }
 
 .drivers-page__muted {

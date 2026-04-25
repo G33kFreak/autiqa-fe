@@ -36,13 +36,13 @@ const form = ref({
 });
 
 const fullName = computed(() => {
-  if (!driver.value) return '—';
+  if (!driver.value) return t('appSections.drivers.details.common.emptyValue');
   return `${driver.value.firstName} ${driver.value.lastName}`.trim();
 });
 
 const assignmentActionLabel = computed(() => {
-  if (!driver.value?.carId) return 'Assign vehicle';
-  return 'Assign other vehicle';
+  if (!driver.value?.carId) return t('appSections.drivers.details.actions.assignVehicle');
+  return t('appSections.drivers.details.actions.assignOtherVehicle');
 });
 
 function syncFormFromDriver(source: DriverDetailsDto | null) {
@@ -233,7 +233,7 @@ onMounted(async () => {
       <EntityDialogShell
         ref="assignDialog"
         title-id="driver-assign-car-dialog-title"
-        title="Assign car"
+        :title="t('appSections.drivers.details.assignDialog.title')"
         width="min(30rem, calc(100vw - 2rem))"
         :lead="''"
       >
@@ -241,7 +241,7 @@ onMounted(async () => {
           <div class="driver-assign-dialog__body">
             <p v-if="assignCarsLoading" class="driver-assign-dialog__state">{{ t('common.loading') }}</p>
             <p v-else-if="assignCars.length === 0" class="driver-assign-dialog__state">
-              No cars available
+              {{ t('appSections.drivers.details.assignDialog.noCars') }}
             </p>
             <button
               v-for="car in assignCars"
@@ -252,12 +252,12 @@ onMounted(async () => {
               :disabled="carsStore.updating || driver?.carId === car.id"
               @click="assignCarToDriver(car)"
             >
-              <span class="driver-assign-dialog__item-name">{{ car.model || 'Unnamed car' }}</span>
+              <span class="driver-assign-dialog__item-name">{{ car.model || t('appSections.drivers.details.assignDialog.unnamedCar') }}</span>
               <span class="driver-assign-dialog__item-meta">
                 <span class="driver-assign-dialog__chip">
-                  {{ car.plateNumber || 'No plate' }}
+                  {{ car.plateNumber || t('appSections.drivers.details.assignDialog.noPlate') }}
                 </span>
-                <span v-if="driver?.carId === car.id">Currently assigned</span>
+                <span v-if="driver?.carId === car.id">{{ t('appSections.drivers.details.assignDialog.currentlyAssigned') }}</span>
               </span>
             </button>
           </div>

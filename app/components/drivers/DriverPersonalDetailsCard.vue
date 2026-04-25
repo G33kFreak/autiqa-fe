@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { DriverDto } from '#shared/dto/driver.dto';
+const { t } = useI18n();
 
 type DriverPersonalForm = {
   firstName: string;
@@ -34,12 +35,12 @@ function updateField(
   <article class="driver-card driver-card--accent">
     <h2 class="driver-card__title">
       <span class="material-symbols-outlined" aria-hidden="true">person</span>
-      Personal details
+      {{ t('appSections.drivers.details.personal.title') }}
     </h2>
     <dl class="driver-card__details-grid">
       <div>
-        <dt>First name</dt>
-        <dd v-if="!props.isEditing">{{ driver.firstName || '—' }}</dd>
+        <dt>{{ t('appSections.drivers.details.personal.firstName') }}</dt>
+        <dd v-if="!props.isEditing">{{ driver.firstName || t('appSections.drivers.details.common.emptyValue') }}</dd>
         <dd v-else>
           <input
             class="driver-card__input"
@@ -50,8 +51,8 @@ function updateField(
         </dd>
       </div>
       <div>
-        <dt>Last name</dt>
-        <dd v-if="!props.isEditing">{{ driver.lastName || '—' }}</dd>
+        <dt>{{ t('appSections.drivers.details.personal.lastName') }}</dt>
+        <dd v-if="!props.isEditing">{{ driver.lastName || t('appSections.drivers.details.common.emptyValue') }}</dd>
         <dd v-else>
           <input
             class="driver-card__input"
@@ -62,8 +63,8 @@ function updateField(
         </dd>
       </div>
       <div>
-        <dt>Email address</dt>
-        <dd v-if="!props.isEditing">{{ driver.email || '—' }}</dd>
+        <dt>{{ t('appSections.drivers.details.personal.email') }}</dt>
+        <dd v-if="!props.isEditing">{{ driver.email || t('appSections.drivers.details.common.emptyValue') }}</dd>
         <dd v-else>
           <input
             class="driver-card__input"
@@ -74,8 +75,8 @@ function updateField(
         </dd>
       </div>
       <div>
-        <dt>Phone number</dt>
-        <dd v-if="!props.isEditing">{{ driver.phoneNumber || '—' }}</dd>
+        <dt>{{ t('appSections.drivers.details.personal.phone') }}</dt>
+        <dd v-if="!props.isEditing">{{ driver.phoneNumber || t('appSections.drivers.details.common.emptyValue') }}</dd>
         <dd v-else>
           <input
             class="driver-card__input"

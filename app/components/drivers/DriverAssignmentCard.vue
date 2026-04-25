@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n();
 defineProps<{
   carId: string | null;
   carModel?: string | null;
@@ -9,7 +10,7 @@ defineProps<{
 <template>
   <article class="driver-card driver-card--glass">
     <header class="driver-card__header">
-      <h2 class="driver-card__title">Assigned car</h2>
+      <h2 class="driver-card__title">{{ t('appSections.drivers.details.assignment.title') }}</h2>
     </header>
 
     <div v-if="carId" class="driver-assignment__vehicle">
@@ -18,12 +19,12 @@ defineProps<{
         <span class="material-symbols-outlined">directions_car</span>
       </div>
       <div class="driver-assignment__content">
-        <p class="driver-assignment__model">{{ carModel || 'Assigned vehicle' }}</p>
+        <p class="driver-assignment__model">{{ carModel || t('appSections.drivers.details.assignment.assignedVehicleFallback') }}</p>
         <p
           class="driver-assignment__plate-chip"
           :class="{ 'driver-assignment__plate-chip--empty': !carPlateNumber }"
         >
-          {{ carPlateNumber || 'Plate not available' }}
+          {{ carPlateNumber || t('appSections.drivers.details.assignment.plateUnavailable') }}
         </p>
       </div>
     </div>
@@ -33,7 +34,7 @@ defineProps<{
         <span class="material-symbols-outlined">directions_car</span>
       </div>
       <div class="driver-assignment__content">
-        <p class="driver-assignment__empty-title">No car assigned</p>
+        <p class="driver-assignment__empty-title">{{ t('appSections.drivers.details.assignment.empty') }}</p>
       </div>
     </div>
   </article>

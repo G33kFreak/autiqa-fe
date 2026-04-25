@@ -5,6 +5,7 @@ import {
   MAX_UPLOAD_FILE_SIZE_BYTES,
   isAcceptedFileType,
 } from '~/utils/file-upload';
+const { t } = useI18n();
 
 export type DriverDocumentView = {
   id?: string;
@@ -34,7 +35,7 @@ const validationError = ref('');
 const pendingFiles = ref<File[]>([]);
 
 function formatSize(size: number | null): string {
-  if (!size || size <= 0) return 'Unknown size';
+  if (!size || size <= 0) return t('appSections.drivers.details.documents.unknownSize');
   const kb = size / 1024;
   if (kb < 1024) return `${Math.round(kb)} KB`;
   return `${(kb / 1024).toFixed(1)} MB`;
@@ -59,17 +60,20 @@ function openPicker() {
 
 function validateFiles(files: File[]): File[] {
   if (files.length === 0) {
-    validationError.value = 'Please select at least one file.';
+    validationError.value = t('appSections.drivers.details.documents.validation.selectAtLeastOne');
     return [];
   }
   const unsupported = files.find((file) => !isAcceptedFileType(file));
   if (unsupported) {
-    validationError.value = `Unsupported format. Allowed: ${ACCEPTED_FILE_FORMATS_LABEL}.`;
+    validationError.value = t(
+      'appSections.drivers.details.documents.validation.unsupportedFormat',
+      { formats: ACCEPTED_FILE_FORMATS_LABEL },
+    );
     return [];
   }
   const tooLarge = files.find((file) => file.size > MAX_UPLOAD_FILE_SIZE_BYTES);
   if (tooLarge) {
-    validationError.value = 'Each file must be 5MB or smaller.';
+    validationError.value = t('appSections.drivers.details.documents.validation.maxSize');
     return [];
   }
   validationError.value = '';
@@ -140,7 +144,7 @@ watch(
   <article class="driver-card">
     <h2 class="driver-card__title">
       <span class="material-symbols-outlined" aria-hidden="true">description</span>
-      Documents
+      {{ t('appSections.drivers.details.documents.title') }}
     </h2>
     <div
       class="driver-documents__dropzone"
@@ -165,20 +169,28 @@ watch(
       <div class="driver-documents__dropzone-icon">
         <span class="material-symbols-outlined" aria-hidden="true">cloud_upload</span>
       </div>
-      <p>{{ props.isUploading ? 'Uploading files...' : 'Drag and drop files here, or' }}</p>
-      <small>Supported formats: {{ ACCEPTED_FILE_FORMATS_LABEL }} (Max 5 MB each)</small>
+      <p>
+        {{
+          props.isUploading
+            ? t('appSections.drivers.details.documents.uploading')
+            : t('appSections.drivers.details.documents.dropzoneHint')
+        }}
+      </p>
+      <small>
+        {{ t('appSections.drivers.details.documents.supportedFormats', { formats: ACCEPTED_FILE_FORMATS_LABEL }) }}
+      </small>
       <button
         type="button"
         :disabled="props.isUploading"
         @click.stop="openPicker"
       >
-        Browse files
+        {{ t('appSections.drivers.details.documents.browse') }}
       </button>
       <small v-if="validationError" class="driver-documents__error">{{ validationError }}</small>
     </div>
 
     <div v-if="pendingFiles.length > 0" class="driver-documents__pending">
-      <h3>Selected files</h3>
+      <h3>{{ t('appSections.drivers.details.documents.selectedFiles') }}</h3>
       <div
         v-for="(file, index) in pendingFiles"
         :key="`${file.name}-${file.size}-${index}`"
@@ -190,7 +202,7 @@ watch(
           </div>
           <div>
             <p>{{ file.name }}</p>
-            <small>{{ formatSize(file.size) }} • {{ file.type || 'unknown/type' }}</small>
+            <small>{{ formatSize(file.size) }} • {{ file.type || t('appSections.drivers.details.documents.unknownType') }}</small>
           </div>
         </div>
         <button
@@ -209,7 +221,7 @@ watch(
           :disabled="props.isUploading"
           @click="clearPendingFiles"
         >
-          Clear
+          {{ t('appSections.drivers.details.documents.clear') }}
         </button>
         <button
           type="button"
@@ -217,15 +229,19 @@ watch(
           :disabled="props.isUploading || pendingFiles.length === 0"
           @click="savePendingFiles"
         >
-          {{ props.isUploading ? 'Saving...' : 'Save' }}
+          {{
+            props.isUploading
+              ? t('appSections.drivers.details.documents.saving')
+              : t('appSections.drivers.details.documents.save')
+          }}
         </button>
       </div>
     </div>
 
     <div class="driver-documents__files">
-      <h3>Uploaded files</h3>
+      <h3>{{ t('appSections.drivers.details.documents.uploadedFiles') }}</h3>
       <p v-if="props.documents.length === 0" class="driver-documents__empty">
-        No uploaded documents yet.
+        {{ t('appSections.drivers.details.documents.empty') }}
       </p>
       <div
         v-for="document in props.documents"
@@ -245,7 +261,7 @@ watch(
           </div>
           <div>
             <p>{{ document.name }}</p>
-            <small>{{ formatSize(document.size) }} • {{ document.mimeType || 'unknown/type' }}</small>
+            <small>{{ formatSize(document.size) }} • {{ document.mimeType || t('appSections.drivers.details.documents.unknownType') }}</small>
           </div>
         </div>
         <div v-if="document.id" class="driver-documents__file-actions">

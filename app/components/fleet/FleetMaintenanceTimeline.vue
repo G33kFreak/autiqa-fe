@@ -24,6 +24,7 @@ function formatCurrency(value: number): string {
   <section class="fleet-card fleet-card--timeline">
     <div class="fleet-card__header">
       <h2 class="fleet-card__title">{{ t('appSections.fleet.vehicleDetails.maintenanceHistory') }}</h2>
+      <slot name="header-action" />
     </div>
     <div class="timeline" v-if="items.length > 0">
       <article

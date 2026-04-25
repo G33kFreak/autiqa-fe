@@ -1,7 +1,8 @@
 {
   "brand": "Autiqa",
   "common": {
-    "loading": "Loading"
+    "loading": "Loading",
+    "clear": "Clear"
   },
   "meta": {
     "home": {
@@ -90,7 +91,14 @@
   "layout": {
     "appTagline": "Fleet intelligence",
     "openMenu": "Open navigation menu",
-    "userFallback": "Account"
+    "userFallback": "Account",
+    "sidebar": {
+      "mainNavigationAria": "Main navigation",
+      "appSectionsAria": "App sections",
+      "buildInfoAria": "Build information",
+      "copyright": "© 2026 Autiqa. All rights reserved.",
+      "alphaVersion": "Alpha version"
+    }
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -122,6 +130,8 @@
       "addVehicleModelPlaceholder": "e.g. Toyota Camry",
       "addVehicleVin": "VIN",
       "addVehiclePlate": "Plate number",
+      "addVehiclePlatePlaceholder": "WZ12345",
+      "addVehicleVinPlaceholder": "V0ZAB12CDE3456789",
       "addVehicleDriver": "Assigned driver",
       "addVehicleDriverUnassigned": "No driver assigned",
       "addVehicleInspectionExpiry": "Technical inspection (valid until)",
@@ -133,6 +143,10 @@
       "addVehicleValidationModelsRequired": "Enter a model for each vehicle.",
       "addVehicleCancel": "Cancel",
       "addVehicleError": "Could not save this vehicle. Check the fields and try again.",
+      "dateInput": {
+        "previousMonth": "Previous month",
+        "nextMonth": "Next month"
+      },
       "driverUnassigned": "Unassigned",
       "unknownModel": "Unknown model",
       "inspectionDaysLeft": "{count} days left",
@@ -169,8 +183,52 @@
         "emptyMaintenanceCopy": "Service events will appear here after first maintenance.",
         "dateNotSet": "Date not set",
         "maintenanceHistory": "Maintenance History",
+        "addExpense": "Add expense",
         "validUntil": "Valid until {date}",
-        "attachments": "Attachments"
+        "attachments": "Attachments",
+        "complianceItems": {
+          "technicalInspection": "Technical inspection",
+          "ocAcPolicy": "OC/AC policy"
+        },
+        "demoFees": {
+          "speedingTicketA4": "Speeding ticket (A4)",
+          "wrongParkingFeeZoneB": "Wrong parking fee (city zone B)",
+          "busLaneViolation": "Bus lane violation",
+          "noValidTollPayment": "No valid toll payment"
+        },
+        "expenseDialog": {
+          "title": "Create expense",
+          "lead": "Log a new cost event for this vehicle and optionally link a driver.",
+          "openCta": "New expense",
+          "type": "Expense type",
+          "carPaymentKind": "Car payment kind",
+          "selectCarPaymentKind": "Select payment kind",
+          "amount": "Amount",
+          "currency": "Currency",
+          "titleField": "Title",
+          "titlePlaceholder": "e.g. Oil change",
+          "occurredAt": "Occurred at",
+          "notes": "Notes",
+          "notesPlaceholder": "Add optional details about this expense",
+          "linkedCar": "Linked car",
+          "linkedDriver": "Linked driver",
+          "searchCarPlaceholder": "Search by model or plate...",
+          "linked": "Linked",
+          "expenseTypes": {
+            "MAINTENANCE": "Maintenance",
+            "CAR_PAYMENT": "Car payment",
+            "INSURANCE": "Insurance",
+            "FEE": "Fee",
+            "OTHER": "Other"
+          },
+          "carPaymentKinds": {
+            "BUY": "Buy",
+            "LEASE": "Lease"
+          },
+          "submit": "Create expense",
+          "validation": "Fill in required fields: title, amount, and date.",
+          "error": "Could not create expense. Check fields and try again."
+        }
       },
       "table": {
         "vehicleUnit": "Vehicle unit",
@@ -212,15 +270,68 @@
         "lead": "Add multiple drivers to the operational roster.",
         "newDriver": "New Driver Details",
         "firstName": "First Name",
+        "firstNamePlaceholder": "e.g. Ivan",
         "lastName": "Last Name",
+        "lastNamePlaceholder": "e.g. Petrov",
         "email": "Email Address",
+        "emailPlaceholder": "ivan{'@'}example.com",
         "phoneNumber": "Phone Number",
+        "phoneNumberPlaceholder": "+48 600 000 000",
         "addAnother": "Add Another Driver",
         "cancel": "Cancel",
         "submit": "Submit All Drivers",
         "submitting": "Submitting...",
         "validation": "Please provide first and last name for each driver. Email and phone must be valid if filled.",
         "error": "Could not save drivers. Check the fields and try again."
+      },
+      "details": {
+        "common": {
+          "emptyValue": "—"
+        },
+        "actions": {
+          "assignVehicle": "Assign vehicle",
+          "assignOtherVehicle": "Assign other vehicle"
+        },
+        "personal": {
+          "title": "Personal details",
+          "firstName": "First name",
+          "lastName": "Last name",
+          "email": "Email address",
+          "phone": "Phone number"
+        },
+        "assignment": {
+          "title": "Assigned car",
+          "assignedVehicleFallback": "Assigned vehicle",
+          "plateUnavailable": "Plate not available",
+          "empty": "No car assigned"
+        },
+        "assignDialog": {
+          "title": "Assign car",
+          "noCars": "No cars available",
+          "unnamedCar": "Unnamed car",
+          "noPlate": "No plate",
+          "currentlyAssigned": "Currently assigned"
+        },
+        "documents": {
+          "title": "Documents",
+          "uploading": "Uploading files...",
+          "dropzoneHint": "Drag and drop files here, or",
+          "supportedFormats": "Supported formats: {formats} (Max 5 MB each)",
+          "browse": "Browse files",
+          "selectedFiles": "Selected files",
+          "uploadedFiles": "Uploaded files",
+          "clear": "Clear",
+          "save": "Save",
+          "saving": "Saving...",
+          "empty": "No uploaded documents yet.",
+          "unknownSize": "Unknown size",
+          "unknownType": "unknown/type",
+          "validation": {
+            "selectAtLeastOne": "Please select at least one file.",
+            "unsupportedFormat": "Unsupported format. Allowed: {formats}.",
+            "maxSize": "Each file must be 5MB or smaller."
+          }
+        }
       }
     },
     "maintenance": {

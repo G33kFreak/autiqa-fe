@@ -53,7 +53,7 @@ watch(searchInput, (value) => {
         <span class="material-symbols-outlined drivers-page__search-icon" aria-hidden="true">search</span>
         <input
           v-model="searchInput"
-          class="drivers-page__search-input"
+          class="ti-input drivers-page__search-input"
           type="text"
           :placeholder="t('appSections.drivers.searchPlaceholder')"
         >
@@ -103,15 +103,6 @@ watch(searchInput, (value) => {
 }
 
 .drivers-page__search-input {
-  width: 100%;
-  border: none;
-  border-radius: 0.6rem;
-  padding: 0.68rem 0.8rem 0.68rem 2.2rem;
-  background: var(--color-surface-container-highest);
-  color: var(--color-on-surface);
-}
-
-.drivers-page__search-input:focus {
-  outline: 2px solid color-mix(in srgb, var(--color-secondary) 30%, transparent);
+  padding-left: 2.2rem;
 }
 </style>

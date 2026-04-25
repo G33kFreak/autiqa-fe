@@ -70,33 +70,76 @@ const hasDriver = computed(() => Boolean((props.name || '').trim()));
 }
 
 .driver-actions {
-  margin-top: 0.75rem;
+  margin-top: 0.95rem;
   display: flex;
-  gap: 0.4rem;
+  gap: 0.55rem;
   flex-wrap: wrap;
 }
 
 .button {
-  border: 0;
-  border-radius: 0.6rem;
-  padding: 0.35rem 0.55rem;
-  font-size: 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.6rem 0.95rem;
+  font-size: 0.8125rem;
+  line-height: 1.2;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.15s ease, background-color 0.2s ease;
+  transition:
+    transform 0.15s ease,
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .button:hover {
   transform: translateY(-1px);
 }
 
+.button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-secondary) 35%, transparent);
+  outline-offset: 2px;
+}
+
 .button--primary {
-  background: var(--color-secondary);
+  background: linear-gradient(
+    135deg,
+    var(--color-secondary) 0%,
+    var(--color-secondary-container) 100%
+  );
   color: var(--color-on-secondary);
+  box-shadow: 0 4px 10px color-mix(in srgb, var(--color-secondary) 24%, transparent);
+}
+
+.button--primary:hover {
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-secondary) 92%, white) 0%,
+    color-mix(in srgb, var(--color-secondary-container) 92%, white) 100%
+  );
 }
 
 .button--secondary {
   background: var(--color-surface-container-high);
   color: var(--color-on-surface);
+}
+
+.button--secondary:hover {
+  background: var(--color-surface-container);
+}
+
+@media (max-width: 30rem) {
+  .driver-actions {
+    flex-direction: column;
+  }
+
+  .button {
+    width: 100%;
+    justify-content: center;
+  }
 }
 </style>

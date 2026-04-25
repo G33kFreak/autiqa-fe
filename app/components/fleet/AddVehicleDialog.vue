@@ -1,24 +1,18 @@
 <script setup lang="ts">
 import type { CreateCarDto } from '#shared/dto/create-car.dto';
+import type { DriverDto } from '#shared/dto/driver.dto';
 import EntityDialogShell from '~/components/shared/EntityDialogShell.vue';
+import SearchableSelect from '~/components/shared/SearchableSelect.vue';
 import { CarsBatchCreateError } from '~/utils/cars-batch-error';
 
 const { t } = useI18n();
 const carsStore = useCarsStore();
+const driversStore = useDriversStore();
 
 const dialogShell = ref<InstanceType<typeof EntityDialogShell> | null>(null);
 const formError = ref<string | null>(null);
 /** 0-based indices from the API when a batch create fails (validation or DB). */
 const failedRowIndices = ref<Set<number>>(new Set());
-
-/** UI-only mock drivers until drivers API is wired. */
-const MOCK_DRIVERS = [
-  { id: 'a6d2fef4-4f8a-4f7b-b171-7f9e2dd3fa3e', name: 'Jan Kowalski' },
-  { id: 'b7c3fef4-5f8a-4f7b-b171-7f9e2dd3fa3e', name: 'Anna Nowak' },
-  { id: 'c8d4fef4-6f8a-4f7b-b171-7f9e2dd3fa3e', name: 'Piotr Wiśniewski' },
-  { id: 'd9e5fef4-7f8a-4f7b-b171-7f9e2dd3fa3e', name: 'Magdalena Zielińska' },
-  { id: 'eaf6fef4-8f8a-4f7b-b171-7f9e2dd3fa3e', name: 'Tomasz Lewandowski' },
-] as const;
 
 type CarFormRow = {
   id: string;
@@ -43,16 +37,44 @@ function newRow(): CarFormRow {
 }
 
 const rows = ref<CarFormRow[]>([newRow()]);
+const driverByIdCache = ref<Record<string, DriverDto>>({});
+const driverSuggestions = ref<DriverDto[]>([]);
+const driverSearching = ref(false);
+let driverSearchTimer: ReturnType<typeof setTimeout> | null = null;
+
+function driverLabel(driver: DriverDto): string {
+  return `${driver.firstName} ${driver.lastName}`.trim();
+}
+
+function selectedDriverForRow(row: CarFormRow): DriverDto | null {
+  if (!row.driverId) return null;
+  return driverByIdCache.value[row.driverId]
+    ?? driverSuggestions.value.find((driver) => driver.id === row.driverId)
+    ?? null;
+}
 
 function resetForm() {
   formError.value = null;
   failedRowIndices.value = new Set();
   rows.value = [newRow()];
+  driverByIdCache.value = {};
+  driverSuggestions.value = [];
+  driverSearching.value = false;
+  if (driverSearchTimer) {
+    clearTimeout(driverSearchTimer);
+    driverSearchTimer = null;
+  }
 }
 
 function onDialogClose() {
   formError.value = null;
   failedRowIndices.value = new Set();
+  driverSuggestions.value = [];
+  driverSearching.value = false;
+  if (driverSearchTimer) {
+    clearTimeout(driverSearchTimer);
+    driverSearchTimer = null;
+  }
 }
 
 function showModal() {
@@ -93,6 +115,56 @@ function setUppercaseField(
   const el = event.target as HTMLInputElement;
   row[key] = el.value.toUpperCase();
 }
+
+async function loadDriverSuggestions(limit = 20) {
+  driverSearching.value = true;
+  try {
+    const items = await driversStore.getDriverSuggestions(limit);
+    driverSuggestions.value = items;
+    for (const driver of items) {
+      driverByIdCache.value[driver.id] = driver;
+    }
+  } finally {
+    driverSearching.value = false;
+  }
+}
+
+function pickDriver(row: CarFormRow, driver: DriverDto) {
+  row.driverId = driver.id;
+  driverByIdCache.value[driver.id] = driver;
+}
+
+function clearDriver(row: CarFormRow) {
+  row.driverId = '';
+}
+
+function onDriverSearchInput(queryRaw: string) {
+  const query = queryRaw.trim();
+  if (driverSearchTimer) clearTimeout(driverSearchTimer);
+
+  driverSearchTimer = setTimeout(async () => {
+    driverSearching.value = true;
+    try {
+      const items = query.length
+        ? await driversStore.searchDrivers(query, 20)
+        : await driversStore.getDriverSuggestions(20);
+      driverSuggestions.value = items;
+      for (const driver of items) {
+        driverByIdCache.value[driver.id] = driver;
+      }
+    } finally {
+      driverSearching.value = false;
+    }
+  }, 350);
+}
+
+const driverOptions = computed(() =>
+  driverSuggestions.value.map((driver) => ({
+    id: driver.id,
+    label: driverLabel(driver),
+    meta: driver.email || driver.phoneNumber || '—',
+  })),
+);
 
 function rowPayload(row: CarFormRow): CreateCarDto | null {
   const model = row.model.trim();
@@ -164,9 +236,12 @@ defineExpose({ showModal, close });
               }"
             >
               <div class="add-vehicle-dialog__card-head">
-                <span class="add-vehicle-dialog__card-label">{{
-                  t('appSections.fleet.addVehicleIndex', { n: index + 1 })
-                }}</span>
+                <div class="add-vehicle-dialog__card-title-wrap">
+                  <span class="material-symbols-outlined" aria-hidden="true">directions_car</span>
+                  <h3 class="add-vehicle-dialog__card-title">
+                    {{ t('appSections.fleet.addVehicleIndex', { n: index + 1 }) }}
+                  </h3>
+                </div>
                 <button
                   v-if="rows.length > 1"
                   type="button"
@@ -210,7 +285,7 @@ defineExpose({ showModal, close });
                     autocomplete="off"
                     autocapitalize="characters"
                     class="ti-input add-vehicle-dialog__input-uppercase"
-                    placeholder="WZ12345"
+                    :placeholder="t('appSections.fleet.addVehiclePlatePlaceholder')"
                     @input="setUppercaseField(row, 'plateNumber', $event)"
                   >
                 </div>
@@ -229,7 +304,7 @@ defineExpose({ showModal, close });
                   autocomplete="off"
                   autocapitalize="characters"
                   class="ti-input add-vehicle-dialog__input-uppercase"
-                  placeholder="V0ZAB12CDE3456789"
+                  :placeholder="t('appSections.fleet.addVehicleVinPlaceholder')"
                   @input="setUppercaseField(row, 'vin', $event)"
                 >
               </div>
@@ -240,23 +315,29 @@ defineExpose({ showModal, close });
                     class="add-vehicle-dialog__label"
                     :for="`add-vehicle-driver-${row.id}`"
                   >{{ t('appSections.fleet.addVehicleDriver') }}</label>
-                  <select
-                    :id="`add-vehicle-driver-${row.id}`"
-                    v-model="row.driverId"
-                    class="ti-input add-vehicle-dialog__select"
+                  <SearchableSelect
+                    :model-value="row.driverId"
+                    :input-id="`add-vehicle-driver-${row.id}`"
                     :aria-label="t('appSections.fleet.addVehicleDriver')"
-                  >
-                    <option value="">
-                      {{ t('appSections.fleet.addVehicleDriverUnassigned') }}
-                    </option>
-                    <option
-                      v-for="d in MOCK_DRIVERS"
-                      :key="d.id"
-                      :value="d.id"
-                    >
-                      {{ d.name }}
-                    </option>
-                  </select>
+                    :placeholder="t('appSections.fleet.addVehicleDriverUnassigned')"
+                    :selected-label="selectedDriverForRow(row) ? driverLabel(selectedDriverForRow(row)!) : ''"
+                    :search-placeholder="t('appSections.drivers.searchPlaceholder')"
+                    :options="driverOptions"
+                    :loading="driverSearching"
+                    :empty-option-label="t('appSections.fleet.addVehicleDriverUnassigned')"
+                    @open="loadDriverSuggestions()"
+                    @search="onDriverSearchInput"
+                    @update:model-value="
+                      (value) => {
+                        if (!value) {
+                          clearDriver(row);
+                          return;
+                        }
+                        const picked = driverSuggestions.find((driver) => driver.id === value);
+                        if (picked) pickDriver(row, picked);
+                      }
+                    "
+                  />
                 </div>
                 <div class="add-vehicle-dialog__field">
                   <label
@@ -365,14 +446,20 @@ defineExpose({ showModal, close });
   margin-bottom: 0.85rem;
 }
 
-.add-vehicle-dialog__card-label {
+.add-vehicle-dialog__card-title-wrap {
   min-width: 0;
   flex: 1;
-  font-size: 0.6875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--color-secondary);
+}
+
+.add-vehicle-dialog__card-title {
+  margin: 0;
+  color: var(--color-on-surface);
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
 }
 
 .add-vehicle-dialog__remove {
@@ -449,16 +536,6 @@ defineExpose({ showModal, close });
 
 .add-vehicle-dialog__input-uppercase {
   text-transform: uppercase;
-}
-
-.add-vehicle-dialog__select {
-  appearance: none;
-  cursor: pointer;
-  padding-right: 2.35rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none'%3E%3Cpath stroke='%239aa0a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.65rem center;
-  background-size: 1.125rem;
 }
 
 .add-vehicle-dialog__label {

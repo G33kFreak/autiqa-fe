@@ -80,6 +80,14 @@ export const useCarsStore = defineStore('cars', () => {
     return vm.getViewModel();
   }
 
+  async function getCarSuggestions(limitValue = 20): Promise<CarDto[]> {
+    const response = await getCars(authenticatedApi, {
+      page: 1,
+      limit: limitValue,
+    });
+    return response.data;
+  }
+
   async function createCars(payloads: CreateCarDto[]): Promise<CarDto[]> {
     if (payloads.length === 0) return [];
     creating.value = true;
@@ -175,6 +183,7 @@ export const useCarsStore = defineStore('cars', () => {
     reset,
     getViewModelById,
     fetchCars,
+    getCarSuggestions,
     createCars,
     updateCar,
     assignDriverToCar,

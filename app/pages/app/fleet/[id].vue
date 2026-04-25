@@ -2,12 +2,15 @@
 import type { CarDto } from '#shared/dto/car.dto';
 import type { CreateCarDto } from '#shared/dto/create-car.dto';
 import type { DriverDto } from '#shared/dto/driver.dto';
+import type { ExpenseDto } from '#shared/dto/expense.dto';
+import AddExpenseDialog from '~/components/fleet/AddExpenseDialog.vue';
 import EntityDialogShell from '~/components/shared/EntityDialogShell.vue';
 
 const { t } = useI18n();
 const route = useRoute();
 const carsStore = useCarsStore();
 const driversStore = useDriversStore();
+const expensesStore = useExpensesStore();
 
 const carId = computed(() => String(route.params.id || ''));
 const detailsLoading = ref(true);
@@ -29,26 +32,7 @@ const insurance = {
   validUntil: '2026-11-30',
 };
 
-const maintenanceHistory = [
-  {
-    date: '2026-03-18',
-    title: 'Annual Service',
-    amount: 840,
-    notes: 'Oil, filters, and brake fluid were replaced during the scheduled yearly service.',
-  },
-  {
-    date: '2025-12-03',
-    title: 'Brake Pad Replacement',
-    amount: 320,
-    notes: 'Front axle brake pads were replaced due to wear indicator warning.',
-  },
-  {
-    date: '2025-08-21',
-    title: 'Air Conditioning Service',
-    amount: 180,
-    notes: 'A/C system was cleaned, recharged, and checked for pressure stability.',
-  },
-];
+const addExpenseDialog = ref<InstanceType<typeof AddExpenseDialog> | null>(null);
 
 const maintenanceSpend = {
   total: 3240.5,
@@ -56,14 +40,28 @@ const maintenanceSpend = {
 
 const carFees = {
   items: [
-    { label: 'Speeding ticket (A4)', dueDate: '2026-05-10', value: 320 },
-    { label: 'Wrong parking fee (city zone B)', dueDate: '2026-05-16', value: 140 },
-    { label: 'Bus lane violation', dueDate: '2026-05-22', value: 220 },
-    { label: 'No valid toll payment', dueDate: '2026-05-29', value: 100 },
+    { label: t('appSections.fleet.vehicleDetails.demoFees.speedingTicketA4'), dueDate: '2026-05-10', value: 320 },
+    { label: t('appSections.fleet.vehicleDetails.demoFees.wrongParkingFeeZoneB'), dueDate: '2026-05-16', value: 140 },
+    { label: t('appSections.fleet.vehicleDetails.demoFees.busLaneViolation'), dueDate: '2026-05-22', value: 220 },
+    { label: t('appSections.fleet.vehicleDetails.demoFees.noValidTollPayment'), dueDate: '2026-05-29', value: 100 },
   ],
 };
 
 const totalIncome = 9840.0;
+
+const maintenanceHistory = computed(() =>
+  [...expensesStore.items]
+    .sort(
+      (a: ExpenseDto, b: ExpenseDto) =>
+        new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
+    )
+    .map((expense: ExpenseDto) => ({
+      date: expense.occurredAt.slice(0, 10),
+      title: expense.title,
+      amount: Number(expense.amount) || 0,
+      notes: expense.notes || '—',
+    })),
+);
 
 const totalFees = computed(() => carFees.items.reduce((sum, item) => sum + item.value, 0));
 const totalMaintenance = computed(() => maintenanceSpend.total);
@@ -72,12 +70,12 @@ const isProfit = computed(() => totalProfitLoss.value >= 0);
 
 const complianceItems = [
   {
-    title: 'Przegląd techniczny',
+    title: t('appSections.fleet.vehicleDetails.complianceItems.technicalInspection'),
     validUntil: inspectionValidUntil,
     attachments: ['inspection-report.pdf'],
   },
   {
-    title: 'OC/AC policy',
+    title: t('appSections.fleet.vehicleDetails.complianceItems.ocAcPolicy'),
     validUntil: insurance.validUntil,
     attachments: ['policy-main.pdf', 'policy-ac-annex.pdf'],
   },
@@ -98,7 +96,15 @@ useSeoMeta({
 onMounted(async () => {
   detailsLoading.value = true;
   try {
-    car.value = await carsStore.getViewModelById(carId.value);
+    const [fetchedCar] = await Promise.all([
+      carsStore.getViewModelById(carId.value),
+      expensesStore.fetchExpenses({
+        page: 1,
+        limit: 20,
+        carId: carId.value,
+      }),
+    ]);
+    car.value = fetchedCar;
     carName.value = car.value?.model ?? '';
     registrationNumber.value = car.value?.plateNumber ?? '';
     vin.value = car.value?.vin ?? '';
@@ -156,6 +162,18 @@ function onAssignSearchInput(event: Event) {
       assignSearching.value = false;
     }
   }, 450);
+}
+
+function handleOpenAddExpenseDialog() {
+  addExpenseDialog.value?.showModal();
+}
+
+async function handleExpenseCreated() {
+  await expensesStore.fetchExpenses({
+    page: 1,
+    limit: expensesStore.limit,
+    carId: carId.value,
+  });
 }
 
 async function assignDriver(driver: DriverDto) {
@@ -235,7 +253,18 @@ async function handleUpdateVehicleInfo(payload: {
           @assign-other="handleAssignOther"
           @remove-driver="handleRemoveDriver"
         />
-        <FleetMaintenanceTimeline :items="maintenanceHistory" />
+        <FleetMaintenanceTimeline :items="maintenanceHistory">
+          <template #header-action>
+            <button
+              type="button"
+              class="fleet-maintenance-action"
+              @click="handleOpenAddExpenseDialog"
+            >
+              <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              {{ t('appSections.fleet.vehicleDetails.expenseDialog.openCta') }}
+            </button>
+          </template>
+        </FleetMaintenanceTimeline>
       </div>
     </section>
 
@@ -253,7 +282,7 @@ async function handleUpdateVehicleInfo(payload: {
             <span class="material-symbols-outlined fleet-assign-dialog__search-icon" aria-hidden="true">search</span>
             <input
               :value="assignSearchInput"
-              class="fleet-assign-dialog__search-input"
+              class="ti-input fleet-assign-dialog__search-input"
               type="text"
               :placeholder="t('appSections.drivers.searchPlaceholder')"
               @input="onAssignSearchInput"
@@ -278,13 +307,18 @@ async function handleUpdateVehicleInfo(payload: {
                 {{ `${driver.firstName} ${driver.lastName}`.trim() }}
               </span>
               <span class="fleet-assign-dialog__item-meta">
-                {{ driver.email || driver.phoneNumber || '—' }}
+                {{ driver.email || driver.phoneNumber || t('appSections.drivers.details.common.emptyValue') }}
               </span>
             </button>
           </div>
         </div>
       </template>
     </EntityDialogShell>
+    <AddExpenseDialog
+      ref="addExpenseDialog"
+      :initial-car-id="carId"
+      @created="handleExpenseCreated"
+    />
     </template>
   </section>
 </template>
@@ -374,12 +408,7 @@ async function handleUpdateVehicleInfo(payload: {
 }
 
 .fleet-assign-dialog__search-input {
-  width: 100%;
-  border: none;
-  border-radius: 0.6rem;
-  padding: 0.68rem 0.8rem 0.68rem 2.2rem;
-  background: var(--color-surface-container-highest);
-  color: var(--color-on-surface);
+  padding-left: 2.2rem;
 }
 
 .fleet-assign-dialog__list {
@@ -427,5 +456,33 @@ async function handleUpdateVehicleInfo(payload: {
 .fleet-assign-dialog__item-meta {
   font-size: 0.75rem;
   color: var(--color-on-surface-variant);
+}
+
+.fleet-maintenance-action {
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.48rem 0.72rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  color: var(--color-on-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: linear-gradient(
+    135deg,
+    var(--color-secondary) 0%,
+    var(--color-secondary-container) 100%
+  );
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.fleet-maintenance-action:hover {
+  opacity: 0.94;
+  transform: translateY(-1px);
+}
+
+.fleet-maintenance-action .material-symbols-outlined {
+  font-size: 0.95rem;
 }
 </style>

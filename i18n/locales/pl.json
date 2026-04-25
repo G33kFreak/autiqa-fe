@@ -1,7 +1,8 @@
 {
   "brand": "Autiqa",
   "common": {
-    "loading": "Ładowanie"
+    "loading": "Ładowanie",
+    "clear": "Wyczyść"
   },
   "meta": {
     "home": {
@@ -90,7 +91,14 @@
   "layout": {
     "appTagline": "Inteligencja floty",
     "openMenu": "Otwórz menu nawigacji",
-    "userFallback": "Konto"
+    "userFallback": "Konto",
+    "sidebar": {
+      "mainNavigationAria": "Główna nawigacja",
+      "appSectionsAria": "Sekcje aplikacji",
+      "buildInfoAria": "Informacje o wersji",
+      "copyright": "© 2026 Autiqa. Wszelkie prawa zastrzeżone.",
+      "alphaVersion": "Wersja alfa"
+    }
   },
   "nav": {
     "dashboard": "Pulpit",
@@ -122,6 +130,8 @@
       "addVehicleModelPlaceholder": "np. Toyota Camry",
       "addVehicleVin": "VIN",
       "addVehiclePlate": "Numer rejestracyjny",
+      "addVehiclePlatePlaceholder": "WZ12345",
+      "addVehicleVinPlaceholder": "V0ZAB12CDE3456789",
       "addVehicleDriver": "Przypisany kierowca",
       "addVehicleDriverUnassigned": "Brak przypisania",
       "addVehicleInspectionExpiry": "Przegląd techniczny (ważny do)",
@@ -133,6 +143,10 @@
       "addVehicleValidationModelsRequired": "Podaj model dla każdego pojazdu.",
       "addVehicleCancel": "Anuluj",
       "addVehicleError": "Nie udało się zapisać pojazdu. Sprawdź dane i spróbuj ponownie.",
+      "dateInput": {
+        "previousMonth": "Poprzedni miesiąc",
+        "nextMonth": "Następny miesiąc"
+      },
       "driverUnassigned": "Nieprzypisany",
       "unknownModel": "Nieznany model",
       "inspectionDaysLeft": "pozostało {count} dni",
@@ -169,8 +183,52 @@
         "emptyMaintenanceCopy": "Zdarzenia serwisowe pojawią się tutaj po pierwszej obsłudze.",
         "dateNotSet": "Brak daty",
         "maintenanceHistory": "Historia serwisowa",
+        "addExpense": "Dodaj wydatek",
         "validUntil": "Ważne do {date}",
-        "attachments": "Załączniki"
+        "attachments": "Załączniki",
+        "complianceItems": {
+          "technicalInspection": "Przegląd techniczny",
+          "ocAcPolicy": "Polisa OC/AC"
+        },
+        "demoFees": {
+          "speedingTicketA4": "Mandat za prędkość (A4)",
+          "wrongParkingFeeZoneB": "Opłata za złe parkowanie (strefa miejska B)",
+          "busLaneViolation": "Naruszenie pasa dla autobusów",
+          "noValidTollPayment": "Brak ważnej opłaty drogowej"
+        },
+        "expenseDialog": {
+          "title": "Dodaj wydatek",
+          "lead": "Zapisz nowy koszt dla tego pojazdu i opcjonalnie przypisz kierowcę.",
+          "openCta": "Nowy wydatek",
+          "type": "Typ wydatku",
+          "carPaymentKind": "Rodzaj płatności auta",
+          "selectCarPaymentKind": "Wybierz rodzaj płatności",
+          "amount": "Kwota",
+          "currency": "Waluta",
+          "titleField": "Tytuł",
+          "titlePlaceholder": "np. Wymiana oleju",
+          "occurredAt": "Data zdarzenia",
+          "notes": "Notatki",
+          "notesPlaceholder": "Dodaj opcjonalne szczegóły wydatku",
+          "linkedCar": "Powiązany pojazd",
+          "linkedDriver": "Powiązany kierowca",
+          "searchCarPlaceholder": "Szukaj po modelu lub tablicy...",
+          "linked": "Powiązano",
+          "expenseTypes": {
+            "MAINTENANCE": "Serwis",
+            "CAR_PAYMENT": "Płatność za auto",
+            "INSURANCE": "Ubezpieczenie",
+            "FEE": "Opłata",
+            "OTHER": "Inne"
+          },
+          "carPaymentKinds": {
+            "BUY": "Zakup",
+            "LEASE": "Leasing"
+          },
+          "submit": "Zapisz wydatek",
+          "validation": "Uzupełnij wymagane pola: tytuł, kwota i data.",
+          "error": "Nie udało się dodać wydatku. Sprawdź pola i spróbuj ponownie."
+        }
       },
       "table": {
         "vehicleUnit": "Pojazd",
@@ -212,15 +270,68 @@
         "lead": "Dodaj wielu kierowców do operacyjnej listy.",
         "newDriver": "Dane nowego kierowcy",
         "firstName": "Imię",
+        "firstNamePlaceholder": "np. Jan",
         "lastName": "Nazwisko",
+        "lastNamePlaceholder": "np. Kowalski",
         "email": "Adres e-mail",
+        "emailPlaceholder": "jan{'@'}example.com",
         "phoneNumber": "Numer telefonu",
+        "phoneNumberPlaceholder": "+48 600 000 000",
         "addAnother": "Dodaj kolejnego kierowcę",
         "cancel": "Anuluj",
         "submit": "Zapisz wszystkich kierowców",
         "submitting": "Zapisywanie...",
         "validation": "Podaj imię i nazwisko dla każdego kierowcy. E-mail i telefon muszą mieć poprawny format, jeśli są uzupełnione.",
         "error": "Nie udało się zapisać kierowców. Sprawdź pola i spróbuj ponownie."
+      },
+      "details": {
+        "common": {
+          "emptyValue": "—"
+        },
+        "actions": {
+          "assignVehicle": "Przypisz pojazd",
+          "assignOtherVehicle": "Przypisz inny pojazd"
+        },
+        "personal": {
+          "title": "Dane osobowe",
+          "firstName": "Imię",
+          "lastName": "Nazwisko",
+          "email": "Adres e-mail",
+          "phone": "Numer telefonu"
+        },
+        "assignment": {
+          "title": "Przypisane auto",
+          "assignedVehicleFallback": "Przypisany pojazd",
+          "plateUnavailable": "Brak tablicy",
+          "empty": "Brak przypisanego auta"
+        },
+        "assignDialog": {
+          "title": "Przypisz auto",
+          "noCars": "Brak dostępnych aut",
+          "unnamedCar": "Nienazwane auto",
+          "noPlate": "Brak tablicy",
+          "currentlyAssigned": "Obecnie przypisane"
+        },
+        "documents": {
+          "title": "Dokumenty",
+          "uploading": "Przesyłanie plików...",
+          "dropzoneHint": "Przeciągnij i upuść pliki tutaj lub",
+          "supportedFormats": "Obsługiwane formaty: {formats} (maks. 5 MB każdy)",
+          "browse": "Wybierz pliki",
+          "selectedFiles": "Wybrane pliki",
+          "uploadedFiles": "Przesłane pliki",
+          "clear": "Wyczyść",
+          "save": "Zapisz",
+          "saving": "Zapisywanie...",
+          "empty": "Brak przesłanych dokumentów.",
+          "unknownSize": "Nieznany rozmiar",
+          "unknownType": "nieznany/typ",
+          "validation": {
+            "selectAtLeastOne": "Wybierz co najmniej jeden plik.",
+            "unsupportedFormat": "Nieobsługiwany format. Dozwolone: {formats}.",
+            "maxSize": "Każdy plik musi mieć maksymalnie 5 MB."
+          }
+        }
       }
     },
     "maintenance": {

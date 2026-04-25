@@ -16,7 +16,7 @@ function onNavClick() {
   <aside
     class="app-sidebar"
     :class="{ 'app-sidebar--open': open }"
-    aria-label="Main navigation"
+    :aria-label="t('layout.sidebar.mainNavigationAria')"
   >
     <div class="app-sidebar__brand">
       <div class="app-sidebar__logo" aria-hidden="true">
@@ -28,7 +28,7 @@ function onNavClick() {
       </div>
     </div>
 
-    <nav class="app-sidebar__nav" aria-label="App sections">
+    <nav class="app-sidebar__nav" :aria-label="t('layout.sidebar.appSectionsAria')">
       <NuxtLink
         v-for="item in APP_NAV_ITEMS"
         :key="item.to"
@@ -51,9 +51,9 @@ function onNavClick() {
       </NuxtLink>
     </nav>
 
-    <div class="app-sidebar__footer" aria-label="Build information">
-      <p class="app-sidebar__footer-copy">© 2026 Autiqa. All rights reserved.</p>
-      <p class="app-sidebar__footer-version">Alpha version</p>
+    <div class="app-sidebar__footer" :aria-label="t('layout.sidebar.buildInfoAria')">
+      <p class="app-sidebar__footer-copy">{{ t('layout.sidebar.copyright') }}</p>
+      <p class="app-sidebar__footer-version">{{ t('layout.sidebar.alphaVersion') }}</p>
     </div>
   </aside>
 </template>

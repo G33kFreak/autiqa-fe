@@ -150,7 +150,7 @@ watch(step, () => {
                   <input
                     v-model="orgName"
                     type="text"
-                    class="onboarding-org__input"
+                    class="ti-input onboarding-org__input"
                     :placeholder="t('onboardingOrg.orgNamePlaceholder')"
                     autocomplete="organization"
                     @keydown.enter.prevent="goNext"
@@ -176,7 +176,7 @@ watch(step, () => {
                   <input
                     v-model="orgType"
                     type="text"
-                    class="onboarding-org__input"
+                    class="ti-input onboarding-org__input"
                     :placeholder="t('onboardingOrg.orgTypePlaceholder')"
                     autocomplete="off"
                     :disabled="orgStore.creating"
@@ -433,28 +433,9 @@ watch(step, () => {
 }
 
 .onboarding-org__input {
-  width: 100%;
-  margin: 0;
   padding: 1rem 1.125rem;
-  border: none;
-  border-radius: 0.5rem;
-  font-family: var(--font-sans);
   font-size: 1rem;
   font-weight: 500;
-  color: var(--color-on-surface);
-  background: var(--color-surface-container-highest);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--color-on-surface) 6%, transparent);
-  transition:
-    box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.onboarding-org__input:focus {
-  outline: none;
-  background: var(--color-surface-container-lowest);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--color-on-surface) 5%, transparent),
-    0 0 0 2px color-mix(in srgb, var(--color-secondary) 30%, transparent);
 }
 
 .onboarding-org__input::placeholder {

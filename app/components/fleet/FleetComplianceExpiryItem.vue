@@ -85,9 +85,6 @@ const hasValidDate = computed(() => !Number.isNaN(new Date(props.validUntil).get
         >
           {{ t('appSections.fleet.inspectionDaysLeft', { count: inspectionDaysLeft }) }}
         </p>
-        <p v-if="props.attachments?.length" class="compliance-item__attachments">
-          {{ t('appSections.fleet.vehicleDetails.attachments') }}: {{ props.attachments.join(', ') }}
-        </p>
       </div>
     </div>
   </article>
@@ -141,13 +138,6 @@ const hasValidDate = computed(() => !Number.isNaN(new Date(props.validUntil).get
 
 .compliance-item__counter--warning {
   color: var(--color-error);
-}
-
-.compliance-item__attachments {
-  margin: 0.4rem 0 0;
-  font-size: 0.75rem;
-  line-height: 1.25;
-  color: var(--color-on-surface-variant);
 }
 
 .compliance-item__progress {

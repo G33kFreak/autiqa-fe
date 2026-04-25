@@ -158,18 +158,18 @@ defineExpose({ showModal, close });
               <input
                 :id="`add-driver-first-name-${row.id}`"
                 v-model="row.firstName"
-                class="add-driver-dialog__input"
+                class="ti-input add-driver-dialog__input"
                 type="text"
-                placeholder="e.g. Ivan"
+                :placeholder="t('appSections.drivers.dialog.firstNamePlaceholder')"
               >
             </label>
             <label class="add-driver-dialog__field">
               <span>{{ t('appSections.drivers.dialog.lastName') }}</span>
               <input
                 v-model="row.lastName"
-                class="add-driver-dialog__input"
+                class="ti-input add-driver-dialog__input"
                 type="text"
-                placeholder="e.g. Petrov"
+                :placeholder="t('appSections.drivers.dialog.lastNamePlaceholder')"
               >
             </label>
             <label class="add-driver-dialog__field">
@@ -178,9 +178,9 @@ defineExpose({ showModal, close });
                 <span class="material-symbols-outlined add-driver-dialog__input-icon" aria-hidden="true">mail</span>
                 <input
                   v-model="row.email"
-                  class="add-driver-dialog__input add-driver-dialog__input--icon"
+                  class="ti-input add-driver-dialog__input add-driver-dialog__input--icon"
                   type="email"
-                  placeholder="ivan@example.com"
+                  :placeholder="t('appSections.drivers.dialog.emailPlaceholder')"
                 >
               </div>
             </label>
@@ -190,9 +190,9 @@ defineExpose({ showModal, close });
                 <span class="material-symbols-outlined add-driver-dialog__input-icon" aria-hidden="true">phone</span>
                 <input
                   v-model="row.phoneNumber"
-                  class="add-driver-dialog__input add-driver-dialog__input--icon"
+                  class="ti-input add-driver-dialog__input add-driver-dialog__input--icon"
                   type="tel"
-                  placeholder="+48 600 000 000"
+                  :placeholder="t('appSections.drivers.dialog.phoneNumberPlaceholder')"
                 >
               </div>
             </label>
@@ -350,22 +350,11 @@ defineExpose({ showModal, close });
 }
 
 .add-driver-dialog__input {
-  width: 100%;
-  border: none;
-  border-radius: 0.5rem;
   padding: 0.7rem 0.8rem;
-  background: var(--color-surface-container-highest);
-  color: var(--color-on-surface);
-  font-size: 0.875rem;
 }
 
 .add-driver-dialog__input--icon {
   padding-left: 2.25rem;
-}
-
-.add-driver-dialog__input:focus {
-  outline: 2px solid color-mix(in srgb, var(--color-secondary) 30%, transparent);
-  outline-offset: 0;
 }
 
 .add-driver-dialog__add-another {

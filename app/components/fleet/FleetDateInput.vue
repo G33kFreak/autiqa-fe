@@ -17,7 +17,7 @@ const emit = defineEmits<{
   'update:modelValue': [value: string];
 }>();
 
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 const isCalendarOpen = ref(false);
 const calendarMonthCursor = ref(startOfMonth(new Date()));
@@ -135,6 +135,15 @@ function selectCalendarDay(iso: string) {
   emit('update:modelValue', iso);
   isCalendarOpen.value = false;
 }
+
+watch(
+  () => props.modelValue,
+  (nextValue, prevValue) => {
+    if (!isCalendarOpen.value || nextValue === prevValue) return;
+    if (!parseIsoDate(nextValue)) return;
+    isCalendarOpen.value = false;
+  },
+);
 </script>
 
 <template>
@@ -172,7 +181,7 @@ function selectCalendarDay(iso: string) {
         <button
           type="button"
           class="fleet-date-input__nav"
-          aria-label="Previous month"
+          :aria-label="t('appSections.fleet.dateInput.previousMonth')"
           @click="shiftMonth(-1)"
         >
           <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
@@ -181,7 +190,7 @@ function selectCalendarDay(iso: string) {
         <button
           type="button"
           class="fleet-date-input__nav"
-          aria-label="Next month"
+          :aria-label="t('appSections.fleet.dateInput.nextMonth')"
           @click="shiftMonth(1)"
         >
           <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
