@@ -21,6 +21,11 @@ const { locale, t } = useI18n();
 
 const isCalendarOpen = ref(false);
 const calendarMonthCursor = ref(startOfMonth(new Date()));
+const root = ref<HTMLElement | null>(null);
+const inputEl = ref<HTMLInputElement | null>(null);
+const calendarPanel = ref<HTMLElement | null>(null);
+const calendarStyle = ref<Record<string, string>>({});
+const calendarTeleportTarget = ref<string | HTMLElement>('body');
 
 const calendarWeekdays = computed(() => {
   const formatter = new Intl.DateTimeFormat(locale.value, { weekday: 'short' });
@@ -98,9 +103,14 @@ function shiftMonth(delta: number) {
 }
 
 function openCalendar() {
+  const hostDialog = root.value?.closest('dialog');
+  calendarTeleportTarget.value = hostDialog instanceof HTMLElement ? hostDialog : 'body';
   isCalendarOpen.value = true;
   const selectedDate = parseIsoDate(props.modelValue);
   calendarMonthCursor.value = startOfMonth(selectedDate ?? new Date());
+  nextTick(() => {
+    updateCalendarPosition();
+  });
 }
 
 function toggleCalendar() {
@@ -128,12 +138,53 @@ function onFocusOut(event: FocusEvent) {
   if (!(currentTarget instanceof HTMLElement)) return;
   const nextFocused = event.relatedTarget;
   if (nextFocused instanceof Node && currentTarget.contains(nextFocused)) return;
+  if (nextFocused instanceof Node && calendarPanel.value?.contains(nextFocused)) return;
   isCalendarOpen.value = false;
 }
 
 function selectCalendarDay(iso: string) {
   emit('update:modelValue', iso);
   isCalendarOpen.value = false;
+}
+
+function updateCalendarPosition() {
+  const host = inputEl.value ?? root.value;
+  const panel = calendarPanel.value;
+  if (!host || !panel || !isCalendarOpen.value) return;
+
+  const rect = host.getBoundingClientRect();
+  const viewportPadding = 12;
+  const gap = 2;
+  const panelWidth = Math.min(
+    Math.max(rect.width, 260),
+    Math.min(320, window.innerWidth - viewportPadding * 2),
+  );
+
+  const left = Math.max(
+    viewportPadding,
+    Math.min(rect.left, window.innerWidth - panelWidth - viewportPadding),
+  );
+
+  const panelHeight = panel.offsetHeight || 320;
+  const spaceBelow = window.innerHeight - rect.bottom - viewportPadding;
+  const spaceAbove = rect.top - viewportPadding;
+  const placeAbove = spaceBelow < panelHeight && spaceAbove > spaceBelow;
+
+  const top = placeAbove
+    ? Math.max(viewportPadding, rect.top - panelHeight - gap)
+    : Math.min(window.innerHeight - panelHeight - viewportPadding, rect.bottom + gap);
+
+  calendarStyle.value = {
+    position: 'fixed',
+    left: `${left}px`,
+    top: `${top}px`,
+    width: `${panelWidth}px`,
+    zIndex: '10050',
+  };
+}
+
+function onViewportChange() {
+  updateCalendarPosition();
 }
 
 watch(
@@ -144,12 +195,33 @@ watch(
     isCalendarOpen.value = false;
   },
 );
+
+watch(isCalendarOpen, (open) => {
+  if (typeof window === 'undefined') return;
+  if (open) {
+    window.addEventListener('resize', onViewportChange);
+    window.addEventListener('scroll', onViewportChange, true);
+    nextTick(() => {
+      updateCalendarPosition();
+    });
+    return;
+  }
+  window.removeEventListener('resize', onViewportChange);
+  window.removeEventListener('scroll', onViewportChange, true);
+});
+
+onBeforeUnmount(() => {
+  if (typeof window === 'undefined') return;
+  window.removeEventListener('resize', onViewportChange);
+  window.removeEventListener('scroll', onViewportChange, true);
+});
 </script>
 
 <template>
-  <div class="fleet-date-input" @focusout="onFocusOut">
+  <div ref="root" class="fleet-date-input" @focusout="onFocusOut">
     <div class="fleet-date-input__wrap">
       <input
+        ref="inputEl"
         :id="inputId"
         :value="modelValue"
         type="text"
@@ -171,54 +243,58 @@ watch(
       </button>
     </div>
 
-    <div
-      v-if="isCalendarOpen"
-      class="fleet-date-input__calendar"
-      role="dialog"
-      :aria-label="title || placeholder"
-    >
-      <div class="fleet-date-input__header">
-        <button
-          type="button"
-          class="fleet-date-input__nav"
-          :aria-label="t('appSections.fleet.dateInput.previousMonth')"
-          @click="shiftMonth(-1)"
-        >
-          <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
-        </button>
-        <p class="fleet-date-input__month">{{ calendarMonthLabel }}</p>
-        <button
-          type="button"
-          class="fleet-date-input__nav"
-          :aria-label="t('appSections.fleet.dateInput.nextMonth')"
-          @click="shiftMonth(1)"
-        >
-          <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
-        </button>
-      </div>
+    <Teleport :to="calendarTeleportTarget">
+      <div
+        v-if="isCalendarOpen"
+        ref="calendarPanel"
+        class="fleet-date-input__calendar"
+        role="dialog"
+        :aria-label="title || placeholder"
+        :style="calendarStyle"
+      >
+        <div class="fleet-date-input__header">
+          <button
+            type="button"
+            class="fleet-date-input__nav"
+            :aria-label="t('appSections.fleet.dateInput.previousMonth')"
+            @click="shiftMonth(-1)"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+          </button>
+          <p class="fleet-date-input__month">{{ calendarMonthLabel }}</p>
+          <button
+            type="button"
+            class="fleet-date-input__nav"
+            :aria-label="t('appSections.fleet.dateInput.nextMonth')"
+            @click="shiftMonth(1)"
+          >
+            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </button>
+        </div>
 
-      <div class="fleet-date-input__weekdays" aria-hidden="true">
-        <span v-for="day in calendarWeekdays" :key="day">{{ day }}</span>
-      </div>
+        <div class="fleet-date-input__weekdays" aria-hidden="true">
+          <span v-for="day in calendarWeekdays" :key="day">{{ day }}</span>
+        </div>
 
-      <div class="fleet-date-input__grid">
-        <button
-          v-for="day in calendarDays"
-          :key="day.key"
-          type="button"
-          class="fleet-date-input__day"
-          :class="{
-            'fleet-date-input__day--outside': !day.isCurrentMonth,
-            'fleet-date-input__day--today': day.isToday,
-            'fleet-date-input__day--selected': day.isSelected,
-          }"
-          :aria-label="day.iso"
-          @click="selectCalendarDay(day.iso)"
-        >
-          {{ day.day }}
-        </button>
+        <div class="fleet-date-input__grid">
+          <button
+            v-for="day in calendarDays"
+            :key="day.key"
+            type="button"
+            class="fleet-date-input__day"
+            :class="{
+              'fleet-date-input__day--outside': !day.isCurrentMonth,
+              'fleet-date-input__day--today': day.isToday,
+              'fleet-date-input__day--selected': day.isSelected,
+            }"
+            :aria-label="day.iso"
+            @click="selectCalendarDay(day.iso)"
+          >
+            {{ day.day }}
+          </button>
+        </div>
       </div>
-    </div>
+    </Teleport>
   </div>
 </template>
 
@@ -276,10 +352,7 @@ watch(
 }
 
 .fleet-date-input__calendar {
-  position: absolute;
-  bottom: calc(100% + 0.4rem);
-  right: 0;
-  z-index: 80;
+  z-index: 10050;
   width: min(18rem, calc(100vw - 4.5rem));
   padding: 0.65rem;
   border-radius: 0.75rem;
