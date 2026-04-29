@@ -16,14 +16,51 @@ const emit = defineEmits<{
 }>();
 
 const dialog = ref<HTMLDialogElement | null>(null);
+let previousBodyOverflow = '';
+let previousHtmlOverflow = '';
+const isScrollLocked = ref(false);
+
+function lockPageScroll() {
+  if (typeof document === 'undefined' || isScrollLocked.value) return;
+  previousBodyOverflow = document.body.style.overflow;
+  previousHtmlOverflow = document.documentElement.style.overflow;
+  document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflow = 'hidden';
+  isScrollLocked.value = true;
+}
+
+function unlockPageScroll() {
+  if (typeof document === 'undefined' || !isScrollLocked.value) return;
+  document.body.style.overflow = previousBodyOverflow;
+  document.documentElement.style.overflow = previousHtmlOverflow;
+  isScrollLocked.value = false;
+}
 
 function showModal() {
-  dialog.value?.showModal();
+  const el = dialog.value;
+  if (!el || el.open) return;
+  el.showModal();
+  lockPageScroll();
 }
 
 function close() {
-  dialog.value?.close();
+  if (!dialog.value?.open) return;
+  dialog.value.close();
 }
+
+function handleClose() {
+  unlockPageScroll();
+  emit('close');
+}
+
+function handleDialogClick(event: MouseEvent) {
+  if (event.target !== dialog.value) return;
+  close();
+}
+
+onBeforeUnmount(() => {
+  unlockPageScroll();
+});
 
 defineExpose({ showModal, close });
 </script>
@@ -34,7 +71,8 @@ defineExpose({ showModal, close });
     class="entity-dialog-shell"
     :aria-labelledby="titleId"
     :style="{ width, maxHeight }"
-    @close="emit('close')"
+    @click="handleDialogClick"
+    @close="handleClose"
   >
     <div class="entity-dialog-shell__shell">
       <header class="entity-dialog-shell__header">
