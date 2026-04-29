@@ -20,6 +20,19 @@ export function createExpense(client: ApiClient, body: CreateExpenseDto) {
   });
 }
 
+export function updateExpense(client: ApiClient, id: string, body: CreateExpenseDto) {
+  return client<ExpenseDto>(`/expenses/${id}`, {
+    method: 'PATCH',
+    body,
+  });
+}
+
+export function deleteExpense(client: ApiClient, id: string) {
+  return client<unknown>(`/expenses/${id}`, {
+    method: 'DELETE',
+  });
+}
+
 export function getExpensesSummary(
   client: ApiClient,
   query: ExpensesSummaryQueryDto = {},

@@ -1,11 +1,17 @@
 <script setup lang="ts">
 defineProps<{
   items: Array<{
+    id: string;
     date: string;
     title: string;
     notes: string;
     amount: number;
   }>;
+}>();
+
+const emit = defineEmits<{
+  edit: [id: string];
+  delete: [id: string];
 }>();
 
 const { t } = useI18n();
@@ -29,7 +35,7 @@ function formatCurrency(value: number): string {
     <div class="timeline" v-if="items.length > 0">
       <article
         v-for="(item, index) in items"
-        :key="`${item.date}-${item.title}`"
+        :key="item.id"
         class="timeline-item"
         :class="{ 'timeline-item--active': index === 0 }"
       >
@@ -41,6 +47,22 @@ function formatCurrency(value: number): string {
             <p class="timeline-item__notes">{{ item.notes }}</p>
           </div>
           <p class="timeline-item__amount">-{{ formatCurrency(item.amount) }}</p>
+        </div>
+        <div class="timeline-item__actions">
+          <button
+            type="button"
+            class="timeline-item__action-btn timeline-item__action-btn--ghost"
+            @click="emit('edit', item.id)"
+          >
+            {{ t('appSections.fleet.vehicleDetails.editExpense') }}
+          </button>
+          <button
+            type="button"
+            class="timeline-item__action-btn timeline-item__action-btn--danger"
+            @click="emit('delete', item.id)"
+          >
+            {{ t('appSections.fleet.vehicleDetails.deleteExpense') }}
+          </button>
         </div>
       </article>
     </div>
@@ -164,6 +186,38 @@ function formatCurrency(value: number): string {
   font-size: 0.8125rem;
   line-height: 1.35;
   color: var(--color-on-surface-variant);
+}
+
+.timeline-item__actions {
+  margin-top: 0.7rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.timeline-item__action-btn {
+  border: none;
+  border-radius: 0.6rem;
+  padding: 0.35rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.timeline-item__action-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.timeline-item__action-btn--ghost {
+  color: var(--color-on-surface);
+  background: var(--color-surface-container-high);
+}
+
+.timeline-item__action-btn--danger {
+  color: color-mix(in srgb, var(--color-error) 90%, white);
+  background: color-mix(in srgb, var(--color-error) 14%, transparent);
 }
 
 .timeline-empty {

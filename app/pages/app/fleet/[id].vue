@@ -34,6 +34,8 @@ const insurance = {
 };
 
 const addExpenseDialog = ref<InstanceType<typeof AddExpenseDialog> | null>(null);
+const editExpenseDialog = ref<InstanceType<typeof EntityDialogShell> | null>(null);
+const deleteExpenseDialog = ref<InstanceType<typeof EntityDialogShell> | null>(null);
 const feeExpenses = ref<ExpenseDto[]>([]);
 const maintenanceExpenses = ref<ExpenseDto[]>([]);
 const feesPage = ref(1);
@@ -45,6 +47,13 @@ const maintenanceHasMore = ref(false);
 const feesLoadingMore = ref(false);
 const maintenanceLoadingMore = ref(false);
 const expenseSummaryItems = ref<ExpenseSummaryItemDto[]>([]);
+const activeMaintenanceExpenseId = ref<string | null>(null);
+const maintenanceFormError = ref<string | null>(null);
+const deleteExpenseError = ref<string | null>(null);
+const editExpenseAmount = ref('');
+const editExpenseTitle = ref('');
+const editExpenseNotes = ref('');
+const editExpenseOccurredAt = ref('');
 
 const carFees = computed(() =>
   [...feeExpenses.value]
@@ -53,6 +62,7 @@ const carFees = computed(() =>
         new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
     )
     .map((expense: ExpenseDto) => ({
+      id: expense.id,
       label: expense.title,
       dueDate: expense.occurredAt.slice(0, 10),
       value: Math.abs(Number(expense.amount) || 0),
@@ -71,12 +81,37 @@ const maintenanceHistory = computed(() =>
         new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
     )
     .map((expense: ExpenseDto) => ({
+      id: expense.id,
       date: expense.occurredAt.slice(0, 10),
       title: expense.title,
       amount: Number(expense.amount) || 0,
       notes: expense.notes || '—',
     })),
 );
+const selectedExpense = computed(() =>
+  [...maintenanceExpenses.value, ...feeExpenses.value]
+    .find((item) => item.id === activeMaintenanceExpenseId.value) ?? null,
+);
+
+function formatExpenseDate(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat(undefined, {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(date);
+}
+
+function formatExpenseAmount(value: string): string {
+  const amount = Number(value);
+  return new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: 'PLN',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number.isFinite(amount) ? amount : 0);
+}
 
 const totalFees = computed(() => {
   const summaryItem = expenseSummaryItems.value.find((item) => item.type === 'FEE');
@@ -235,6 +270,83 @@ function handleOpenAddExpenseDialog() {
   addExpenseDialog.value?.showModal();
 }
 
+function resetEditExpenseState() {
+  maintenanceFormError.value = null;
+  activeMaintenanceExpenseId.value = null;
+  editExpenseAmount.value = '';
+  editExpenseTitle.value = '';
+  editExpenseNotes.value = '';
+  editExpenseOccurredAt.value = '';
+}
+
+function openEditExpenseDialog(expenseId: string) {
+  const expense = [...maintenanceExpenses.value, ...feeExpenses.value]
+    .find((item) => item.id === expenseId);
+  if (!expense) return;
+  activeMaintenanceExpenseId.value = expense.id;
+  maintenanceFormError.value = null;
+  editExpenseTitle.value = expense.title;
+  editExpenseAmount.value = String(Number(expense.amount) || 0);
+  editExpenseNotes.value = expense.notes ?? '';
+  editExpenseOccurredAt.value = expense.occurredAt.slice(0, 10);
+  editExpenseDialog.value?.showModal();
+}
+
+function openDeleteExpenseDialog(expenseId: string) {
+  activeMaintenanceExpenseId.value = expenseId;
+  deleteExpenseError.value = null;
+  deleteExpenseDialog.value?.showModal();
+}
+
+function closeDeleteExpenseDialog() {
+  deleteExpenseError.value = null;
+  activeMaintenanceExpenseId.value = null;
+}
+
+async function handleSaveExpenseEdit() {
+  if (!activeMaintenanceExpenseId.value) return;
+  if (
+    !editExpenseTitle.value.trim()
+    || !editExpenseAmount.value.trim()
+    || !editExpenseOccurredAt.value.trim()
+  ) {
+    maintenanceFormError.value = t('appSections.fleet.vehicleDetails.expenseDialog.validation');
+    return;
+  }
+
+  maintenanceFormError.value = null;
+  try {
+    await expensesStore.updateExpense(activeMaintenanceExpenseId.value, {
+      type: selectedExpense.value?.type ?? 'MAINTENANCE',
+      amount: editExpenseAmount.value.trim(),
+      currency: 'PLN',
+      occurredAt: new Date(`${editExpenseOccurredAt.value.trim()}T12:00:00.000Z`).toISOString(),
+      title: editExpenseTitle.value.trim(),
+      notes: editExpenseNotes.value.trim() || undefined,
+      carPaymentKind: selectedExpense.value?.carPaymentKind || undefined,
+      carId: selectedExpense.value?.carId || carId.value || undefined,
+      driverId: selectedExpense.value?.driverId || undefined,
+    });
+    await handleExpenseCreated();
+    editExpenseDialog.value?.close();
+    resetEditExpenseState();
+  } catch {
+    maintenanceFormError.value = t('appSections.fleet.vehicleDetails.expenseDialog.error');
+  }
+}
+
+async function handleConfirmDeleteExpense() {
+  if (!activeMaintenanceExpenseId.value) return;
+  deleteExpenseError.value = null;
+  try {
+    await expensesStore.deleteExpense(activeMaintenanceExpenseId.value);
+    await handleExpenseCreated();
+    deleteExpenseDialog.value?.close();
+  } catch {
+    deleteExpenseError.value = t('appSections.fleet.vehicleDetails.expenseDeleteError');
+  }
+}
+
 async function handleExpenseCreated() {
   await Promise.all([
     fetchFees(1),
@@ -332,7 +444,11 @@ async function handleUpdateVehicleInfo(payload: {
           :total-profit-loss="totalProfitLoss"
           :is-profit="isProfit"
         />
-        <FleetFeesCard :items="carFees">
+        <FleetFeesCard
+          :items="carFees"
+          @edit="openEditExpenseDialog"
+          @delete="openDeleteExpenseDialog"
+        >
           <template #footer>
             <button
               v-if="feesHasMore"
@@ -354,7 +470,11 @@ async function handleUpdateVehicleInfo(payload: {
           @assign-other="handleAssignOther"
           @remove-driver="handleRemoveDriver"
         />
-        <FleetMaintenanceTimeline :items="maintenanceHistory">
+        <FleetMaintenanceTimeline
+          :items="maintenanceHistory"
+          @edit="openEditExpenseDialog"
+          @delete="openDeleteExpenseDialog"
+        >
           <template #header-action>
             <button
               type="button"
@@ -431,6 +551,145 @@ async function handleUpdateVehicleInfo(payload: {
       :initial-car-id="carId"
       @created="handleExpenseCreated"
     />
+    <EntityDialogShell
+      ref="editExpenseDialog"
+      title-id="fleet-edit-expense-dialog-title"
+      :title="t('appSections.fleet.vehicleDetails.editExpenseTitle')"
+      :lead="t('appSections.fleet.vehicleDetails.editExpenseLead')"
+      width="min(34rem, calc(100vw - 2rem))"
+      @close="resetEditExpenseState"
+    >
+      <template #body>
+        <form id="fleet-edit-expense-form" class="fleet-expense-dialog__form" @submit.prevent="handleSaveExpenseEdit">
+          <label class="fleet-expense-dialog__field">
+            <span>{{ `${t('appSections.fleet.vehicleDetails.expenseDialog.titleField')} *` }}</span>
+            <input
+              v-model="editExpenseTitle"
+              class="ti-input"
+              type="text"
+              :placeholder="t('appSections.fleet.vehicleDetails.expenseDialog.titlePlaceholder')"
+              required
+            >
+          </label>
+          <label class="fleet-expense-dialog__field">
+            <span>{{ `${t('appSections.fleet.vehicleDetails.expenseDialog.amount')} *` }}</span>
+            <input
+              v-model="editExpenseAmount"
+              class="ti-input"
+              type="text"
+              inputmode="decimal"
+              placeholder="1499.99"
+              required
+            >
+          </label>
+          <div class="fleet-expense-dialog__field">
+            <span>{{ `${t('appSections.fleet.vehicleDetails.expenseDialog.occurredAt')} *` }}</span>
+            <FleetDateInput
+              v-model="editExpenseOccurredAt"
+              input-id="fleet-edit-expense-occurred-at"
+              :title="t('appSections.fleet.vehicleDetails.expenseDialog.occurredAt')"
+            />
+          </div>
+          <label class="fleet-expense-dialog__field fleet-expense-dialog__field--full">
+            <span>{{ t('appSections.fleet.vehicleDetails.expenseDialog.notes') }}</span>
+            <textarea
+              v-model="editExpenseNotes"
+              class="ti-input fleet-expense-dialog__textarea"
+              rows="3"
+              :placeholder="t('appSections.fleet.vehicleDetails.expenseDialog.notesPlaceholder')"
+            />
+          </label>
+        </form>
+      </template>
+      <template #footer>
+        <div class="fleet-expense-dialog__footer">
+          <p v-if="maintenanceFormError" class="fleet-expense-dialog__error" role="alert">
+            {{ maintenanceFormError }}
+          </p>
+          <button
+            type="button"
+            class="fleet-expense-dialog__btn fleet-expense-dialog__btn--ghost"
+            :disabled="expensesStore.updating"
+            @click="editExpenseDialog?.close()"
+          >
+            {{ t('appSections.fleet.vehicleDetails.cancel') }}
+          </button>
+          <button
+            form="fleet-edit-expense-form"
+            type="submit"
+            class="fleet-expense-dialog__btn fleet-expense-dialog__btn--primary"
+            :disabled="expensesStore.updating"
+          >
+            {{ expensesStore.updating ? t('common.loading') : t('appSections.fleet.vehicleDetails.save') }}
+          </button>
+        </div>
+      </template>
+    </EntityDialogShell>
+    <EntityDialogShell
+      ref="deleteExpenseDialog"
+      title-id="fleet-delete-expense-dialog-title"
+      :title="t('appSections.fleet.vehicleDetails.deleteExpenseTitle')"
+      :lead="t('appSections.fleet.vehicleDetails.deleteExpenseConfirm')"
+      width="min(30rem, calc(100vw - 2rem))"
+      @close="closeDeleteExpenseDialog"
+    >
+      <template #body>
+        <div class="fleet-delete-expense">
+          <p class="fleet-delete-expense__body">
+            {{ t('appSections.fleet.vehicleDetails.deleteExpenseConfirm') }}
+          </p>
+          <dl v-if="selectedExpense" class="fleet-delete-expense__details">
+            <div class="fleet-delete-expense__row">
+              <dt>{{ t('appSections.fleet.vehicleDetails.expenseDialog.titleField') }}</dt>
+              <dd>{{ selectedExpense.title }}</dd>
+            </div>
+            <div class="fleet-delete-expense__row">
+              <dt>{{ t('appSections.fleet.vehicleDetails.expenseDialog.amount') }}</dt>
+              <dd>{{ formatExpenseAmount(selectedExpense.amount) }}</dd>
+            </div>
+            <div class="fleet-delete-expense__row">
+              <dt>{{ t('appSections.fleet.vehicleDetails.expenseDialog.occurredAt') }}</dt>
+              <dd>{{ formatExpenseDate(selectedExpense.occurredAt) }}</dd>
+            </div>
+            <div class="fleet-delete-expense__row">
+              <dt>{{ t('appSections.fleet.vehicleDetails.expenseDialog.type') }}</dt>
+              <dd>
+                {{
+                  t(`appSections.fleet.vehicleDetails.expenseDialog.expenseTypes.${selectedExpense.type}`)
+                }}
+              </dd>
+            </div>
+            <div class="fleet-delete-expense__row fleet-delete-expense__row--full">
+              <dt>{{ t('appSections.fleet.vehicleDetails.expenseDialog.notes') }}</dt>
+              <dd>{{ selectedExpense.notes || '—' }}</dd>
+            </div>
+          </dl>
+        </div>
+      </template>
+      <template #footer>
+        <div class="fleet-expense-dialog__footer">
+          <p v-if="deleteExpenseError" class="fleet-expense-dialog__error" role="alert">
+            {{ deleteExpenseError }}
+          </p>
+          <button
+            type="button"
+            class="fleet-expense-dialog__btn fleet-expense-dialog__btn--ghost"
+            :disabled="expensesStore.deleting"
+            @click="deleteExpenseDialog?.close()"
+          >
+            {{ t('appSections.fleet.vehicleDetails.cancel') }}
+          </button>
+          <button
+            type="button"
+            class="fleet-expense-dialog__btn fleet-expense-dialog__btn--danger"
+            :disabled="expensesStore.deleting"
+            @click="handleConfirmDeleteExpense"
+          >
+            {{ expensesStore.deleting ? t('common.loading') : t('appSections.fleet.vehicleDetails.deleteExpense') }}
+          </button>
+        </div>
+      </template>
+    </EntityDialogShell>
     </template>
   </section>
 </template>
@@ -613,5 +872,126 @@ async function handleUpdateVehicleInfo(payload: {
 .fleet-load-more-btn:disabled {
   opacity: 0.65;
   cursor: not-allowed;
+}
+
+.fleet-expense-dialog__form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.fleet-expense-dialog__field {
+  min-width: 0;
+}
+
+.fleet-expense-dialog__field > span {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+.fleet-expense-dialog__field--full {
+  grid-column: 1 / -1;
+}
+
+.fleet-expense-dialog__textarea {
+  resize: vertical;
+  min-height: 5rem;
+}
+
+.fleet-expense-dialog__footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.fleet-expense-dialog__error {
+  margin: 0;
+  margin-right: auto;
+  align-self: center;
+  font-size: 0.8125rem;
+  color: var(--color-error);
+}
+
+.fleet-expense-dialog__btn {
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.56rem 0.9rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fleet-expense-dialog__btn--ghost {
+  color: var(--color-on-surface);
+  background: transparent;
+}
+
+.fleet-expense-dialog__btn--ghost:hover:not(:disabled) {
+  background: var(--color-surface-container-high);
+}
+
+.fleet-expense-dialog__btn--primary {
+  color: var(--color-on-secondary);
+  background: linear-gradient(
+    135deg,
+    var(--color-secondary) 0%,
+    var(--color-secondary-container) 100%
+  );
+}
+
+.fleet-expense-dialog__btn--danger {
+  color: color-mix(in srgb, var(--color-error) 90%, white);
+  background: color-mix(in srgb, var(--color-error) 14%, transparent);
+}
+
+.fleet-delete-expense__body {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-on-surface-variant);
+}
+
+.fleet-delete-expense {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.fleet-delete-expense__details {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.fleet-delete-expense__row {
+  border-radius: 0.7rem;
+  background: var(--color-surface-container-lowest);
+  padding: 0.6rem 0.7rem;
+}
+
+.fleet-delete-expense__row--full {
+  grid-column: 1 / -1;
+}
+
+.fleet-delete-expense__row dt {
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+.fleet-delete-expense__row dd {
+  margin: 0.3rem 0 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
 }
 </style>
