@@ -254,7 +254,74 @@
     },
     "finance": {
       "title": "Finanse",
-      "lead": "Przychody, koszty i marże w podziale na pojazdy i kategorie."
+      "lead": "Podsumowanie wydatków i przychodów.",
+      "filters": {
+        "periods": {
+          "currentWeek": "Bieżący tydzień",
+          "currentMonth": "Bieżący miesiąc",
+          "currentYear": "Bieżący rok",
+          "customRange": "Własny zakres"
+        },
+        "dateRange": "Zakres dat",
+        "quickRange": "Szybki zakres",
+        "pickRange": "Wybierz datę początkową i końcową",
+        "fromDate": "Data od",
+        "toDate": "Data do",
+        "type": "Typ wydatku",
+        "allTypes": "Wszystkie typy",
+        "currency": "Waluta",
+        "allCurrencies": "Wszystkie waluty",
+        "search": "Szybkie wyszukiwanie",
+        "searchPlaceholder": "Szukaj po tytule lub notatkach..."
+      },
+      "types": {
+        "MAINTENANCE": "Serwis",
+        "CAR_PAYMENT": "Rata pojazdu",
+        "INSURANCE": "Ubezpieczenie",
+        "FEE": "Opłata",
+        "OTHER": "Inne"
+      },
+      "kpis": {
+        "totalSpend": "Łączne wydatki",
+        "avgDaily": "Średni wydatek dzienny",
+        "totalRevenue": "Łączne przychody",
+        "avgRevenueDaily": "Średnie przychody dzienne",
+        "avgMonthly": "Średni wydatek miesięcznie",
+        "largest": "Największy pojedynczy wydatek",
+        "focusRisk": "Koncentracja kategorii",
+        "anomalies": "Liczba anomalii"
+      },
+      "charts": {
+        "spendTrend": "Trend wydatków i przychodów",
+        "categoryMix": "Struktura kategorii",
+        "typeBreakdown": "Skumulowany zysk/strata (rok bieżący + prognoza)",
+        "intensity": "Top pojazdów wg wydatków",
+        "recurring": "Top pojazdów wg przychodu"
+      },
+      "insights": {
+        "label": "Wnioski",
+        "title": "Inteligencja operacyjna",
+        "items": {
+          "total": "W wybranym okresie wygenerowano {value} wydatków.",
+          "top": "Największa kategoria odpowiada obecnie za {value} całego obciążenia kosztowego.",
+          "anomalies": "Liczba transakcji powyżej oczekiwanej dynamiki wydatków: {value}.",
+          "largest": "Największy pojedynczy wydatek w widoku to {value}."
+        }
+      },
+      "recent": {
+        "title": "Ostatnie wydatki",
+        "date": "Data",
+        "type": "Typ",
+        "titleCol": "Tytuł",
+        "amount": "Kwota"
+      },
+      "recentEarnings": {
+        "title": "Ostatnie przychody",
+        "date": "Data",
+        "type": "Typ",
+        "titleCol": "Tytuł",
+        "amount": "Kwota"
+      }
     },
     "drivers": {
       "title": "Kierowcy",

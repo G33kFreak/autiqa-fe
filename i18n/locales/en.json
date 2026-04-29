@@ -254,7 +254,74 @@
     },
     "finance": {
       "title": "Finance",
-      "lead": "Revenue, costs, and margin intelligence across vehicles and categories."
+      "lead": "Revenue, costs, and margin intelligence across vehicles and categories.",
+      "filters": {
+        "periods": {
+          "currentWeek": "Current week",
+          "currentMonth": "Current month",
+          "currentYear": "Current year",
+          "customRange": "Custom range"
+        },
+        "dateRange": "Date range",
+        "quickRange": "Quick range",
+        "pickRange": "Pick start and end date",
+        "fromDate": "From date",
+        "toDate": "To date",
+        "type": "Expense type",
+        "allTypes": "All types",
+        "currency": "Currency",
+        "allCurrencies": "All currencies",
+        "search": "Quick search",
+        "searchPlaceholder": "Search title or notes..."
+      },
+      "types": {
+        "MAINTENANCE": "Maintenance",
+        "CAR_PAYMENT": "Car payment",
+        "INSURANCE": "Insurance",
+        "FEE": "Fee",
+        "OTHER": "Other"
+      },
+      "kpis": {
+        "totalSpend": "Total spend",
+        "avgDaily": "Average daily spend",
+        "totalRevenue": "Total revenue",
+        "avgRevenueDaily": "Average daily earnings",
+        "avgMonthly": "Average monthly spend",
+        "largest": "Largest single expense",
+        "focusRisk": "Category concentration",
+        "anomalies": "Anomaly count"
+      },
+      "charts": {
+        "spendTrend": "Expenses and earnings trend",
+        "categoryMix": "Category composition",
+        "typeBreakdown": "Cumulative profit/loss (current year + projection)",
+        "intensity": "Top cars by expenses",
+        "recurring": "Top cars by revenue"
+      },
+      "insights": {
+        "label": "Insights",
+        "title": "Operational intelligence",
+        "items": {
+          "total": "The selected period generated {value} in total spend.",
+          "top": "Top category currently drives {value} of the full expense load.",
+          "anomalies": "{value} transactions are currently above expected spend velocity.",
+          "largest": "Largest single expense in view is {value}."
+        }
+      },
+      "recent": {
+        "title": "Recent expenses",
+        "date": "Date",
+        "type": "Type",
+        "titleCol": "Title",
+        "amount": "Amount"
+      },
+      "recentEarnings": {
+        "title": "Recent earnings",
+        "date": "Date",
+        "type": "Type",
+        "titleCol": "Title",
+        "amount": "Amount"
+      }
     },
     "drivers": {
       "title": "Drivers",
