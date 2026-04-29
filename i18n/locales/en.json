@@ -286,6 +286,8 @@
         "avgDaily": "Average daily spend",
         "totalRevenue": "Total revenue",
         "avgRevenueDaily": "Average daily earnings",
+        "profitLoss": "Profit / Loss",
+        "avgProfitLossDaily": "Average daily profit / loss",
         "avgMonthly": "Average monthly spend",
         "largest": "Largest single expense",
         "focusRisk": "Category concentration",

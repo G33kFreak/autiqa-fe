@@ -286,6 +286,8 @@
         "avgDaily": "Średni wydatek dzienny",
         "totalRevenue": "Łączne przychody",
         "avgRevenueDaily": "Średnie przychody dzienne",
+        "profitLoss": "Zysk / strata",
+        "avgProfitLossDaily": "Średni zysk / strata dziennie",
         "avgMonthly": "Średni wydatek miesięcznie",
         "largest": "Największy pojedynczy wydatek",
         "focusRisk": "Koncentracja kategorii",

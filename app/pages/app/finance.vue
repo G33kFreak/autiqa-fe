@@ -123,6 +123,8 @@ const daySpan = computed(() => {
 const avgDailySpend = computed(() => totalSpend.value / daySpan.value);
 const totalRevenue = computed(() => totalSpend.value * 1.42);
 const avgDailyRevenue = computed(() => totalRevenue.value / daySpan.value);
+const totalProfitLoss = computed(() => totalRevenue.value - totalSpend.value);
+const avgDailyProfitLoss = computed(() => totalProfitLoss.value / daySpan.value);
 const largestExpense = computed(() => Math.max(...filteredRows.value.map(amountOf), 0));
 const concentration = computed(() => {
   const map = new Map<string, number>();
@@ -298,6 +300,19 @@ const recentExpenses = computed(() => filteredRows.value.slice(0, 10));
       <FinanceKpiCard :label="t('appSections.finance.kpis.avgRevenueDaily')" :value="money(avgDailyRevenue)" tone="good" />
     </section>
 
+    <section class="finance-page__kpis-secondary">
+      <FinanceKpiCard
+        :label="t('appSections.finance.kpis.profitLoss')"
+        :value="money(totalProfitLoss)"
+        :tone="totalProfitLoss >= 0 ? 'good' : 'warn'"
+      />
+      <FinanceKpiCard
+        :label="t('appSections.finance.kpis.avgProfitLossDaily')"
+        :value="money(avgDailyProfitLoss)"
+        :tone="avgDailyProfitLoss >= 0 ? 'good' : 'warn'"
+      />
+    </section>
+
     <section class="finance-page__grid">
       <article class="finance-page__card finance-page__card--wide">
         <h2 class="finance-page__card-title">{{ t('appSections.finance.charts.spendTrend') }}</h2>
@@ -384,6 +399,12 @@ const recentExpenses = computed(() => filteredRows.value.slice(0, 10));
 .finance-page__kpis {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.finance-page__kpis-secondary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.75rem;
 }
 
@@ -489,6 +510,10 @@ const recentExpenses = computed(() => filteredRows.value.slice(0, 10));
 @media (max-width: 48rem) {
   .finance-page__kpis {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .finance-page__kpis-secondary {
+    grid-template-columns: 1fr;
   }
 
   .finance-page__table-head,
