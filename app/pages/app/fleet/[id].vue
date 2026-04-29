@@ -332,16 +332,19 @@ async function handleUpdateVehicleInfo(payload: {
           :total-profit-loss="totalProfitLoss"
           :is-profit="isProfit"
         />
-        <FleetFeesCard :items="carFees" />
-        <button
-          v-if="feesHasMore"
-          type="button"
-          class="fleet-load-more-btn"
-          :disabled="feesLoadingMore"
-          @click="handleLoadMoreFees"
-        >
-          {{ feesLoadingMore ? t('common.loading') : t('appSections.fleet.vehicleDetails.loadMore') }}
-        </button>
+        <FleetFeesCard :items="carFees">
+          <template #footer>
+            <button
+              v-if="feesHasMore"
+              type="button"
+              class="fleet-load-more-btn"
+              :disabled="feesLoadingMore"
+              @click="handleLoadMoreFees"
+            >
+              {{ feesLoadingMore ? t('common.loading') : t('appSections.fleet.vehicleDetails.loadMore') }}
+            </button>
+          </template>
+        </FleetFeesCard>
       </div>
 
       <div class="fleet-layout__right">
@@ -362,16 +365,18 @@ async function handleUpdateVehicleInfo(payload: {
               {{ t('appSections.fleet.vehicleDetails.expenseDialog.openCta') }}
             </button>
           </template>
+          <template #footer>
+            <button
+              v-if="maintenanceHasMore"
+              type="button"
+              class="fleet-load-more-btn"
+              :disabled="maintenanceLoadingMore"
+              @click="handleLoadMoreMaintenance"
+            >
+              {{ maintenanceLoadingMore ? t('common.loading') : t('appSections.fleet.vehicleDetails.loadMore') }}
+            </button>
+          </template>
         </FleetMaintenanceTimeline>
-        <button
-          v-if="maintenanceHasMore"
-          type="button"
-          class="fleet-load-more-btn"
-          :disabled="maintenanceLoadingMore"
-          @click="handleLoadMoreMaintenance"
-        >
-          {{ maintenanceLoadingMore ? t('common.loading') : t('appSections.fleet.vehicleDetails.loadMore') }}
-        </button>
       </div>
     </section>
 
@@ -594,7 +599,7 @@ async function handleUpdateVehicleInfo(payload: {
 }
 
 .fleet-load-more-btn {
-  align-self: flex-start;
+  align-self: center;
   border: none;
   border-radius: 0.65rem;
   padding: 0.5rem 0.75rem;

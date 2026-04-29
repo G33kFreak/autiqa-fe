@@ -38,6 +38,9 @@ function formatCurrency(value: number): string {
       <p class="fees-card__empty-title">{{ t('appSections.fleet.vehicleDetails.emptyFeesTitle') }}</p>
       <p class="fees-card__empty-copy">{{ t('appSections.fleet.vehicleDetails.emptyFeesCopy') }}</p>
     </article>
+    <div class="fleet-card__footer">
+      <slot name="footer" />
+    </div>
   </section>
 </template>
 
@@ -62,6 +65,12 @@ function formatCurrency(value: number): string {
   font-weight: 800;
   letter-spacing: -0.01em;
   color: var(--color-on-surface);
+}
+
+.fleet-card__footer {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
 }
 
 .fees-card {

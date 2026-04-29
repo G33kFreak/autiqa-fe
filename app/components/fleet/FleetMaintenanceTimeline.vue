@@ -48,6 +48,9 @@ function formatCurrency(value: number): string {
       <p class="timeline-empty__title">{{ t('appSections.fleet.vehicleDetails.emptyMaintenanceTitle') }}</p>
       <p class="timeline-empty__copy">{{ t('appSections.fleet.vehicleDetails.emptyMaintenanceCopy') }}</p>
     </article>
+    <div class="fleet-card__footer">
+      <slot name="footer" />
+    </div>
   </section>
 </template>
 
@@ -72,6 +75,12 @@ function formatCurrency(value: number): string {
   font-weight: 800;
   letter-spacing: -0.01em;
   color: var(--color-on-surface);
+}
+
+.fleet-card__footer {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
 }
 
 .fleet-card--timeline::after {
