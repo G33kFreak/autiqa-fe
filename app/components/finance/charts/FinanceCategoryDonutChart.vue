@@ -7,7 +7,10 @@ const props = defineProps<{
 }>();
 
 const option = computed<EChartsOption>(() => ({
-  tooltip: { trigger: 'item' },
+  tooltip: {
+    trigger: 'item',
+    formatter: (params: any) => `${params.name}<br/>${Number(params.value).toLocaleString()} (${params.percent}%)`,
+  },
   legend: { bottom: 0, textStyle: { color: '#6b7280', fontSize: 11 } },
   series: [
     {
@@ -15,7 +18,11 @@ const option = computed<EChartsOption>(() => ({
       radius: ['52%', '72%'],
       center: ['50%', '45%'],
       itemStyle: { borderRadius: 6 },
-      label: { color: '#374151', fontSize: 11 },
+      label: {
+        color: '#374151',
+        fontSize: 11,
+        formatter: '{b}\n{d}%',
+      },
       data: props.rows,
       animationDuration: 520,
       animationEasing: 'cubicOut',
