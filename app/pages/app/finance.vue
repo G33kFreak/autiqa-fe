@@ -1,22 +1,28 @@
 <script setup lang="ts">
 import type { ExpenseDto } from '#shared/dto/expense.dto';
+import type { IncomeDto } from '#shared/dto/income.dto';
 import FinanceCategoryDonutChart from '~/components/finance/charts/FinanceCategoryDonutChart.vue';
 import FinanceCumulativeProfitChart from '~/components/finance/charts/FinanceCumulativeProfitChart.vue';
 import FinanceSpendTrendChart from '~/components/finance/charts/FinanceSpendTrendChart.vue';
 import FinanceTopCarsChart from '~/components/finance/charts/FinanceTopCarsChart.vue';
 import FinanceFilters from '~/components/finance/FinanceFilters.vue';
 import FinanceKpiCard from '~/components/finance/FinanceKpiCard.vue';
-import { createFinanceExpenseMocks } from '~/mocks/finance-expenses.mock';
 
 const { t } = useI18n();
+const financesStore = useFinancesStore();
+const expensesStore = useExpensesStore();
+const incomesStore = useIncomesStore();
 
 useSeoMeta({
   title: computed(() => t('appSections.finance.title')),
   description: computed(() => t('appSections.finance.lead')),
 });
 
-const rows = ref<ExpenseDto[]>(createFinanceExpenseMocks(190));
+const RECENT_PAGE = 1;
+const RECENT_LIMIT = 10;
+
 const period = ref('currentMonth');
+const applyingPreset = ref(false);
 
 function toIsoDate(date: Date): string {
   const year = date.getFullYear();
@@ -36,12 +42,6 @@ function parseDayBoundary(value: string, endOfDay = false): Date | null {
   return new Date(`${value}T${endOfDay ? '23:59:59' : '00:00:00'}`);
 }
 
-function carPlateFromId(carId: string): string {
-  const num = Number.parseInt(carId.replace(/\D/g, ''), 10);
-  const safe = Number.isFinite(num) ? num : 0;
-  return `WX ${String(1000 + safe).padStart(4, '0')}`;
-}
-
 function startOfWeek(date: Date): Date {
   const d = new Date(date);
   const day = (d.getDay() + 6) % 7;
@@ -52,9 +52,9 @@ function startOfWeek(date: Date): Date {
 
 const dateFrom = ref(daysAgoIso(90));
 const dateTo = ref(toIsoDate(new Date()));
-const applyingPreset = ref(false);
 
-const availableTypes = ['MAINTENANCE', 'CAR_PAYMENT', 'INSURANCE', 'FEE', 'OTHER'];
+const recentExpenses = ref<ExpenseDto[]>([]);
+const recentIncomes = ref<IncomeDto[]>([]);
 
 watch(period, (value) => {
   if (value === 'customRange') return;
@@ -92,19 +92,6 @@ watch([dateFrom, dateTo], () => {
   }
 });
 
-const filteredRows = computed(() => {
-  const from = parseDayBoundary(dateFrom.value) ?? new Date('1970-01-01T00:00:00');
-  const to = parseDayBoundary(dateTo.value, true) ?? new Date('2999-12-31T23:59:59');
-  return rows.value.filter((item) => {
-    const itemDate = new Date(item.occurredAt);
-    return itemDate >= from && itemDate <= to;
-  });
-});
-
-function amountOf(expense: ExpenseDto): number {
-  return Number.parseFloat(expense.amount) || 0;
-}
-
 function money(value: number, c = 'PLN'): string {
   return new Intl.NumberFormat(undefined, {
     style: 'currency',
@@ -113,33 +100,41 @@ function money(value: number, c = 'PLN'): string {
   }).format(value);
 }
 
-const totalSpend = computed(() => filteredRows.value.reduce((sum, row) => sum + amountOf(row), 0));
-const daySpan = computed(() => {
-  const from = parseDayBoundary(dateFrom.value) ?? new Date();
-  const to = parseDayBoundary(dateTo.value, true) ?? new Date();
-  const diff = Math.ceil((to.getTime() - from.getTime()) / 86400000);
-  return Math.max(diff, 1);
+function byOccurredAtDesc<T extends { occurredAt: string }>(a: T, b: T): number {
+  return new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime();
+}
+
+async function loadRecentLists(): Promise<void> {
+  const [expRes, incRes] = await Promise.all([
+    expensesStore.fetchExpenses({ page: RECENT_PAGE, limit: RECENT_LIMIT }),
+    incomesStore.fetchIncomes({ page: RECENT_PAGE, limit: RECENT_LIMIT }),
+  ]);
+
+  recentExpenses.value = [...expRes.data].sort(byOccurredAtDesc);
+  recentIncomes.value = [...incRes.data].sort(byOccurredAtDesc);
+}
+
+watch([dateFrom, dateTo], () => {
+  void financesStore.fetchDashboard(dateFrom.value, dateTo.value);
+}, { immediate: true });
+
+onMounted(() => {
+  void loadRecentLists();
 });
-const avgDailySpend = computed(() => totalSpend.value / daySpan.value);
-const totalRevenue = computed(() => totalSpend.value * 1.42);
-const avgDailyRevenue = computed(() => totalRevenue.value / daySpan.value);
-const totalProfitLoss = computed(() => totalRevenue.value - totalSpend.value);
-const avgDailyProfitLoss = computed(() => totalProfitLoss.value / daySpan.value);
-const largestExpense = computed(() => Math.max(...filteredRows.value.map(amountOf), 0));
-const concentration = computed(() => {
-  const map = new Map<string, number>();
-  for (const row of filteredRows.value) map.set(row.type, (map.get(row.type) ?? 0) + amountOf(row));
-  const top = Math.max(...Array.from(map.values()), 0);
-  return totalSpend.value > 0 ? (top / totalSpend.value) * 100 : 0;
-});
-const anomalyCount = computed(() => filteredRows.value.filter((row) => amountOf(row) > avgDailySpend.value * 2.4).length);
+
+const summary = computed(() => financesStore.summary);
+
+const totalSpend = computed(() => summary.value?.totalSpend ?? 0);
+const avgDailySpend = computed(() => summary.value?.avgDailySpend ?? 0);
+const totalRevenue = computed(() => summary.value?.totalRevenue ?? 0);
+const avgDailyRevenue = computed(() => summary.value?.avgDailyRevenue ?? 0);
+const totalProfitLoss = computed(() => summary.value?.totalProfitLoss ?? 0);
+const avgDailyProfitLoss = computed(() => summary.value?.avgDailyProfitLoss ?? 0);
 
 const spendTrend = computed(() => {
-  const byDay = new Map<string, number>();
-  for (const row of filteredRows.value) {
-    const key = row.occurredAt.slice(0, 10);
-    byDay.set(key, (byDay.get(key) ?? 0) + amountOf(row));
-  }
+  const byDay = new Map(
+    financesStore.trend.map((p) => [p.date.slice(0, 10), p]),
+  );
 
   const from = parseDayBoundary(dateFrom.value) ?? new Date();
   const to = parseDayBoundary(dateTo.value) ?? new Date();
@@ -156,131 +151,62 @@ const spendTrend = computed(() => {
 
   return {
     labels,
-    spendValues: keys.map((key) => Number((-(byDay.get(key) ?? 0)).toFixed(2))),
-    revenueValues: keys.map((key, index) => {
-      const spend = byDay.get(key) ?? 0;
-      const factor = 1 + Math.sin(index * 0.65) * 0.22 + Math.cos(index * 0.33) * 0.08;
-      return Number((Math.max(spend * factor, 0)).toFixed(2));
-    }),
-    profitLossValues: keys.map((key, index) => {
-      const spend = byDay.get(key) ?? 0;
-      const factor = 1 + Math.sin(index * 0.65) * 0.22 + Math.cos(index * 0.33) * 0.08;
-      const revenue = Math.max(spend * factor, 0);
-      return Number((revenue - spend).toFixed(2));
-    }),
+    spendValues: keys.map((key) =>
+      Number((-(byDay.get(key)?.spendValue ?? 0)).toFixed(2)),
+    ),
+    revenueValues: keys.map((key) =>
+      Number((byDay.get(key)?.revenueValue ?? 0).toFixed(2)),
+    ),
+    profitLossValues: keys.map((key) =>
+      Number((byDay.get(key)?.profitLossValue ?? 0).toFixed(2)),
+    ),
   };
 });
 
-const categoryDonutRows = computed(() => {
-  const byType = new Map<string, number>();
-  for (const row of filteredRows.value) byType.set(row.type, (byType.get(row.type) ?? 0) + amountOf(row));
-  return Array.from(byType.entries()).map(([name, value]) => ({
-    name: t(`appSections.finance.types.${name}`),
-    value: Number(value.toFixed(2)),
-  }));
-});
+const categoryDonutRows = computed(() =>
+  financesStore.expenseStructure.map((row) => ({
+    name: t(`appSections.finance.types.${row.category}`),
+    value: Number(row.percentage.toFixed(2)),
+  })),
+);
 
 const cumulativeProfit = computed(() => {
-  const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonthIndex = now.getMonth();
-  const monthlyProfit = new Array<number>(12).fill(0);
-
-  for (const row of rows.value) {
-    const d = new Date(row.occurredAt);
-    if (d.getFullYear() !== currentYear) continue;
-    const month = d.getMonth();
-    const spend = amountOf(row);
-    const revenue = spend * 1.42;
-    const pnl = revenue - spend;
-    monthlyProfit[month] += pnl;
-  }
-
-  const labels = Array.from({ length: 12 }, (_, month) =>
-    `${currentYear}-${String(month + 1).padStart(2, '0')}`,
-  );
-
-  const actualMonthly = monthlyProfit.slice(0, currentMonthIndex + 1);
-  const avgMonthlyProfit = actualMonthly.length
-    ? actualMonthly.reduce((sum, v) => sum + v, 0) / actualMonthly.length
-    : 0;
-
-  const actualValues: Array<number | null> = [];
-  const projectedValues: Array<number | null> = [];
-  let running = 0;
-  for (let month = 0; month < 12; month += 1) {
-    if (month <= currentMonthIndex) {
-      running += monthlyProfit[month] ?? 0;
-      const value = Number(running.toFixed(2));
-      actualValues.push(value);
-      projectedValues.push(month === currentMonthIndex ? value : null);
-      continue;
-    }
-    running += avgMonthlyProfit;
-    actualValues.push(null);
-    projectedValues.push(Number(running.toFixed(2)));
-  }
-
+  const pts = financesStore.cumulativeResult;
   return {
-    labels,
-    actualValues,
-    projectedValues,
+    labels: pts.map((p) => p.date),
+    actualValues: pts.map((p) => p.actualValue),
+    projectedValues: pts.map((p) => p.projectedValue),
   };
+});
+
+function topCarChartEntries(
+  entries: { plateNumber: string; value: number }[],
+  max = 7,
+) {
+  const sorted = [...entries].sort((a, b) => b.value - a.value).slice(0, max);
+  return {
+    labels: sorted.map((e) => e.plateNumber),
+    values: sorted.map((e) => Number(e.value.toFixed(2))),
+  };
+}
+
+const topCars = computed(() => {
+  const list = financesStore.carsRatings?.expenses ?? [];
+  return topCarChartEntries(list);
 });
 
 const topCarsRevenue = computed(() => {
-  const byCar = new Map<string, number>();
-  for (const row of filteredRows.value) {
-    if (!row.carId) continue;
-    const spend = amountOf(row);
-    const revenue = spend * 1.42;
-    byCar.set(row.carId, (byCar.get(row.carId) ?? 0) + revenue);
-  }
-  const top = Array.from(byCar.entries())
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 7);
-  return {
-    labels: top.map(([carId]) => carPlateFromId(carId)),
-    values: top.map(([, value]) => Number(value.toFixed(2))),
-  };
+  const list = financesStore.carsRatings?.earnings ?? [];
+  return topCarChartEntries(list);
 });
 
-const topCars = computed(() => {
-  const byCar = new Map<string, number>();
-  for (const row of filteredRows.value) {
-    if (!row.carId) continue;
-    byCar.set(row.carId, (byCar.get(row.carId) ?? 0) + amountOf(row));
-  }
-  const top = Array.from(byCar.entries())
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 7);
-  return {
-    labels: top.map(([carId]) => carPlateFromId(carId)),
-    values: top.map(([, value]) => Number(value.toFixed(2))),
-  };
-});
-
-const recentEarnings = computed(() =>
-  filteredRows.value
-    .slice(0, 10)
-    .map((row) => {
-      const spend = amountOf(row);
-      const earnings = Math.max(spend * 1.42, 0);
-      return {
-        id: row.id,
-        occurredAt: row.occurredAt,
-        title: row.title,
-        type: row.type,
-        currency: row.currency,
-        earnings,
-      };
-    }),
-);
-const recentExpenses = computed(() => filteredRows.value.slice(0, 10));
+function incomeAmount(row: IncomeDto): number {
+  return Number.parseFloat(row.amount) || 0;
+}
 </script>
 
 <template>
-  <div class="finance-page">
+  <div class="finance-page" :class="{ 'finance-page--loading': financesStore.loading }">
     <h1 class="app-page__title">{{ t('appSections.finance.title') }}</h1>
     <p class="app-page__lead">{{ t('appSections.finance.lead') }}</p>
 
@@ -377,11 +303,11 @@ const recentExpenses = computed(() => filteredRows.value.slice(0, 10));
             <span>{{ t('appSections.finance.recentEarnings.titleCol') }}</span>
             <span>{{ t('appSections.finance.recentEarnings.amount') }}</span>
           </div>
-          <div v-for="row in recentEarnings" :key="row.id" class="finance-page__table-row">
+          <div v-for="row in recentIncomes" :key="row.id" class="finance-page__table-row">
             <span>{{ row.occurredAt.slice(0, 10) }}</span>
-            <span>{{ t(`appSections.finance.types.${row.type}`) }}</span>
-            <span>{{ row.title }}</span>
-            <strong class="finance-page__table-row-earning">{{ money(row.earnings, row.currency) }}</strong>
+            <span>{{ t('appSections.finance.recentEarnings.kind') }}</span>
+            <span>{{ row.title ?? '—' }}</span>
+            <strong class="finance-page__table-row-earning">{{ money(incomeAmount(row), row.currency) }}</strong>
           </div>
         </div>
       </section>
@@ -394,6 +320,10 @@ const recentExpenses = computed(() => filteredRows.value.slice(0, 10));
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+.finance-page--loading {
+  opacity: 0.85;
 }
 
 .finance-page__kpis {

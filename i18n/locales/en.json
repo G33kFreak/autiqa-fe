@@ -370,6 +370,7 @@
         "title": "Recent earnings",
         "date": "Date",
         "type": "Type",
+        "kind": "Income",
         "titleCol": "Title",
         "amount": "Amount"
       }

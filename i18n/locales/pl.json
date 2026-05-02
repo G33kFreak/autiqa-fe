@@ -327,7 +327,7 @@
         "MAINTENANCE": "Serwis",
         "CAR_PAYMENT": "Rata pojazdu",
         "INSURANCE": "Ubezpieczenie",
-        "FEE": "Opłata",
+        "FEE": "Mandaty",
         "OTHER": "Inne"
       },
       "kpis": {
@@ -370,6 +370,7 @@
         "title": "Ostatnie przychody",
         "date": "Data",
         "type": "Typ",
+        "kind": "Przychód",
         "titleCol": "Tytuł",
         "amount": "Kwota"
       }
