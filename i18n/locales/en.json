@@ -103,10 +103,8 @@
   "nav": {
     "dashboard": "Dashboard",
     "fleet": "Fleet",
-    "liveMap": "Live map",
     "finance": "Finance",
     "drivers": "Drivers",
-    "maintenance": "Maintenance",
     "settings": "Settings"
   },
   "appSections": {
@@ -344,10 +342,18 @@
       },
       "charts": {
         "spendTrend": "Expenses and earnings trend",
+        "spendTrendEmptyTitle": "No trend data for this period",
+        "spendTrendEmptyDescription": "Add expenses and income from fleet operations to see a daily chart of spending, earnings, and profit or loss here.",
         "categoryMix": "Category composition",
+        "categoryMixEmptyTitle": "No category breakdown yet",
+        "categoryMixEmptyDescription": "Record fleet expenses—maintenance, tickets, insurance, and more—for the selected period, and this donut chart will show how spending is distributed across categories.",
         "typeBreakdown": "Cumulative profit/loss (current year + projection)",
         "intensity": "Top cars by expenses",
-        "recurring": "Top cars by revenue"
+        "intensityEmptyTitle": "No vehicle expense ranking yet",
+        "intensityEmptyDescription": "Log expenses tied to specific vehicles in the selected date range—this bar chart will rank plates by total spend.",
+        "recurring": "Top cars by revenue",
+        "recurringEmptyTitle": "No vehicle revenue ranking yet",
+        "recurringEmptyDescription": "Record income linked to vehicles for this period to see which units bring in the most revenue."
       },
       "insights": {
         "label": "Insights",
@@ -361,6 +367,8 @@
       },
       "recent": {
         "title": "Recent expenses",
+        "emptyTitle": "No recent expenses yet",
+        "emptyDescription": "When you log costs in Fleet—tickets, maintenance, fuel, and more—they will show up in this list with date, type, and amount.",
         "date": "Date",
         "type": "Type",
         "titleCol": "Title",
@@ -368,6 +376,8 @@
       },
       "recentEarnings": {
         "title": "Recent earnings",
+        "emptyTitle": "No recent earnings yet",
+        "emptyDescription": "Income you record for vehicles and drivers will appear here so you can quickly review the latest credits.",
         "date": "Date",
         "type": "Type",
         "kind": "Income",

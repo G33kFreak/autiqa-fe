@@ -7,6 +7,7 @@ import FinanceSpendTrendChart from '~/components/finance/charts/FinanceSpendTren
 import FinanceTopCarsChart from '~/components/finance/charts/FinanceTopCarsChart.vue';
 import FinanceFilters from '~/components/finance/FinanceFilters.vue';
 import FinanceKpiCard from '~/components/finance/FinanceKpiCard.vue';
+import ListEmptyState from '~/components/shared/ListEmptyState.vue';
 
 const { t } = useI18n();
 const financesStore = useFinancesStore();
@@ -55,6 +56,8 @@ const dateTo = ref(toIsoDate(new Date()));
 
 const recentExpenses = ref<ExpenseDto[]>([]);
 const recentIncomes = ref<IncomeDto[]>([]);
+const recentExpensesLoading = ref(true);
+const recentIncomesLoading = ref(true);
 
 watch(period, (value) => {
   if (value === 'customRange') return;
@@ -104,14 +107,38 @@ function byOccurredAtDesc<T extends { occurredAt: string }>(a: T, b: T): number 
   return new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime();
 }
 
-async function loadRecentLists(): Promise<void> {
-  const [expRes, incRes] = await Promise.all([
-    expensesStore.fetchExpenses({ page: RECENT_PAGE, limit: RECENT_LIMIT }),
-    incomesStore.fetchIncomes({ page: RECENT_PAGE, limit: RECENT_LIMIT }),
-  ]);
+async function loadRecentExpenses(): Promise<void> {
+  recentExpensesLoading.value = true;
+  try {
+    const expRes = await expensesStore.fetchExpenses({
+      page: RECENT_PAGE,
+      limit: RECENT_LIMIT,
+    });
+    recentExpenses.value = [...(expRes.data ?? [])].sort(byOccurredAtDesc);
+  } catch {
+    recentExpenses.value = [];
+  } finally {
+    recentExpensesLoading.value = false;
+  }
+}
 
-  recentExpenses.value = [...expRes.data].sort(byOccurredAtDesc);
-  recentIncomes.value = [...incRes.data].sort(byOccurredAtDesc);
+async function loadRecentIncomes(): Promise<void> {
+  recentIncomesLoading.value = true;
+  try {
+    const incRes = await incomesStore.fetchIncomes({
+      page: RECENT_PAGE,
+      limit: RECENT_LIMIT,
+    });
+    recentIncomes.value = [...(incRes.data ?? [])].sort(byOccurredAtDesc);
+  } catch {
+    recentIncomes.value = [];
+  } finally {
+    recentIncomesLoading.value = false;
+  }
+}
+
+async function loadRecentLists(): Promise<void> {
+  await Promise.all([loadRecentExpenses(), loadRecentIncomes()]);
 }
 
 watch([dateFrom, dateTo], () => {
@@ -130,6 +157,43 @@ const totalRevenue = computed(() => summary.value?.totalRevenue ?? 0);
 const avgDailyRevenue = computed(() => summary.value?.avgDailyRevenue ?? 0);
 const totalProfitLoss = computed(() => summary.value?.totalProfitLoss ?? 0);
 const avgDailyProfitLoss = computed(() => summary.value?.avgDailyProfitLoss ?? 0);
+
+/** Trend API returned no daily points (not the same as values being zero). */
+const showSpendTrendEmpty = computed(
+  () => !financesStore.loading && financesStore.trend.length === 0,
+);
+
+/** Expense-structure API returned no category rows for the range. */
+const showCategoryMixEmpty = computed(
+  () => !financesStore.loading && financesStore.expenseStructure.length === 0,
+);
+
+/** True when API sent nothing usable (empty, all zeros, or blank plates only). */
+function hasMeaningfulTopCarEntries(
+  entries: { plateNumber: string; value: number }[] | null | undefined,
+): boolean {
+  if (entries == null || entries.length === 0) return false;
+  return entries.some(
+    (e) =>
+      String(e.plateNumber ?? '').trim().length > 0 &&
+      Number.isFinite(Number(e.value)) &&
+      Number(e.value) !== 0,
+  );
+}
+
+/** No usable per-vehicle expense totals for the range (empty or all zero). */
+const showTopCarsExpensesEmpty = computed(
+  () =>
+    !financesStore.loading &&
+    !hasMeaningfulTopCarEntries(financesStore.carsRatings?.expenses),
+);
+
+/** No usable per-vehicle revenue totals for the range (empty or all zero). */
+const showTopCarsRevenueEmpty = computed(
+  () =>
+    !financesStore.loading &&
+    !hasMeaningfulTopCarEntries(financesStore.carsRatings?.earnings),
+);
 
 const spendTrend = computed(() => {
   const byDay = new Map(
@@ -203,6 +267,14 @@ const topCarsRevenue = computed(() => {
 function incomeAmount(row: IncomeDto): number {
   return Number.parseFloat(row.amount) || 0;
 }
+
+const showRecentExpensesEmpty = computed(
+  () => !recentExpensesLoading.value && recentExpenses.value.length === 0,
+);
+
+const showRecentIncomesEmpty = computed(
+  () => !recentIncomesLoading.value && recentIncomes.value.length === 0,
+);
 </script>
 
 <template>
@@ -242,7 +314,14 @@ function incomeAmount(row: IncomeDto): number {
     <section class="finance-page__grid">
       <article class="finance-page__card finance-page__card--wide">
         <h2 class="finance-page__card-title">{{ t('appSections.finance.charts.spendTrend') }}</h2>
+        <ListEmptyState
+          v-if="showSpendTrendEmpty"
+          icon="show_chart"
+          :title="t('appSections.finance.charts.spendTrendEmptyTitle')"
+          :description="t('appSections.finance.charts.spendTrendEmptyDescription')"
+        />
         <FinanceSpendTrendChart
+          v-else
           :labels="spendTrend.labels"
           :spend-values="spendTrend.spendValues"
           :revenue-values="spendTrend.revenueValues"
@@ -252,7 +331,13 @@ function incomeAmount(row: IncomeDto): number {
 
       <article class="finance-page__card">
         <h2 class="finance-page__card-title">{{ t('appSections.finance.charts.categoryMix') }}</h2>
-        <FinanceCategoryDonutChart :rows="categoryDonutRows" />
+        <ListEmptyState
+          v-if="showCategoryMixEmpty"
+          icon="pie_chart"
+          :title="t('appSections.finance.charts.categoryMixEmptyTitle')"
+          :description="t('appSections.finance.charts.categoryMixEmptyDescription')"
+        />
+        <FinanceCategoryDonutChart v-else :rows="categoryDonutRows" />
       </article>
 
       <article class="finance-page__card">
@@ -266,19 +351,47 @@ function incomeAmount(row: IncomeDto): number {
 
       <article class="finance-page__card">
         <h2 class="finance-page__card-title">{{ t('appSections.finance.charts.intensity') }}</h2>
-        <FinanceTopCarsChart :labels="topCars.labels" :values="topCars.values" color="#ba1a1a" />
+        <ListEmptyState
+          v-if="showTopCarsExpensesEmpty"
+          icon="directions_car"
+          :title="t('appSections.finance.charts.intensityEmptyTitle')"
+          :description="t('appSections.finance.charts.intensityEmptyDescription')"
+        />
+        <FinanceTopCarsChart
+          v-else
+          :labels="topCars.labels"
+          :values="topCars.values"
+          color="#ba1a1a"
+        />
       </article>
 
       <article class="finance-page__card">
         <h2 class="finance-page__card-title">{{ t('appSections.finance.charts.recurring') }}</h2>
-        <FinanceTopCarsChart :labels="topCarsRevenue.labels" :values="topCarsRevenue.values" color="#0f8a46" />
+        <ListEmptyState
+          v-if="showTopCarsRevenueEmpty"
+          icon="payments"
+          :title="t('appSections.finance.charts.recurringEmptyTitle')"
+          :description="t('appSections.finance.charts.recurringEmptyDescription')"
+        />
+        <FinanceTopCarsChart
+          v-else
+          :labels="topCarsRevenue.labels"
+          :values="topCarsRevenue.values"
+          color="#0f8a46"
+        />
       </article>
     </section>
 
     <div class="finance-page__bottom">
       <section class="finance-page__table-card">
         <h2 class="finance-page__card-title">{{ t('appSections.finance.recent.title') }}</h2>
-        <div class="finance-page__table">
+        <ListEmptyState
+          v-if="showRecentExpensesEmpty"
+          icon="receipt_long"
+          :title="t('appSections.finance.recent.emptyTitle')"
+          :description="t('appSections.finance.recent.emptyDescription')"
+        />
+        <div v-else class="finance-page__table">
           <div class="finance-page__table-head">
             <span>{{ t('appSections.finance.recent.date') }}</span>
             <span>{{ t('appSections.finance.recent.type') }}</span>
@@ -296,7 +409,13 @@ function incomeAmount(row: IncomeDto): number {
 
       <section class="finance-page__table-card">
         <h2 class="finance-page__card-title">{{ t('appSections.finance.recentEarnings.title') }}</h2>
-        <div class="finance-page__table">
+        <ListEmptyState
+          v-if="showRecentIncomesEmpty"
+          icon="account_balance_wallet"
+          :title="t('appSections.finance.recentEarnings.emptyTitle')"
+          :description="t('appSections.finance.recentEarnings.emptyDescription')"
+        />
+        <div v-else class="finance-page__table">
           <div class="finance-page__table-head">
             <span>{{ t('appSections.finance.recentEarnings.date') }}</span>
             <span>{{ t('appSections.finance.recentEarnings.type') }}</span>

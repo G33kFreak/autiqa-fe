@@ -103,10 +103,8 @@
   "nav": {
     "dashboard": "Pulpit",
     "fleet": "Flota",
-    "liveMap": "Mapa na żywo",
     "finance": "Finanse",
     "drivers": "Kierowcy",
-    "maintenance": "Serwis",
     "settings": "Ustawienia"
   },
   "appSections": {
@@ -344,10 +342,18 @@
       },
       "charts": {
         "spendTrend": "Trend wydatków i przychodów",
+        "spendTrendEmptyTitle": "Brak danych trendu w tym okresie",
+        "spendTrendEmptyDescription": "Dodaj wydatki i przychody z operacji floty, aby zobaczyć tutaj wykres dzienny wydatków, przychodów oraz zysku lub straty.",
         "categoryMix": "Struktura kategorii",
+        "categoryMixEmptyTitle": "Brak podziału według kategorii",
+        "categoryMixEmptyDescription": "Zapisuj wydatki floty—serwis, mandaty, ubezpieczenie i inne—w wybranym okresie, a ten wykres pokaże, jak rozkładają się koszty między kategoriami.",
         "typeBreakdown": "Skumulowany zysk/strata (rok bieżący + prognoza)",
         "intensity": "Top pojazdów wg wydatków",
-        "recurring": "Top pojazdów wg przychodu"
+        "intensityEmptyTitle": "Brak rankingu wydatków per pojazd",
+        "intensityEmptyDescription": "Zapisuj wydatki przypisane do pojazdów w wybranym zakresie dat—wykres słupkowy uporządkuje tablice według łącznych kosztów.",
+        "recurring": "Top pojazdów wg przychodu",
+        "recurringEmptyTitle": "Brak rankingu przychodu per pojazd",
+        "recurringEmptyDescription": "Rejestruj przychody powiązane z pojazdami w tym okresie, aby zobaczyć, które jednostki generują największy wpływ."
       },
       "insights": {
         "label": "Wnioski",
@@ -361,6 +367,8 @@
       },
       "recent": {
         "title": "Ostatnie wydatki",
+        "emptyTitle": "Brak ostatnich wydatków",
+        "emptyDescription": "Po zapisaniu kosztów we Flocie—mandaty, serwis, paliwo i inne—pojawią się tutaj z datą, typem i kwotą.",
         "date": "Data",
         "type": "Typ",
         "titleCol": "Tytuł",
@@ -368,6 +376,8 @@
       },
       "recentEarnings": {
         "title": "Ostatnie przychody",
+        "emptyTitle": "Brak ostatnich przychodów",
+        "emptyDescription": "Przychody zapisane dla pojazdów i kierowców pojawią się tutaj, abyś mógł szybko przejrzeć ostatnie wpływy.",
         "date": "Data",
         "type": "Typ",
         "kind": "Przychód",
