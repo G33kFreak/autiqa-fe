@@ -1,6 +1,8 @@
 import type { ApiClient } from './types';
 import type { CreateIncomeDto } from '~~/shared/dto/create-income.dto';
 import type { IncomeDto } from '~~/shared/dto/income.dto';
+import type { IncomesSummaryQueryDto } from '~~/shared/dto/incomes-summary-query.dto';
+import type { IncomesSummaryResponseDto } from '~~/shared/dto/incomes-summary-response.dto';
 import type { ListIncomesQueryDto } from '~~/shared/dto/list-incomes-query.dto';
 import type { PaginatedIncomesResponseDto } from '~~/shared/dto/paginated-incomes-response.dto';
 
@@ -28,5 +30,15 @@ export function updateIncome(client: ApiClient, id: string, body: CreateIncomeDt
 export function deleteIncome(client: ApiClient, id: string) {
   return client<unknown>(`/incomes/${id}`, {
     method: 'DELETE',
+  });
+}
+
+export function getIncomesSummary(
+  client: ApiClient,
+  query: IncomesSummaryQueryDto = {},
+) {
+  return client<IncomesSummaryResponseDto>('/incomes/summary', {
+    method: 'GET',
+    query,
   });
 }

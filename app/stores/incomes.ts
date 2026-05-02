@@ -1,12 +1,15 @@
 import { defineStore } from 'pinia';
 import type { CreateIncomeDto } from '#shared/dto/create-income.dto';
 import type { IncomeDto } from '#shared/dto/income.dto';
+import type { IncomesSummaryQueryDto } from '#shared/dto/incomes-summary-query.dto';
+import type { IncomesSummaryResponseDto } from '#shared/dto/incomes-summary-response.dto';
 import type { ListIncomesQueryDto } from '#shared/dto/list-incomes-query.dto';
 import type { PaginatedIncomesResponseDto } from '#shared/dto/paginated-incomes-response.dto';
 import {
   createIncome as createIncomeRequest,
   deleteIncome as deleteIncomeRequest,
   getIncomes,
+  getIncomesSummary,
   updateIncome as updateIncomeRequest,
 } from '../api/incomes';
 
@@ -42,6 +45,12 @@ export const useIncomesStore = defineStore('incomes', () => {
     return await getIncomes(authenticatedApi, query);
   }
 
+  async function fetchIncomesSummary(
+    query: IncomesSummaryQueryDto = {},
+  ): Promise<IncomesSummaryResponseDto> {
+    return await getIncomesSummary(authenticatedApi, query);
+  }
+
   async function createIncome(payload: CreateIncomeDto): Promise<IncomeDto> {
     creating.value = true;
     try {
@@ -75,6 +84,7 @@ export const useIncomesStore = defineStore('incomes', () => {
     deleting,
     fetchIncomes,
     getIncomesByQuery,
+    fetchIncomesSummary,
     createIncome,
     updateIncome,
     deleteIncome,

@@ -5,6 +5,7 @@ import type { DriverDto } from '#shared/dto/driver.dto';
 import type { ExpenseDto } from '#shared/dto/expense.dto';
 import type { ExpenseSummaryItemDto } from '#shared/dto/expense-summary-item.dto';
 import type { IncomeDto } from '#shared/dto/income.dto';
+import type { IncomesSummaryResponseDto } from '#shared/dto/incomes-summary-response.dto';
 import AddExpenseDialog from '~/components/fleet/AddExpenseDialog.vue';
 import AddIncomeDialog from '~/components/fleet/AddIncomeDialog.vue';
 import FleetIncomeHistoryTable, {
@@ -56,6 +57,7 @@ const maintenanceHasMore = ref(false);
 const feesLoadingMore = ref(false);
 const maintenanceLoadingMore = ref(false);
 const expenseSummaryItems = ref<ExpenseSummaryItemDto[]>([]);
+const incomesSummary = ref<IncomesSummaryResponseDto | null>(null);
 const incomeRecords = ref<IncomeDto[]>([]);
 const INCOME_PREVIEW_LIMIT = 4;
 const INCOME_DIALOG_PAGE_SIZE = 10;
@@ -100,8 +102,8 @@ const totalIncomeFromExpenseSummary = computed(() => {
   return Number(summaryItem?.totalAmount ?? 0) || 0;
 });
 
-const totalIncomeFromIncomesApi = computed(() =>
-  incomeRecords.value.reduce((sum, item) => sum + (Number(item.amount) || 0), 0),
+const totalIncomeFromIncomesApi = computed(
+  () => Number(incomesSummary.value?.totalAmount ?? 0) || 0,
 );
 
 const totalIncome = computed(
@@ -395,6 +397,13 @@ async function fetchExpensesSummary(): Promise<void> {
   expenseSummaryItems.value = response.items;
 }
 
+async function fetchIncomesSummary(): Promise<void> {
+  const response = await incomesStore.fetchIncomesSummary({
+    carId: carId.value,
+  });
+  incomesSummary.value = response;
+}
+
 const INCOMES_FETCH_LIMIT = 50;
 
 /**
@@ -434,6 +443,7 @@ onMounted(async () => {
       fetchFees(1),
       fetchMaintenance(1),
       fetchExpensesSummary(),
+      fetchIncomesSummary(),
       fetchIncomesLedger(),
     ]);
     car.value = fetchedCar;
@@ -540,7 +550,11 @@ async function handleConfirmDeleteIncome() {
   deleteIncomeError.value = null;
   try {
     await incomesStore.deleteIncome(activeIncomeId.value);
-    await Promise.all([fetchIncomesLedger(), fetchExpensesSummary()]);
+    await Promise.all([
+      fetchIncomesLedger(),
+      fetchIncomesSummary(),
+      fetchExpensesSummary(),
+    ]);
     await refreshIncomeDriverLabels();
     deleteIncomeDialog.value?.close();
   } catch {
@@ -649,7 +663,11 @@ async function handleExpenseCreated() {
 }
 
 async function handleIncomeCreated() {
-  await Promise.all([fetchIncomesLedger(), fetchExpensesSummary()]);
+  await Promise.all([
+    fetchIncomesLedger(),
+    fetchIncomesSummary(),
+    fetchExpensesSummary(),
+  ]);
   await refreshIncomeDriverLabels();
 }
 
