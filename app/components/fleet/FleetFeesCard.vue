@@ -40,10 +40,8 @@ function formatCurrency(value: number): string {
 
     <div class="fees-card__list" v-if="items.length > 0">
       <article v-for="fee in items" :key="fee.id" class="fees-card__item">
-        <p class="fees-card__item-label">{{ fee.label }}</p>
-        <p class="fees-card__item-date">
-          {{ t('appSections.fleet.vehicleDetails.dueDate', { date: fee.dueDate }) }}
-        </p>
+        <p class="fees-card__item-date">{{ fee.dueDate }}</p>
+        <h3 class="fees-card__item-title">{{ fee.label }}</h3>
         <p class="fees-card__item-value">-{{ formatCurrency(fee.value) }}</p>
         <div class="fees-card__item-actions">
           <button
@@ -51,6 +49,9 @@ function formatCurrency(value: number): string {
             class="fees-card__item-action fees-card__item-action--ghost"
             @click="emit('edit', fee.id)"
           >
+            <span class="material-symbols-outlined fees-card__item-action-icon" aria-hidden="true"
+              >edit</span
+            >
             {{ t('appSections.fleet.vehicleDetails.editExpense') }}
           </button>
           <button
@@ -58,6 +59,9 @@ function formatCurrency(value: number): string {
             class="fees-card__item-action fees-card__item-action--danger"
             @click="emit('delete', fee.id)"
           >
+            <span class="material-symbols-outlined fees-card__item-action-icon" aria-hidden="true"
+              >delete</span
+            >
             {{ t('appSections.fleet.vehicleDetails.deleteExpense') }}
           </button>
         </div>
@@ -121,21 +125,26 @@ function formatCurrency(value: number): string {
   padding: 0.75rem 0.8rem;
 }
 
-.fees-card__item-label {
-  margin: 0;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  color: var(--color-on-surface);
-}
-
 .fees-card__item-date {
-  margin: 0.3rem 0 0;
-  font-size: 0.75rem;
+  margin: 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   color: var(--color-on-surface-variant);
 }
 
+.fees-card__item-title {
+  margin: 0.4rem 0 0;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-on-surface);
+}
+
 .fees-card__item-value {
-  margin: 0.45rem 0 0;
+  margin: 0.4rem 0 0;
   font-size: 0.95rem;
   font-weight: 800;
   color: var(--color-error);
@@ -148,6 +157,9 @@ function formatCurrency(value: number): string {
 }
 
 .fees-card__item-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
   border: none;
   border-radius: 0.6rem;
   padding: 0.35rem 0.55rem;
@@ -155,6 +167,16 @@ function formatCurrency(value: number): string {
   font-weight: 700;
   cursor: pointer;
   transition: opacity 0.18s ease, filter 0.18s ease;
+}
+
+.fees-card__item-action-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 20;
 }
 
 .fees-card__item-action:hover {

@@ -59,6 +59,9 @@ function formatCurrency(value: number): string {
             class="timeline-item__action-btn timeline-item__action-btn--ghost"
             @click="emit('edit', item.id)"
           >
+            <span class="material-symbols-outlined timeline-item__action-icon" aria-hidden="true"
+              >edit</span
+            >
             {{ t('appSections.fleet.vehicleDetails.editExpense') }}
           </button>
           <button
@@ -66,6 +69,9 @@ function formatCurrency(value: number): string {
             class="timeline-item__action-btn timeline-item__action-btn--danger"
             @click="emit('delete', item.id)"
           >
+            <span class="material-symbols-outlined timeline-item__action-icon" aria-hidden="true"
+              >delete</span
+            >
             {{ t('appSections.fleet.vehicleDetails.deleteExpense') }}
           </button>
         </div>
@@ -200,6 +206,9 @@ function formatCurrency(value: number): string {
 }
 
 .timeline-item__action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
   border: none;
   border-radius: 0.6rem;
   padding: 0.35rem 0.55rem;
@@ -207,6 +216,16 @@ function formatCurrency(value: number): string {
   font-weight: 700;
   cursor: pointer;
   transition: opacity 0.18s ease, filter 0.18s ease;
+}
+
+.timeline-item__action-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 20;
 }
 
 .timeline-item__action-btn:hover {
