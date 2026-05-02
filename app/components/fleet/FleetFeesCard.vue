@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import ListEmptyState from '~/components/shared/ListEmptyState.vue';
 
-defineProps<{
-  items: Array<{
-    id: string;
-    label: string;
-    dueDate: string;
-    value: number;
-  }>;
-}>();
+withDefaults(
+  defineProps<{
+    items: Array<{
+      id: string;
+      label: string;
+      dueDate: string;
+      value: number;
+    }>;
+    /** Hide the card title (e.g. when used with an external tab bar). */
+    hideHeading?: boolean;
+  }>(),
+  { hideHeading: false },
+);
 
 const emit = defineEmits<{
   edit: [id: string];
@@ -29,7 +34,7 @@ function formatCurrency(value: number): string {
 
 <template>
   <section class="fleet-card fees-card">
-    <div class="fleet-card__header">
+    <div v-if="!hideHeading" class="fleet-card__header">
       <h2 class="fleet-card__title">{{ t('appSections.fleet.vehicleDetails.carFeesTitle') }}</h2>
     </div>
 

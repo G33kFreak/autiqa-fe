@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import ListEmptyState from '~/components/shared/ListEmptyState.vue';
 
-defineProps<{
-  items: Array<{
-    id: string;
-    date: string;
-    title: string;
-    notes: string;
-    amount: number;
-  }>;
-}>();
+withDefaults(
+  defineProps<{
+    items: Array<{
+      id: string;
+      date: string;
+      title: string;
+      notes: string;
+      amount: number;
+    }>;
+    hideHeading?: boolean;
+  }>(),
+  { hideHeading: false },
+);
 
 const emit = defineEmits<{
   edit: [id: string];
@@ -30,7 +34,7 @@ function formatCurrency(value: number): string {
 
 <template>
   <section class="fleet-card fleet-card--timeline">
-    <div class="fleet-card__header">
+    <div v-if="!hideHeading" class="fleet-card__header">
       <h2 class="fleet-card__title">{{ t('appSections.fleet.vehicleDetails.maintenanceHistory') }}</h2>
     </div>
     <div class="timeline" v-if="items.length > 0">

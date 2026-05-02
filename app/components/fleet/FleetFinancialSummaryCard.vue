@@ -78,6 +78,8 @@ function formatCurrency(value: number): string {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .financial-bento__shell {

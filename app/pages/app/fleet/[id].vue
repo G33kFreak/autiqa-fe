@@ -6,6 +6,7 @@ import type { ExpenseDto } from '#shared/dto/expense.dto';
 import type { ExpenseSummaryItemDto } from '#shared/dto/expense-summary-item.dto';
 import AddExpenseDialog from '~/components/fleet/AddExpenseDialog.vue';
 import EntityDialogShell from '~/components/shared/EntityDialogShell.vue';
+import ListEmptyState from '~/components/shared/ListEmptyState.vue';
 
 const { t } = useI18n();
 const route = useRoute();
@@ -20,6 +21,8 @@ const car = ref<CarDto | null>(null);
 const carName = ref('');
 const registrationNumber = ref('');
 const vin = ref('');
+type VehicleLedgerTab = 'fees' | 'maintenance';
+const vehicleLedgerTab = ref<VehicleLedgerTab>('fees');
 const assignDialog = ref<InstanceType<typeof EntityDialogShell> | null>(null);
 const assignSearchInput = ref('');
 const assignSuggestions = ref<DriverDto[]>([]);
@@ -411,20 +414,23 @@ async function handleUpdateVehicleInfo(payload: {
 <template>
   <section class="fleet-vehicle-page">
     <template v-if="detailsLoading && !detailsResolved">
-      <div class="fleet-vehicle-page__hero">
+      <div class="fleet-vehicle-page__hero fleet-vehicle-page__hero--split">
         <div class="fleet-skeleton fleet-skeleton--header" />
         <div class="fleet-skeleton fleet-skeleton--bento" />
       </div>
       <div class="fleet-vehicle-page__grid">
         <div class="fleet-vehicle-page__grid-main">
+          <div class="fleet-skeleton fleet-skeleton--income" />
+          <div class="fleet-skeleton fleet-skeleton--ledger-tabs" />
           <div class="fleet-skeleton fleet-skeleton--card-lg" />
-          <div class="fleet-skeleton fleet-skeleton--timeline" />
         </div>
-        <div class="fleet-skeleton fleet-skeleton--card-md" />
+        <div class="fleet-vehicle-page__grid-aside">
+          <div class="fleet-skeleton fleet-skeleton--card-md" />
+        </div>
       </div>
     </template>
     <template v-else>
-    <div class="fleet-vehicle-page__hero">
+    <div class="fleet-vehicle-page__hero fleet-vehicle-page__hero--split">
       <FleetVehicleHeader
         class="fleet-vehicle-page__hero-header"
         :overline="t('appSections.fleet.vehicleDetails.commandView')"
@@ -458,40 +464,98 @@ async function handleUpdateVehicleInfo(payload: {
 
     <div class="fleet-vehicle-page__grid">
       <div class="fleet-vehicle-page__grid-main">
-        <FleetFeesCard
-          :items="carFees"
-          @edit="openEditExpenseDialog"
-          @delete="openDeleteExpenseDialog"
-        >
-          <template #footer>
+        <section class="fleet-vehicle-page__income" aria-labelledby="fleet-income-heading">
+          <h2 id="fleet-income-heading" class="fleet-vehicle-page__income-title">
+            {{ t('appSections.fleet.vehicleDetails.incomeHistoryTitle') }}
+          </h2>
+          <ListEmptyState
+            icon="account_balance_wallet"
+            :title="t('appSections.fleet.vehicleDetails.emptyIncomeTitle')"
+            :description="t('appSections.fleet.vehicleDetails.emptyIncomeCopy')"
+          />
+        </section>
+        <div class="fleet-vehicle-page__ledger">
+          <div
+            class="fleet-vehicle-page__ledger-tabs"
+            role="tablist"
+            :aria-label="t('appSections.fleet.vehicleDetails.ledgerTablistAria')"
+          >
             <button
-              v-if="feesHasMore"
+              id="fleet-ledger-tab-fees"
               type="button"
-              class="fleet-load-more-btn"
-              :disabled="feesLoadingMore"
-              @click="handleLoadMoreFees"
+              class="fleet-vehicle-page__ledger-tab"
+              :class="{ 'fleet-vehicle-page__ledger-tab--active': vehicleLedgerTab === 'fees' }"
+              role="tab"
+              :aria-selected="vehicleLedgerTab === 'fees'"
+              :tabindex="vehicleLedgerTab === 'fees' ? 0 : -1"
+              @click="vehicleLedgerTab = 'fees'"
             >
-              {{ feesLoadingMore ? t('common.loading') : t('appSections.fleet.vehicleDetails.loadMore') }}
+              {{ t('appSections.fleet.vehicleDetails.carFeesTitle') }}
             </button>
-          </template>
-        </FleetFeesCard>
-        <FleetMaintenanceTimeline
-          :items="maintenanceHistory"
-          @edit="openEditExpenseDialog"
-          @delete="openDeleteExpenseDialog"
-        >
-          <template #footer>
             <button
-              v-if="maintenanceHasMore"
+              id="fleet-ledger-tab-maintenance"
               type="button"
-              class="fleet-load-more-btn"
-              :disabled="maintenanceLoadingMore"
-              @click="handleLoadMoreMaintenance"
+              class="fleet-vehicle-page__ledger-tab"
+              :class="{ 'fleet-vehicle-page__ledger-tab--active': vehicleLedgerTab === 'maintenance' }"
+              role="tab"
+              :aria-selected="vehicleLedgerTab === 'maintenance'"
+              :tabindex="vehicleLedgerTab === 'maintenance' ? 0 : -1"
+              @click="vehicleLedgerTab = 'maintenance'"
             >
-              {{ maintenanceLoadingMore ? t('common.loading') : t('appSections.fleet.vehicleDetails.loadMore') }}
+              {{ t('appSections.fleet.vehicleDetails.maintenanceHistory') }}
             </button>
-          </template>
-        </FleetMaintenanceTimeline>
+          </div>
+          <div
+            v-show="vehicleLedgerTab === 'fees'"
+            class="fleet-vehicle-page__ledger-panel"
+            role="tabpanel"
+            aria-labelledby="fleet-ledger-tab-fees"
+          >
+            <FleetFeesCard
+              hide-heading
+              :items="carFees"
+              @edit="openEditExpenseDialog"
+              @delete="openDeleteExpenseDialog"
+            >
+              <template #footer>
+                <button
+                  v-if="feesHasMore"
+                  type="button"
+                  class="fleet-load-more-btn"
+                  :disabled="feesLoadingMore"
+                  @click="handleLoadMoreFees"
+                >
+                  {{ feesLoadingMore ? t('common.loading') : t('appSections.fleet.vehicleDetails.loadMore') }}
+                </button>
+              </template>
+            </FleetFeesCard>
+          </div>
+          <div
+            v-show="vehicleLedgerTab === 'maintenance'"
+            class="fleet-vehicle-page__ledger-panel"
+            role="tabpanel"
+            aria-labelledby="fleet-ledger-tab-maintenance"
+          >
+            <FleetMaintenanceTimeline
+              hide-heading
+              :items="maintenanceHistory"
+              @edit="openEditExpenseDialog"
+              @delete="openDeleteExpenseDialog"
+            >
+              <template #footer>
+                <button
+                  v-if="maintenanceHasMore"
+                  type="button"
+                  class="fleet-load-more-btn"
+                  :disabled="maintenanceLoadingMore"
+                  @click="handleLoadMoreMaintenance"
+                >
+                  {{ maintenanceLoadingMore ? t('common.loading') : t('appSections.fleet.vehicleDetails.loadMore') }}
+                </button>
+              </template>
+            </FleetMaintenanceTimeline>
+          </div>
+        </div>
       </div>
       <aside class="fleet-vehicle-page__grid-aside">
         <FleetComplianceCard
@@ -712,13 +776,14 @@ async function handleUpdateVehicleInfo(payload: {
 }
 
 .fleet-vehicle-page__hero-header {
-  flex: 1;
   min-width: 0;
+  height: 100%;
 }
 
 .fleet-vehicle-page__hero-bento {
-  flex-shrink: 0;
+  min-width: 0;
   width: 100%;
+  height: 100%;
 }
 
 .fleet-vehicle-page__grid {
@@ -734,11 +799,125 @@ async function handleUpdateVehicleInfo(payload: {
   gap: 1.5rem;
 }
 
+.fleet-vehicle-page__income {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.fleet-vehicle-page__income-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--color-on-surface);
+}
+
 .fleet-vehicle-page__grid-aside {
   min-width: 0;
 }
 
+.fleet-vehicle-page__ledger {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.fleet-vehicle-page__ledger-tabs {
+  display: flex;
+  width: 100%;
+  max-width: 100%;
+  flex-wrap: nowrap;
+  gap: 0.2rem;
+  padding: 0.22rem;
+  margin-bottom: 1rem;
+  border-radius: 0.75rem;
+  background: var(--color-surface-container-high);
+  box-sizing: border-box;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.fleet-vehicle-page__ledger-tab {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  border-radius: 0.55rem;
+  padding: 0.48rem 0.65rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  cursor: pointer;
+  color: var(--color-on-surface-variant);
+  background: transparent;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.fleet-vehicle-page__ledger-tab:hover:not(.fleet-vehicle-page__ledger-tab--active) {
+  background: color-mix(in srgb, var(--color-surface-container-lowest) 55%, transparent);
+  color: var(--color-on-surface);
+}
+
+.fleet-vehicle-page__ledger-tab--active {
+  background: var(--color-surface-container-lowest);
+  color: var(--color-on-surface);
+  font-weight: 700;
+  box-shadow:
+    0 1px 2px color-mix(in srgb, var(--color-on-surface) 5%, transparent),
+    0 4px 12px color-mix(in srgb, var(--color-on-surface) 4%, transparent);
+}
+
+.fleet-vehicle-page__ledger-tab--active:hover {
+  background: var(--color-surface-container-lowest);
+}
+
+.fleet-vehicle-page__ledger-tab:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-secondary) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.fleet-vehicle-page__ledger-panel {
+  min-width: 0;
+}
+
 @media (min-width: 768px) {
+  .fleet-vehicle-page__hero--split {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  .fleet-vehicle-page__hero--split .fleet-vehicle-page__hero-header {
+    grid-column: span 8;
+  }
+
+  .fleet-vehicle-page__hero--split .fleet-vehicle-page__hero-bento {
+    grid-column: span 4;
+  }
+
+  .fleet-vehicle-page__hero--split .fleet-skeleton--header {
+    grid-column: span 8;
+    min-width: 0;
+    height: 100%;
+    min-height: 8.2rem;
+  }
+
+  .fleet-vehicle-page__hero--split .fleet-skeleton--bento {
+    grid-column: span 4;
+    min-width: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 8.2rem;
+  }
+
   .fleet-vehicle-page__grid {
     grid-template-columns: repeat(12, minmax(0, 1fr));
   }
@@ -749,18 +928,6 @@ async function handleUpdateVehicleInfo(payload: {
 
   .fleet-vehicle-page__grid-aside {
     grid-column: span 4;
-  }
-}
-
-@media (min-width: 1280px) {
-  .fleet-vehicle-page__hero {
-    flex-direction: row;
-    align-items: stretch;
-  }
-
-  .fleet-vehicle-page__hero-bento {
-    width: 33.333%;
-    max-width: 22rem;
   }
 }
 
@@ -778,7 +945,7 @@ async function handleUpdateVehicleInfo(payload: {
 
 .fleet-skeleton--header {
   min-height: 8.2rem;
-  flex: 1;
+  width: 100%;
 }
 
 .fleet-skeleton--bento {
@@ -794,8 +961,15 @@ async function handleUpdateVehicleInfo(payload: {
   min-height: 12rem;
 }
 
-.fleet-skeleton--timeline {
-  min-height: 14rem;
+.fleet-skeleton--income {
+  min-height: 13rem;
+  border-radius: 1rem;
+}
+
+.fleet-skeleton--ledger-tabs {
+  min-height: 2.5rem;
+  max-width: 20rem;
+  border-radius: 0.75rem;
 }
 
 @keyframes fleet-skeleton-shimmer {
@@ -805,14 +979,6 @@ async function handleUpdateVehicleInfo(payload: {
 
   100% {
     background-position: -200% 0;
-  }
-}
-
-@media (min-width: 1280px) {
-  .fleet-vehicle-page__hero .fleet-skeleton--bento {
-    width: 33.333%;
-    max-width: 22rem;
-    flex-shrink: 0;
   }
 }
 
