@@ -7,6 +7,9 @@ import type { ExpenseSummaryItemDto } from '#shared/dto/expense-summary-item.dto
 import type { IncomeDto } from '#shared/dto/income.dto';
 import AddExpenseDialog from '~/components/fleet/AddExpenseDialog.vue';
 import AddIncomeDialog from '~/components/fleet/AddIncomeDialog.vue';
+import FleetIncomeHistoryTable, {
+  type FleetIncomeHistoryRow,
+} from '~/components/fleet/FleetIncomeHistoryTable.vue';
 import EntityDialogShell from '~/components/shared/EntityDialogShell.vue';
 import ListEmptyState from '~/components/shared/ListEmptyState.vue';
 
@@ -54,9 +57,21 @@ const feesLoadingMore = ref(false);
 const maintenanceLoadingMore = ref(false);
 const expenseSummaryItems = ref<ExpenseSummaryItemDto[]>([]);
 const incomeRecords = ref<IncomeDto[]>([]);
+const INCOME_PREVIEW_LIMIT = 4;
+const INCOME_DIALOG_PAGE_SIZE = 10;
+const incomeDriverLabelById = ref<Record<string, string>>({});
+const incomeAllDialog = ref<InstanceType<typeof EntityDialogShell> | null>(
+  null,
+);
+const incomeDialogPage = ref(1);
 const activeMaintenanceExpenseId = ref<string | null>(null);
 const maintenanceFormError = ref<string | null>(null);
 const deleteExpenseError = ref<string | null>(null);
+const deleteIncomeDialog = ref<InstanceType<typeof EntityDialogShell> | null>(
+  null,
+);
+const activeIncomeId = ref<string | null>(null);
+const deleteIncomeError = ref<string | null>(null);
 const editExpenseAmount = ref('');
 const editExpenseTitle = ref('');
 const editExpenseNotes = ref('');
@@ -93,21 +108,51 @@ const totalIncome = computed(
   () => totalIncomeFromExpenseSummary.value + totalIncomeFromIncomesApi.value,
 );
 
-const incomeHistoryRows = computed(() =>
-  [...incomeRecords.value]
+const incomeHistoryEnriched = computed<FleetIncomeHistoryRow[]>(() => {
+  const labels = incomeDriverLabelById.value;
+  return [...incomeRecords.value]
     .sort(
       (a: IncomeDto, b: IncomeDto) =>
         new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
     )
-    .map((item: IncomeDto) => ({
-      id: item.id,
-      date: item.occurredAt.slice(0, 10),
-      title: item.title?.trim() ?? '',
-      amount: item.amount,
-      currency: item.currency,
-      notes: item.notes?.trim() ?? '',
-    })),
+    .map((item: IncomeDto) => {
+      const titleLine =
+        item.title?.trim() ||
+        t('appSections.fleet.vehicleDetails.incomeDefaultTitle');
+      const notes = item.notes?.trim() ?? '';
+      return {
+        id: item.id,
+        titleLine,
+        sourceLine: notes,
+        driverName: labels[item.driverId] ?? '',
+        occurredLabel: formatIncomeOccurredAt(item.occurredAt),
+        amountNumber: formatIncomeAmountNumber(item.amount),
+        currencyCode: (item.currency?.trim() || 'PLN').toUpperCase(),
+        icon: inferIncomeRowIcon(titleLine, notes),
+      };
+    });
+});
+
+const incomePreviewRows = computed(() =>
+  incomeHistoryEnriched.value.slice(0, INCOME_PREVIEW_LIMIT),
 );
+
+const incomeDialogTotalPages = computed(() =>
+  Math.max(
+    1,
+    Math.ceil(
+      incomeHistoryEnriched.value.length / INCOME_DIALOG_PAGE_SIZE,
+    ),
+  ),
+);
+
+const incomeDialogPageRows = computed(() => {
+  const start = (incomeDialogPage.value - 1) * INCOME_DIALOG_PAGE_SIZE;
+  return incomeHistoryEnriched.value.slice(
+    start,
+    start + INCOME_DIALOG_PAGE_SIZE,
+  );
+});
 
 const maintenanceHistory = computed(() =>
   [...maintenanceExpenses.value]
@@ -130,6 +175,12 @@ const selectedExpense = computed(
     ) ?? null,
 );
 
+const selectedIncome = computed(
+  () =>
+    incomeRecords.value.find((item) => item.id === activeIncomeId.value) ??
+    null,
+);
+
 function formatExpenseDate(value: string): string {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
@@ -150,7 +201,25 @@ function formatExpenseAmount(value: string): string {
   }).format(Number.isFinite(amount) ? amount : 0);
 }
 
-function formatIncomeAmount(value: string, currency: string): string {
+function formatIncomeOccurredAt(value: string): string {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat(undefined, {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(date);
+}
+
+function formatIncomeAmountNumber(value: string): string {
+  const amount = Number(value);
+  return new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number.isFinite(amount) ? amount : 0);
+}
+
+function formatIncomeMoney(value: string, currency: string): string {
   const amount = Number(value);
   const code = currency?.trim() || 'PLN';
   return new Intl.NumberFormat(undefined, {
@@ -159,6 +228,50 @@ function formatIncomeAmount(value: string, currency: string): string {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(Number.isFinite(amount) ? amount : 0);
+}
+
+function inferIncomeRowIcon(title: string, notes: string): string {
+  const blob = `${title} ${notes}`.toLowerCase();
+  if (
+    /\b(charge|fee|fees|surcharge|cleaning|penalty|adhoc|ad-hoc|ad hoc|opłat|myjnia|kaucj)\b/.test(
+      blob,
+    )
+  ) {
+    return 'bolt';
+  }
+  return 'account_balance_wallet';
+}
+
+function driverDisplayName(
+  d: Pick<DriverDto, 'firstName' | 'lastName'>,
+): string {
+  return `${d.firstName} ${d.lastName}`.trim();
+}
+
+async function refreshIncomeDriverLabels(): Promise<void> {
+  const ids = [
+    ...new Set(
+      incomeRecords.value
+        .map((i) => i.driverId)
+        .filter((id) => String(id).trim().length > 0),
+    ),
+  ];
+  if (ids.length === 0) {
+    incomeDriverLabelById.value = {};
+    return;
+  }
+  const assigned = car.value?.driver ?? null;
+  const entries = await Promise.all(
+    ids.map(async (id) => {
+      if (assigned && assigned.id === id) {
+        return [id, driverDisplayName(assigned)] as const;
+      }
+      const detail = await driversStore.getViewModelById(id);
+      const label = detail ? driverDisplayName(detail) : '';
+      return [id, label] as const;
+    }),
+  );
+  incomeDriverLabelById.value = Object.fromEntries(entries);
 }
 
 const totalFees = computed(() => {
@@ -327,6 +440,7 @@ onMounted(async () => {
     carName.value = car.value?.model ?? '';
     registrationNumber.value = car.value?.plateNumber ?? '';
     vin.value = car.value?.vin ?? '';
+    await refreshIncomeDriverLabels();
   } finally {
     detailsLoading.value = false;
     detailsResolved.value = true;
@@ -351,6 +465,7 @@ async function handleRemoveDriver() {
   if (!car.value) return;
   const updated = await carsStore.unassignDriverFromCar(car.value.id);
   car.value = updated;
+  await refreshIncomeDriverLabels();
 }
 
 function resetAssignDialogState() {
@@ -393,6 +508,51 @@ function handleOpenAddExpenseDialog() {
 function handleOpenAddIncomeDialog() {
   addIncomeDialog.value?.showModal();
 }
+
+function openIncomeAllDialog() {
+  incomeDialogPage.value = 1;
+  incomeAllDialog.value?.showModal();
+}
+
+function closeIncomeAllDialog() {
+  incomeDialogPage.value = 1;
+}
+
+function openEditIncomeDialog(incomeId: string) {
+  const inc = incomeRecords.value.find((item) => item.id === incomeId);
+  if (!inc) return;
+  addIncomeDialog.value?.showModalForEdit(inc);
+}
+
+function openDeleteIncomeDialog(incomeId: string) {
+  activeIncomeId.value = incomeId;
+  deleteIncomeError.value = null;
+  deleteIncomeDialog.value?.showModal();
+}
+
+function closeDeleteIncomeDialog() {
+  deleteIncomeError.value = null;
+  activeIncomeId.value = null;
+}
+
+async function handleConfirmDeleteIncome() {
+  if (!activeIncomeId.value) return;
+  deleteIncomeError.value = null;
+  try {
+    await incomesStore.deleteIncome(activeIncomeId.value);
+    await Promise.all([fetchIncomesLedger(), fetchExpensesSummary()]);
+    await refreshIncomeDriverLabels();
+    deleteIncomeDialog.value?.close();
+  } catch {
+    deleteIncomeError.value = t(
+      'appSections.fleet.vehicleDetails.incomeDeleteError',
+    );
+  }
+}
+
+watch(incomeDialogTotalPages, (max) => {
+  if (incomeDialogPage.value > max) incomeDialogPage.value = max;
+});
 
 function resetEditExpenseState() {
   maintenanceFormError.value = null;
@@ -490,6 +650,7 @@ async function handleExpenseCreated() {
 
 async function handleIncomeCreated() {
   await Promise.all([fetchIncomesLedger(), fetchExpensesSummary()]);
+  await refreshIncomeDriverLabels();
 }
 
 async function handleLoadMoreFees() {
@@ -517,6 +678,7 @@ async function assignDriver(driver: DriverDto) {
   const updated = await carsStore.assignDriverToCar(car.value.id, driver.id);
   car.value = updated;
   closeAssignDialog();
+  await refreshIncomeDriverLabels();
 }
 
 async function handleUpdateVehicleInfo(payload: {
@@ -606,43 +768,28 @@ function handleComplianceEmptyCta() {
             class="fleet-vehicle-page__income"
             aria-labelledby="fleet-income-heading"
           >
-            <h2
-              id="fleet-income-heading"
-              class="fleet-vehicle-page__income-title"
-            >
-              {{ t('appSections.fleet.vehicleDetails.incomeHistoryTitle') }}
-            </h2>
-            <ul
-              v-if="incomeHistoryRows.length > 0"
-              class="fleet-vehicle-page__income-list"
-              :aria-label="
-                t('appSections.fleet.vehicleDetails.incomeHistoryTitle')
-              "
-            >
-              <li
-                v-for="row in incomeHistoryRows"
-                :key="row.id"
-                class="fleet-vehicle-page__income-row"
+            <div class="fleet-vehicle-page__income-head">
+              <h2
+                id="fleet-income-heading"
+                class="fleet-vehicle-page__income-title"
               >
-                <div class="fleet-vehicle-page__income-row-main">
-                  <span class="fleet-vehicle-page__income-row-title">{{
-                    row.title ||
-                    t('appSections.fleet.vehicleDetails.incomeDefaultTitle')
-                  }}</span>
-                  <span class="fleet-vehicle-page__income-row-amount">{{
-                    formatIncomeAmount(row.amount, row.currency)
-                  }}</span>
-                </div>
-                <p class="fleet-vehicle-page__income-row-meta">
-                  {{ formatExpenseDate(row.date) }}
-                  <template v-if="row.notes">
-                    <span class="fleet-vehicle-page__income-row-notes">
-                      · {{ row.notes }}
-                    </span>
-                  </template>
-                </p>
-              </li>
-            </ul>
+                {{ t('appSections.fleet.vehicleDetails.incomeHistoryTitle') }}
+              </h2>
+              <button
+                v-if="incomeHistoryEnriched.length > INCOME_PREVIEW_LIMIT"
+                type="button"
+                class="fleet-vehicle-page__income-view-all"
+                @click="openIncomeAllDialog"
+              >
+                {{ t('appSections.fleet.vehicleDetails.incomeViewAll') }}
+              </button>
+            </div>
+            <FleetIncomeHistoryTable
+              v-if="incomeHistoryEnriched.length > 0"
+              :rows="incomePreviewRows"
+              @edit="openEditIncomeDialog"
+              @delete="openDeleteIncomeDialog"
+            />
             <ListEmptyState
               v-else
               icon="account_balance_wallet"
@@ -832,6 +979,145 @@ function handleComplianceEmptyCta() {
         :initial-driver-id="car?.driver?.id ?? ''"
         @created="handleIncomeCreated"
       />
+      <EntityDialogShell
+        ref="incomeAllDialog"
+        title-id="fleet-income-all-dialog-title"
+        :title="t('appSections.fleet.vehicleDetails.incomeAllDialogTitle')"
+        width="min(56rem, calc(100vw - 2rem))"
+        @close="closeIncomeAllDialog"
+      >
+        <template #body>
+          <FleetIncomeHistoryTable
+            :rows="incomeDialogPageRows"
+            @edit="openEditIncomeDialog"
+            @delete="openDeleteIncomeDialog"
+          />
+          <div
+            v-if="incomeDialogTotalPages > 1"
+            class="fleet-income-dialog-pager"
+          >
+            <button
+              type="button"
+              class="fleet-income-dialog-pager__btn"
+              :disabled="incomeDialogPage <= 1"
+              @click="incomeDialogPage -= 1"
+            >
+              {{ t('appSections.fleet.vehicleDetails.incomeDialogPrev') }}
+            </button>
+            <span class="fleet-income-dialog-pager__status">
+              {{
+                t('appSections.fleet.vehicleDetails.incomeDialogPageStatus', {
+                  current: incomeDialogPage,
+                  total: incomeDialogTotalPages,
+                })
+              }}
+            </span>
+            <button
+              type="button"
+              class="fleet-income-dialog-pager__btn"
+              :disabled="incomeDialogPage >= incomeDialogTotalPages"
+              @click="incomeDialogPage += 1"
+            >
+              {{ t('appSections.fleet.vehicleDetails.incomeDialogNext') }}
+            </button>
+          </div>
+        </template>
+      </EntityDialogShell>
+      <EntityDialogShell
+        ref="deleteIncomeDialog"
+        title-id="fleet-delete-income-dialog-title"
+        :title="t('appSections.fleet.vehicleDetails.deleteIncomeTitle')"
+        :lead="t('appSections.fleet.vehicleDetails.deleteIncomeConfirm')"
+        width="min(30rem, calc(100vw - 2rem))"
+        @close="closeDeleteIncomeDialog"
+      >
+        <template #body>
+          <div class="fleet-delete-expense">
+            <p class="fleet-delete-expense__body">
+              {{ t('appSections.fleet.vehicleDetails.deleteIncomeConfirm') }}
+            </p>
+            <dl v-if="selectedIncome" class="fleet-delete-expense__details">
+              <div class="fleet-delete-expense__row">
+                <dt>
+                  {{
+                    t(
+                      'appSections.fleet.vehicleDetails.incomeDialog.titleField',
+                    )
+                  }}
+                </dt>
+                <dd>
+                  {{
+                    selectedIncome.title?.trim() ||
+                    t('appSections.fleet.vehicleDetails.incomeDefaultTitle')
+                  }}
+                </dd>
+              </div>
+              <div class="fleet-delete-expense__row">
+                <dt>
+                  {{ t('appSections.fleet.vehicleDetails.incomeDialog.amount') }}
+                </dt>
+                <dd>
+                  {{
+                    formatIncomeMoney(
+                      selectedIncome.amount,
+                      selectedIncome.currency,
+                    )
+                  }}
+                </dd>
+              </div>
+              <div class="fleet-delete-expense__row">
+                <dt>
+                  {{
+                    t(
+                      'appSections.fleet.vehicleDetails.incomeDialog.occurredAt',
+                    )
+                  }}
+                </dt>
+                <dd>{{ formatIncomeOccurredAt(selectedIncome.occurredAt) }}</dd>
+              </div>
+              <div
+                class="fleet-delete-expense__row fleet-delete-expense__row--full"
+              >
+                <dt>
+                  {{ t('appSections.fleet.vehicleDetails.incomeDialog.notes') }}
+                </dt>
+                <dd>{{ selectedIncome.notes?.trim() || '—' }}</dd>
+              </div>
+            </dl>
+          </div>
+        </template>
+        <template #footer>
+          <div class="fleet-expense-dialog__footer">
+            <p
+              v-if="deleteIncomeError"
+              class="fleet-expense-dialog__error"
+              role="alert"
+            >
+              {{ deleteIncomeError }}
+            </p>
+            <button
+              type="button"
+              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--ghost"
+              :disabled="incomesStore.deleting"
+              @click="deleteIncomeDialog?.close()"
+            >
+              {{ t('appSections.fleet.vehicleDetails.cancel') }}
+            </button>
+            <button
+              type="button"
+              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--danger"
+              :disabled="incomesStore.deleting"
+              @click="handleConfirmDeleteIncome"
+            >
+              {{
+                incomesStore.deleting
+                  ? t('common.loading')
+                  : t('appSections.fleet.vehicleDetails.deleteExpense')
+              }}
+            </button>
+          </div>
+        </template>
+      </EntityDialogShell>
       <EntityDialogShell
         ref="editExpenseDialog"
         title-id="fleet-edit-expense-dialog-title"
@@ -1086,6 +1372,14 @@ function handleComplianceEmptyCta() {
   min-width: 0;
 }
 
+.fleet-vehicle-page__income-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .fleet-vehicle-page__income-title {
   margin: 0;
   font-family: var(--font-display);
@@ -1095,53 +1389,55 @@ function handleComplianceEmptyCta() {
   color: var(--color-on-surface);
 }
 
-.fleet-vehicle-page__income-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
+.fleet-vehicle-page__income-view-all {
+  flex-shrink: 0;
+  border: none;
+  border-radius: 0.65rem;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
-.fleet-vehicle-page__income-row {
-  margin: 0;
-  border-radius: 0.75rem;
-  padding: 0.75rem 0.85rem;
-  background: var(--color-surface-container-lowest);
-  box-shadow: var(--shadow-ambient);
+.fleet-vehicle-page__income-view-all:hover {
+  background: var(--color-surface-container-high);
+  color: var(--color-on-secondary-container);
 }
 
-.fleet-vehicle-page__income-row-main {
+.fleet-income-dialog-pager {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  flex-wrap: wrap;
+  padding-top: 0.25rem;
 }
 
-.fleet-vehicle-page__income-row-title {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--color-on-surface);
-  min-width: 0;
-}
-
-.fleet-vehicle-page__income-row-amount {
-  flex-shrink: 0;
-  font-size: 0.875rem;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
-  color: var(--color-secondary);
-}
-
-.fleet-vehicle-page__income-row-meta {
-  margin: 0.35rem 0 0;
-  font-size: 0.75rem;
+.fleet-income-dialog-pager__status {
+  font-size: 0.8125rem;
+  font-weight: 600;
   color: var(--color-on-surface-variant);
 }
 
-.fleet-vehicle-page__income-row-notes {
-  font-weight: 500;
+.fleet-income-dialog-pager__btn {
+  border: none;
+  border-radius: 0.65rem;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  background: var(--color-surface-container-high);
+  cursor: pointer;
+}
+
+.fleet-income-dialog-pager__btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .fleet-vehicle-page__grid-aside {

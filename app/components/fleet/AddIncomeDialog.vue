@@ -2,6 +2,7 @@
 import type { CarDto } from '#shared/dto/car.dto';
 import type { CreateIncomeDto } from '#shared/dto/create-income.dto';
 import type { DriverDto } from '#shared/dto/driver.dto';
+import type { IncomeDto } from '#shared/dto/income.dto';
 import EntityDialogShell from '~/components/shared/EntityDialogShell.vue';
 import SearchableSelect from '~/components/shared/SearchableSelect.vue';
 
@@ -23,6 +24,8 @@ const driversStore = useDriversStore();
 const carsStore = useCarsStore();
 
 const dialogShell = ref<InstanceType<typeof EntityDialogShell> | null>(null);
+const editingIncomeId = ref<string | null>(null);
+const editingCurrency = ref('PLN');
 const formError = ref<string | null>(null);
 const localCarId = ref('');
 const localDriverId = ref('');
@@ -53,10 +56,57 @@ const form = reactive<IncomeFormModel>({
   notes: '',
 });
 
+const incomeDialogTitle = computed(() =>
+  editingIncomeId.value
+    ? t('appSections.fleet.vehicleDetails.incomeDialog.editTitle')
+    : t('appSections.fleet.vehicleDetails.incomeDialog.title'),
+);
+
+const incomeDialogLead = computed(() =>
+  editingIncomeId.value
+    ? t('appSections.fleet.vehicleDetails.incomeDialog.editLead')
+    : t('appSections.fleet.vehicleDetails.incomeDialog.lead'),
+);
+
 function showModal() {
   resetForm();
   dialogShell.value?.showModal();
   void loadInitialSuggestions();
+}
+
+async function showModalForEdit(income: IncomeDto) {
+  editingIncomeId.value = income.id;
+  editingCurrency.value = income.currency?.trim() || 'PLN';
+  formError.value = null;
+  form.amount = String(Number(income.amount) || 0);
+  form.occurredAt = income.occurredAt.slice(0, 10);
+  form.title = income.title ?? '';
+  form.notes = income.notes ?? '';
+  localCarId.value = income.carId;
+  localDriverId.value = income.driverId;
+  dialogShell.value?.showModal();
+  carSearching.value = true;
+  driverSearching.value = true;
+  try {
+    const [cars, drivers] = await Promise.all([
+      carsStore.getCarSuggestions(30),
+      driversStore.getDriverSuggestions(30),
+    ]);
+    carSuggestions.value = cars;
+    driverSuggestions.value = drivers;
+    selectedCar.value =
+      cars.find((c) => c.id === income.carId) ??
+      (await carsStore.getViewModelById(income.carId));
+    let driver: DriverDto | null =
+      drivers.find((d) => d.id === income.driverId) ?? null;
+    if (!driver) {
+      driver = await driversStore.getViewModelById(income.driverId);
+    }
+    selectedDriver.value = driver;
+  } finally {
+    carSearching.value = false;
+    driverSearching.value = false;
+  }
 }
 
 function close() {
@@ -68,6 +118,8 @@ function toIsoDateString(dateInput: string): string {
 }
 
 function resetForm() {
+  editingIncomeId.value = null;
+  editingCurrency.value = 'PLN';
   formError.value = null;
   form.amount = '';
   form.occurredAt = getTodayDateInputValue();
@@ -80,6 +132,7 @@ function resetForm() {
 }
 
 function resetDialogState() {
+  resetForm();
   formError.value = null;
   carSuggestions.value = [];
   driverSuggestions.value = [];
@@ -214,7 +267,7 @@ async function onSubmit() {
 
   const payload: CreateIncomeDto = {
     amount: form.amount.trim(),
-    currency: 'PLN',
+    currency: editingCurrency.value || 'PLN',
     occurredAt: toIsoDateString(form.occurredAt.trim()),
     title: form.title.trim() || undefined,
     notes: form.notes.trim() || undefined,
@@ -223,7 +276,11 @@ async function onSubmit() {
   };
 
   try {
-    await incomesStore.createIncome(payload);
+    if (editingIncomeId.value) {
+      await incomesStore.updateIncome(editingIncomeId.value, payload);
+    } else {
+      await incomesStore.createIncome(payload);
+    }
     emit('created');
     close();
   } catch {
@@ -231,15 +288,15 @@ async function onSubmit() {
   }
 }
 
-defineExpose({ showModal, close });
+defineExpose({ showModal, showModalForEdit, close });
 </script>
 
 <template>
   <EntityDialogShell
     ref="dialogShell"
     title-id="add-income-dialog-title"
-    :title="t('appSections.fleet.vehicleDetails.incomeDialog.title')"
-    :lead="t('appSections.fleet.vehicleDetails.incomeDialog.lead')"
+    :title="incomeDialogTitle"
+    :lead="incomeDialogLead"
     @close="resetDialogState"
   >
     <template #body>
@@ -250,7 +307,7 @@ defineExpose({ showModal, close });
             <div class="income-dialog__card-title-wrap">
               <span class="material-symbols-outlined" aria-hidden="true">payments</span>
               <h3 class="income-dialog__card-title">
-                {{ t('appSections.fleet.vehicleDetails.incomeDialog.title') }}
+                {{ incomeDialogTitle }}
               </h3>
             </div>
           </div>
@@ -375,9 +432,15 @@ defineExpose({ showModal, close });
           form="add-income-form"
           type="submit"
           class="income-dialog__btn income-dialog__btn--primary"
-          :disabled="incomesStore.creating"
+          :disabled="incomesStore.creating || incomesStore.updating"
         >
-          {{ t('appSections.fleet.vehicleDetails.incomeDialog.submit') }}
+          {{
+            incomesStore.creating || incomesStore.updating
+              ? t('common.loading')
+              : editingIncomeId
+                ? t('appSections.fleet.vehicleDetails.save')
+                : t('appSections.fleet.vehicleDetails.incomeDialog.submit')
+          }}
         </button>
       </div>
     </template>
