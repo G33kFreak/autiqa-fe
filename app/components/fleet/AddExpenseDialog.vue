@@ -61,20 +61,25 @@ const expenseTypeOptions = [
   'INSURANCE',
   'FEE',
   'OTHER',
+  'INCOME',
 ] as const;
 
 const carPaymentKindOptions = ['BUY', 'LEASE'] as const;
 
 const isCarPaymentType = computed(() => form.type === 'CAR_PAYMENT');
 const showsDriverRelation = computed(
-  () => form.type === 'FEE' || form.type === 'OTHER',
+  () =>
+    form.type === 'FEE'
+    || form.type === 'OTHER'
+    || form.type === 'INCOME',
 );
 const requiresCarRelation = computed(
   () =>
     form.type === 'MAINTENANCE'
     || form.type === 'FEE'
     || form.type === 'CAR_PAYMENT'
-    || form.type === 'INSURANCE',
+    || form.type === 'INSURANCE'
+    || form.type === 'INCOME',
 );
 const requiresDriverRelation = computed(() => form.type === 'FEE');
 
@@ -90,8 +95,8 @@ watch(
   },
 );
 
-function showModal() {
-  resetForm();
+function showModal(presetType?: (typeof expenseTypeOptions)[number]) {
+  resetForm(presetType);
   dialogShell.value?.showModal();
   void loadInitialSuggestions();
 }
@@ -104,9 +109,9 @@ function toIsoDateString(dateInput: string): string {
   return new Date(`${dateInput}T12:00:00.000Z`).toISOString();
 }
 
-function resetForm() {
+function resetForm(presetType?: (typeof expenseTypeOptions)[number]) {
   formError.value = null;
-  form.type = 'MAINTENANCE';
+  form.type = presetType ?? 'MAINTENANCE';
   form.amount = '';
   form.occurredAt = getTodayDateInputValue();
   form.title = '';

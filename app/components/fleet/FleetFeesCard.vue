@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ListEmptyState from '~/components/shared/ListEmptyState.vue';
+
 defineProps<{
   items: Array<{
     id: string;
@@ -57,8 +59,11 @@ function formatCurrency(value: number): string {
       </article>
     </div>
     <article v-else class="fees-card__empty">
-      <p class="fees-card__empty-title">{{ t('appSections.fleet.vehicleDetails.emptyFeesTitle') }}</p>
-      <p class="fees-card__empty-copy">{{ t('appSections.fleet.vehicleDetails.emptyFeesCopy') }}</p>
+      <ListEmptyState
+        icon="gavel"
+        :title="t('appSections.fleet.vehicleDetails.emptyFeesTitle')"
+        :description="t('appSections.fleet.vehicleDetails.emptyFeesCopy')"
+      />
     </article>
     <div class="fleet-card__footer">
       <slot name="footer" />
@@ -163,21 +168,8 @@ function formatCurrency(value: number): string {
 }
 
 .fees-card__empty {
-  border-radius: 0.75rem;
-  background: var(--color-surface-container-lowest);
-  padding: 0.85rem;
-}
-
-.fees-card__empty-title {
   margin: 0;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--color-on-surface);
-}
-
-.fees-card__empty-copy {
-  margin: 0.4rem 0 0;
-  font-size: 0.8125rem;
-  color: var(--color-on-surface-variant);
+  padding: 0;
+  background: transparent;
 }
 </style>

@@ -6,7 +6,9 @@ const props = defineProps<{
   registrationNumber: string;
   vinLabel: string;
   vin: string;
-  editInfoLabel: string;
+  editVehicleLabel: string;
+  addExpenseLabel: string;
+  addIncomeLabel: string;
   saveLabel: string;
   savingLabel: string;
   cancelLabel: string;
@@ -21,6 +23,8 @@ const emit = defineEmits<{
       vin: string;
     },
   ];
+  addExpense: [];
+  addIncome: [];
 }>();
 const { t } = useI18n();
 
@@ -107,7 +111,7 @@ function setUppercaseField(
 
 <template>
   <header class="fleet-vehicle-page__header">
-    <div>
+    <div class="fleet-vehicle-page__identity">
       <p class="fleet-vehicle-page__overline">{{ overline }}</p>
       <template v-if="isEditing">
         <div class="fleet-vehicle-page__edit-fields">
@@ -150,35 +154,72 @@ function setUppercaseField(
         <h1 class="fleet-vehicle-page__title">{{ displayCarName }}</h1>
         <p class="fleet-vehicle-page__meta">
           <span
-            class="fleet-vehicle-page__chip"
-            :class="{ 'fleet-vehicle-page__chip--empty': !registrationNumber.trim() }"
+            class="fleet-vehicle-page__plate-meta"
+            :class="{
+              'fleet-vehicle-page__plate-meta--empty': !registrationNumber.trim(),
+            }"
           >
-            {{ displayPlate }}
+            <span
+              class="material-symbols-outlined fleet-vehicle-page__plate-icon"
+              aria-hidden="true"
+            >pin</span>
+            <span
+              class="fleet-vehicle-page__chip"
+              :class="{ 'fleet-vehicle-page__chip--empty': !registrationNumber.trim() }"
+            >{{ displayPlate }}</span>
           </span>
           <span
             class="fleet-vehicle-page__id"
             :class="{ 'fleet-vehicle-page__id--empty': !vin.trim() }"
           >
-            {{ vinLabel }}: {{ displayVin }}
+            <span
+              class="material-symbols-outlined fleet-vehicle-page__meta-icon"
+              aria-hidden="true"
+            >fingerprint</span>
+            <span>{{ vinLabel }}: {{ displayVin }}</span>
           </span>
         </p>
       </template>
     </div>
-    <div class="fleet-vehicle-page__actions">
-      <button
-        v-if="!isEditing"
-        type="button"
-        class="fleet-vehicle-page__action"
-        @click="startEditing"
-      >
-        <span
-          class="material-symbols-outlined fleet-vehicle-page__action-icon"
-          aria-hidden="true"
+    <div
+      class="fleet-vehicle-page__actions"
+      :class="{ 'fleet-vehicle-page__actions--editing': isEditing }"
+    >
+      <template v-if="!isEditing">
+        <button
+          type="button"
+          class="fleet-vehicle-page__action fleet-vehicle-page__action--primary"
+          @click="startEditing"
         >
-          edit
-        </span>
-        {{ editInfoLabel }}
-      </button>
+          <span
+            class="material-symbols-outlined fleet-vehicle-page__action-icon"
+            aria-hidden="true"
+          >edit</span>
+          {{ editVehicleLabel }}
+        </button>
+        <button
+          type="button"
+          class="fleet-vehicle-page__action fleet-vehicle-page__action--secondary"
+          @click="emit('addExpense')"
+        >
+          <span
+            class="material-symbols-outlined fleet-vehicle-page__action-icon"
+            aria-hidden="true"
+          >receipt_long</span>
+          {{ addExpenseLabel }}
+        </button>
+        <button
+          type="button"
+          class="fleet-vehicle-page__action fleet-vehicle-page__action--secondary"
+          @click="emit('addIncome')"
+        >
+          <span
+            class="material-symbols-outlined fleet-vehicle-page__action-icon"
+            aria-hidden="true"
+          >payments</span>
+          {{ addIncomeLabel }}
+        </button>
+      </template>
       <template v-else>
         <button
           type="button"
@@ -190,7 +231,7 @@ function setUppercaseField(
         </button>
         <button
           type="button"
-          class="fleet-vehicle-page__action"
+          class="fleet-vehicle-page__action fleet-vehicle-page__action--secondary"
           :disabled="props.isSaving"
           @click="cancelEditing"
         >
@@ -204,15 +245,22 @@ function setUppercaseField(
 <style scoped>
 .fleet-vehicle-page__header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.125rem;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0;
+  padding: 1.5rem 1.5rem;
   border-radius: 1rem;
-  background: var(--color-surface-container-low);
+  background: var(--color-surface-container-lowest);
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--color-on-surface) 2%, transparent);
+}
+
+.fleet-vehicle-page__identity {
+  min-width: 0;
 }
 
 .fleet-vehicle-page__overline {
   margin: 0 0 0.35rem;
+  font-family: var(--font-sans);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -223,11 +271,11 @@ function setUppercaseField(
 .fleet-vehicle-page__title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 2.8vw, 2.7rem);
+  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
   font-weight: 800;
   letter-spacing: -0.03em;
   color: var(--color-on-surface);
-  line-height: 1.05;
+  line-height: 1.1;
 }
 
 .fleet-vehicle-page__edit-fields {
@@ -240,7 +288,7 @@ function setUppercaseField(
   margin: 0.625rem 0 0;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
@@ -250,9 +298,32 @@ function setUppercaseField(
   gap: 0.6rem;
 }
 
+.fleet-vehicle-page__plate-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.fleet-vehicle-page__plate-icon {
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--color-outline);
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 20;
+}
+
+.fleet-vehicle-page__plate-meta--empty .fleet-vehicle-page__plate-icon {
+  color: var(--color-on-surface-variant);
+}
+
 .fleet-vehicle-page__chip {
-  border-radius: 8px;
-  padding: 0.3rem 0.625rem;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 0.375rem;
+  padding: 0.25rem 0.65rem;
   font-size: 0.75rem;
   font-weight: 700;
   background: var(--color-surface-container-high);
@@ -264,6 +335,9 @@ function setUppercaseField(
 }
 
 .fleet-vehicle-page__id {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   margin: 0;
   font-size: 0.8125rem;
   font-weight: 600;
@@ -272,6 +346,17 @@ function setUppercaseField(
 
 .fleet-vehicle-page__id--empty {
   color: var(--color-on-surface-variant);
+}
+
+.fleet-vehicle-page__meta-icon {
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--color-outline);
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 20;
 }
 
 .fleet-vehicle-page__field {
@@ -303,25 +388,32 @@ function setUppercaseField(
 }
 
 .fleet-vehicle-page__actions {
-  display: inline-flex;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 0.45rem;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.fleet-vehicle-page__actions--editing {
+  margin-top: 1.25rem;
 }
 
 .fleet-vehicle-page__action {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.45rem;
   border: 0;
   border-radius: 0.75rem;
-  padding: 0.6rem 0.9rem;
+  padding: 0.625rem 1.15rem;
   font-size: 0.8125rem;
-  font-weight: 700;
-  background: var(--color-surface-container-high);
-  color: var(--color-on-surface);
+  font-weight: 600;
   cursor: pointer;
   transition:
     background-color 0.18s ease,
+    box-shadow 0.18s ease,
     transform 0.18s ease;
 }
 
@@ -344,25 +436,12 @@ function setUppercaseField(
     0 12px 32px color-mix(in srgb, var(--color-secondary) 12%, transparent);
 }
 
-@media (max-width: 860px) {
-  .fleet-vehicle-page__header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-
-  .fleet-vehicle-page__meta-grid {
-    grid-template-columns: 1fr;
-  }
+.fleet-vehicle-page__action--secondary {
+  background: var(--color-surface-container-highest);
+  color: var(--color-on-surface);
 }
 
-.fleet-vehicle-page__action:hover:not(.fleet-vehicle-page__action--primary) {
-  background: var(--color-surface-container);
-  transform: translateY(-1px);
-}
-
-.fleet-vehicle-page__action--primary:hover {
-  opacity: 0.96;
+.fleet-vehicle-page__action--primary:hover:not(:disabled) {
   transform: translateY(-1px);
   box-shadow:
     0 6px 22px
@@ -370,13 +449,24 @@ function setUppercaseField(
     0 14px 36px color-mix(in srgb, var(--color-secondary) 14%, transparent);
 }
 
+.fleet-vehicle-page__action--secondary:hover:not(:disabled) {
+  background: var(--color-surface-variant);
+  transform: translateY(-1px);
+}
+
 .fleet-vehicle-page__action-icon {
-  font-size: 1rem;
+  font-size: 1.125rem;
   line-height: 1;
   font-variation-settings:
     'FILL' 0,
     'wght' 500,
     'GRAD' 0,
-    'opsz' 20;
+    'opsz' 24;
+}
+
+@media (max-width: 860px) {
+  .fleet-vehicle-page__meta-grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

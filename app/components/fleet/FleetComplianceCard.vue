@@ -1,9 +1,12 @@
 <script setup lang="ts">
+import ListEmptyState from '~/components/shared/ListEmptyState.vue';
+
 defineProps<{
   complianceItems: Array<{
     title: string;
     validUntil: string;
     attachments?: readonly string[];
+    icon?: 'verified' | 'shield';
   }>;
   driver: {
     name: string;
@@ -32,11 +35,15 @@ const { t } = useI18n();
           :title="item.title"
           :valid-until="item.validUntil"
           :attachments="item.attachments"
+          :icon="item.icon"
         />
       </template>
       <article v-else class="compliance-empty">
-        <p class="compliance-empty__title">{{ t('appSections.fleet.vehicleDetails.emptyComplianceTitle') }}</p>
-        <p class="compliance-empty__copy">{{ t('appSections.fleet.vehicleDetails.emptyComplianceCopy') }}</p>
+        <ListEmptyState
+          icon="verified_user"
+          :title="t('appSections.fleet.vehicleDetails.emptyComplianceTitle')"
+          :description="t('appSections.fleet.vehicleDetails.emptyComplianceCopy')"
+        />
       </article>
 
       <FleetAssignedDriverCard
@@ -77,33 +84,15 @@ const { t } = useI18n();
 }
 
 .compliance-row {
-  display: grid;
-  gap: 0.75rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .compliance-empty {
-  border-radius: 0.875rem;
-  background: var(--color-surface-container-lowest);
-  padding: 0.9rem;
-}
-
-.compliance-empty__title {
   margin: 0;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--color-on-surface);
+  padding: 0;
+  background: transparent;
 }
 
-.compliance-empty__copy {
-  margin: 0.45rem 0 0;
-  font-size: 0.8125rem;
-  color: var(--color-on-surface-variant);
-}
-
-@media (max-width: 1120px) {
-  .compliance-row {
-    grid-template-columns: 1fr;
-  }
-}
 </style>

@@ -142,11 +142,13 @@ const complianceItems = [
     title: t('appSections.fleet.vehicleDetails.complianceItems.technicalInspection'),
     validUntil: inspectionValidUntil,
     attachments: ['inspection-report.pdf'],
+    icon: 'verified' as const,
   },
   {
     title: t('appSections.fleet.vehicleDetails.complianceItems.ocAcPolicy'),
     validUntil: insurance.validUntil,
     attachments: ['policy-main.pdf', 'policy-ac-annex.pdf'],
+    icon: 'shield' as const,
   },
 ];
 const driverCard = computed(() => {
@@ -268,6 +270,10 @@ function onAssignSearchInput(event: Event) {
 
 function handleOpenAddExpenseDialog() {
   addExpenseDialog.value?.showModal();
+}
+
+function handleOpenAddIncomeDialog() {
+  addExpenseDialog.value?.showModal('INCOME');
 }
 
 function resetEditExpenseState() {
@@ -405,45 +411,53 @@ async function handleUpdateVehicleInfo(payload: {
 <template>
   <section class="fleet-vehicle-page">
     <template v-if="detailsLoading && !detailsResolved">
-      <div class="fleet-skeleton fleet-skeleton--header" />
-      <section class="fleet-layout">
-        <div class="fleet-layout__left">
+      <div class="fleet-vehicle-page__hero">
+        <div class="fleet-skeleton fleet-skeleton--header" />
+        <div class="fleet-skeleton fleet-skeleton--bento" />
+      </div>
+      <div class="fleet-vehicle-page__grid">
+        <div class="fleet-vehicle-page__grid-main">
           <div class="fleet-skeleton fleet-skeleton--card-lg" />
-          <div class="fleet-skeleton fleet-skeleton--card-md" />
+          <div class="fleet-skeleton fleet-skeleton--timeline" />
         </div>
-        <div class="fleet-layout__right">
-          <div class="fleet-skeleton fleet-skeleton--card-md" />
-          <div class="fleet-skeleton fleet-skeleton--card-lg" />
-        </div>
-      </section>
+        <div class="fleet-skeleton fleet-skeleton--card-md" />
+      </div>
     </template>
     <template v-else>
-    <FleetVehicleHeader
-      :overline="t('appSections.fleet.vehicleDetails.commandView')"
-      :car-name="carName"
-      :plate-label="t('appSections.fleet.table.plate')"
-      :registration-number="registrationNumber"
-      :vin-label="t('appSections.fleet.table.vin')"
-      :vin="vin"
-      :edit-info-label="t('appSections.fleet.vehicleDetails.editInfo')"
-      :save-label="t('appSections.fleet.vehicleDetails.save')"
-      :saving-label="t('common.loading')"
-      :cancel-label="t('appSections.fleet.vehicleDetails.cancel')"
-      :is-saving="carsStore.updating"
-      @update-info="handleUpdateVehicleInfo"
-    />
+    <div class="fleet-vehicle-page__hero">
+      <FleetVehicleHeader
+        class="fleet-vehicle-page__hero-header"
+        :overline="t('appSections.fleet.vehicleDetails.commandView')"
+        :car-name="carName"
+        :plate-label="t('appSections.fleet.table.plate')"
+        :registration-number="registrationNumber"
+        :vin-label="t('appSections.fleet.table.vin')"
+        :vin="vin"
+        :edit-vehicle-label="t('appSections.fleet.vehicleDetails.editVehicle')"
+        :add-expense-label="t('appSections.fleet.vehicleDetails.addExpense')"
+        :add-income-label="t('appSections.fleet.vehicleDetails.addIncome')"
+        :save-label="t('appSections.fleet.vehicleDetails.save')"
+        :saving-label="t('common.loading')"
+        :cancel-label="t('appSections.fleet.vehicleDetails.cancel')"
+        :is-saving="carsStore.updating"
+        @update-info="handleUpdateVehicleInfo"
+        @add-expense="handleOpenAddExpenseDialog"
+        @add-income="handleOpenAddIncomeDialog"
+      />
+      <FleetFinancialSummaryCard
+        class="fleet-vehicle-page__hero-bento"
+        :total-income="totalIncome"
+        :total-fees="totalFees"
+        :total-maintenance="totalMaintenance"
+        :total-other-expenses="totalOtherExpenses"
+        :total-combined-expenses="totalCombinedExpenses"
+        :total-profit-loss="totalProfitLoss"
+        :is-profit="isProfit"
+      />
+    </div>
 
-    <section class="fleet-layout">
-      <div class="fleet-layout__left">
-        <FleetFinancialSummaryCard
-          :total-income="totalIncome"
-          :total-fees="totalFees"
-          :total-maintenance="totalMaintenance"
-          :total-other-expenses="totalOtherExpenses"
-          :total-combined-expenses="totalCombinedExpenses"
-          :total-profit-loss="totalProfitLoss"
-          :is-profit="isProfit"
-        />
+    <div class="fleet-vehicle-page__grid">
+      <div class="fleet-vehicle-page__grid-main">
         <FleetFeesCard
           :items="carFees"
           @edit="openEditExpenseDialog"
@@ -461,30 +475,11 @@ async function handleUpdateVehicleInfo(payload: {
             </button>
           </template>
         </FleetFeesCard>
-      </div>
-
-      <div class="fleet-layout__right">
-        <FleetComplianceCard
-          :compliance-items="complianceItems"
-          :driver="driverCard"
-          @assign-other="handleAssignOther"
-          @remove-driver="handleRemoveDriver"
-        />
         <FleetMaintenanceTimeline
           :items="maintenanceHistory"
           @edit="openEditExpenseDialog"
           @delete="openDeleteExpenseDialog"
         >
-          <template #header-action>
-            <button
-              type="button"
-              class="fleet-maintenance-action"
-              @click="handleOpenAddExpenseDialog"
-            >
-              <span class="material-symbols-outlined" aria-hidden="true">add</span>
-              {{ t('appSections.fleet.vehicleDetails.expenseDialog.openCta') }}
-            </button>
-          </template>
           <template #footer>
             <button
               v-if="maintenanceHasMore"
@@ -498,7 +493,15 @@ async function handleUpdateVehicleInfo(payload: {
           </template>
         </FleetMaintenanceTimeline>
       </div>
-    </section>
+      <aside class="fleet-vehicle-page__grid-aside">
+        <FleetComplianceCard
+          :compliance-items="complianceItems"
+          :driver="driverCard"
+          @assign-other="handleAssignOther"
+          @remove-driver="handleRemoveDriver"
+        />
+      </aside>
+    </div>
 
     <EntityDialogShell
       ref="assignDialog"
@@ -701,22 +704,64 @@ async function handleUpdateVehicleInfo(payload: {
   gap: 1.5rem;
 }
 
-.fleet-layout {
+.fleet-vehicle-page__hero {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.5rem;
+}
+
+.fleet-vehicle-page__hero-header {
+  flex: 1;
+  min-width: 0;
+}
+
+.fleet-vehicle-page__hero-bento {
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.fleet-vehicle-page__grid {
   display: grid;
-  gap: 1rem;
-  grid-template-columns: minmax(0, 4.4fr) minmax(0, 7.6fr);
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
 }
 
-.fleet-layout__left {
+.fleet-vehicle-page__grid-main {
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
-.fleet-layout__right {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.fleet-vehicle-page__grid-aside {
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .fleet-vehicle-page__grid {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+
+  .fleet-vehicle-page__grid-main {
+    grid-column: span 8;
+  }
+
+  .fleet-vehicle-page__grid-aside {
+    grid-column: span 4;
+  }
+}
+
+@media (min-width: 1280px) {
+  .fleet-vehicle-page__hero {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .fleet-vehicle-page__hero-bento {
+    width: 33.333%;
+    max-width: 22rem;
+  }
 }
 
 .fleet-skeleton {
@@ -733,6 +778,12 @@ async function handleUpdateVehicleInfo(payload: {
 
 .fleet-skeleton--header {
   min-height: 8.2rem;
+  flex: 1;
+}
+
+.fleet-skeleton--bento {
+  min-height: 11rem;
+  width: 100%;
 }
 
 .fleet-skeleton--card-lg {
@@ -741,6 +792,10 @@ async function handleUpdateVehicleInfo(payload: {
 
 .fleet-skeleton--card-md {
   min-height: 12rem;
+}
+
+.fleet-skeleton--timeline {
+  min-height: 14rem;
 }
 
 @keyframes fleet-skeleton-shimmer {
@@ -753,9 +808,11 @@ async function handleUpdateVehicleInfo(payload: {
   }
 }
 
-@media (max-width: 1120px) {
-  .fleet-layout {
-    grid-template-columns: 1fr;
+@media (min-width: 1280px) {
+  .fleet-vehicle-page__hero .fleet-skeleton--bento {
+    width: 33.333%;
+    max-width: 22rem;
+    flex-shrink: 0;
   }
 }
 
@@ -827,34 +884,6 @@ async function handleUpdateVehicleInfo(payload: {
 .fleet-assign-dialog__item-meta {
   font-size: 0.75rem;
   color: var(--color-on-surface-variant);
-}
-
-.fleet-maintenance-action {
-  border: none;
-  border-radius: 0.75rem;
-  padding: 0.48rem 0.72rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.32rem;
-  color: var(--color-on-secondary);
-  font-size: 0.75rem;
-  font-weight: 700;
-  cursor: pointer;
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
-  transition: opacity 0.18s ease, transform 0.18s ease;
-}
-
-.fleet-maintenance-action:hover {
-  opacity: 0.94;
-  transform: translateY(-1px);
-}
-
-.fleet-maintenance-action .material-symbols-outlined {
-  font-size: 0.95rem;
 }
 
 .fleet-load-more-btn {

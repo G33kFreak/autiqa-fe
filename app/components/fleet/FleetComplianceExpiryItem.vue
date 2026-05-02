@@ -1,9 +1,13 @@
 <script setup lang="ts">
-const props = defineProps<{
-  title: string;
-  validUntil: string;
-  attachments?: readonly string[];
-}>();
+const props = withDefaults(
+  defineProps<{
+    title: string;
+    validUntil: string;
+    attachments?: readonly string[];
+    icon?: 'verified' | 'shield';
+  }>(),
+  { icon: 'verified' },
+);
 
 const { t } = useI18n();
 
@@ -38,53 +42,75 @@ const inspectionDaysLeft = computed(() => daysLeft(props.validUntil));
 const progress = computed(() => progressFromDaysLeft(inspectionDaysLeft.value));
 const isWarning = computed(() => inspectionDaysLeft.value <= 30);
 const hasValidDate = computed(() => !Number.isNaN(new Date(props.validUntil).getTime()));
+
+const iconName = computed(() => (props.icon === 'shield' ? 'shield' : 'verified'));
 </script>
 
 <template>
   <article class="compliance-item">
-    <p class="compliance-item__label">{{ props.title }}</p>
-    <div class="compliance-item__status">
-      <div
-        v-if="hasValidDate"
-        class="compliance-item__progress"
-        :class="{
-          'compliance-item__progress--ok': !isWarning,
-          'compliance-item__progress--warning': isWarning,
-        }"
-      >
-        <svg class="compliance-item__ring" viewBox="0 0 36 36" aria-hidden="true">
-          <circle class="compliance-item__track" cx="18" cy="18" r="15.9155" />
-          <circle
-            class="compliance-item__value"
-            cx="18"
-            cy="18"
-            r="15.9155"
-            :stroke-dasharray="`${progress}, 100`"
-          />
-        </svg>
-        <span>{{ progress }}%</span>
+    <div class="compliance-item__head">
+      <div class="compliance-item__head-text">
+        <p class="compliance-item__eyebrow">
+          {{ t('appSections.fleet.vehicleDetails.complianceItemStatusLabel') }}
+        </p>
+        <h3 class="compliance-item__title">{{ props.title }}</h3>
       </div>
-      <div v-else class="compliance-item__progress-placeholder">
-        {{ t('appSections.fleet.vehicleDetails.dateNotSet') }}
+      <div class="compliance-item__icon-wrap" aria-hidden="true">
+        <span class="material-symbols-outlined compliance-item__icon">{{
+          iconName
+        }}</span>
       </div>
+    </div>
 
-      <div class="compliance-item__status-copy">
-        <p v-if="hasValidDate" class="compliance-item__title">
-          {{ t('appSections.fleet.vehicleDetails.validUntil', { date: formatDate(props.validUntil) }) }}
-        </p>
-        <p v-else class="compliance-item__title">
-          {{ t('appSections.fleet.vehicleDetails.dateNotSet') }}
-        </p>
-        <p
-          v-if="hasValidDate"
-          class="compliance-item__counter"
+    <div
+      class="compliance-item__date-row"
+      :class="{ 'compliance-item__date-row--empty': !hasValidDate }"
+    >
+      <span class="compliance-item__date-label">{{
+        t('appSections.fleet.vehicleDetails.validUntilLabel')
+      }}</span>
+      <span class="compliance-item__date-value">{{
+        hasValidDate
+          ? formatDate(props.validUntil)
+          : t('appSections.fleet.vehicleDetails.dateNotSet')
+      }}</span>
+    </div>
+
+    <div v-if="hasValidDate" class="compliance-item__meter">
+      <div class="compliance-item__meter-labels">
+        <span class="compliance-item__meter-label">{{
+          t('appSections.fleet.vehicleDetails.timeRemaining')
+        }}</span>
+        <span
+          class="compliance-item__meter-value"
           :class="{
-            'compliance-item__counter--ok': !isWarning,
-            'compliance-item__counter--warning': isWarning,
+            'compliance-item__meter-value--ok': !isWarning,
+            'compliance-item__meter-value--warn': isWarning,
           }"
         >
-          {{ t('appSections.fleet.inspectionDaysLeft', { count: inspectionDaysLeft }) }}
-        </p>
+          {{
+            t('appSections.fleet.inspectionDaysLeft', {
+              count: inspectionDaysLeft,
+            })
+          }}
+        </span>
+      </div>
+      <div
+        class="compliance-item__bar"
+        role="progressbar"
+        :aria-valuenow="progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        :aria-label="t('appSections.fleet.vehicleDetails.timeRemaining')"
+      >
+        <div
+          class="compliance-item__bar-fill"
+          :class="{
+            'compliance-item__bar-fill--ok': !isWarning,
+            'compliance-item__bar-fill--warn': isWarning,
+          }"
+          :style="{ width: `${progress}%` }"
+        />
       </div>
     </div>
   </article>
@@ -92,123 +118,146 @@ const hasValidDate = computed(() => !Number.isNaN(new Date(props.validUntil).get
 
 <style scoped>
 .compliance-item {
-  border-radius: 0.875rem;
+  border-radius: 1rem;
+  padding: 1.15rem 1.2rem 1.2rem;
   background: var(--color-surface-container-lowest);
-  padding: 0.9rem;
-  border-left: 0.23rem solid var(--color-secondary);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-on-surface) 2%, transparent);
 }
 
-.compliance-item__label {
-  margin: 0;
+.compliance-item__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.compliance-item__head-text {
+  min-width: 0;
+}
+
+.compliance-item__eyebrow {
+  margin: 0 0 0.2rem;
+  font-family: var(--font-sans);
   font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-on-surface-variant);
 }
 
-.compliance-item__status {
-  margin-top: 0.55rem;
-  display: flex;
-  gap: 0.75rem;
-}
-
-.compliance-item__status-copy {
-  min-width: 0;
-}
-
 .compliance-item__title {
   margin: 0;
-  font-size: 0.95rem;
-  line-height: 1.2;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
   color: var(--color-on-surface);
 }
 
-.compliance-item__counter {
-  margin: 0.3rem 0 0;
-  font-size: 0.8125rem;
-  line-height: 1.2;
-  font-weight: 700;
+.compliance-item__icon-wrap {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-secondary-fixed);
+  color: var(--color-secondary-container);
 }
 
-.compliance-item__counter--ok {
+.compliance-item__icon {
+  font-size: 1.25rem;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.compliance-item__date-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 0.75rem;
+  background: var(--color-surface-container);
+}
+
+.compliance-item__date-row--empty .compliance-item__date-value {
+  color: var(--color-on-surface-variant);
+  font-weight: 600;
+}
+
+.compliance-item__date-label {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+}
+
+.compliance-item__date-value {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+}
+
+.compliance-item__meter {
+  margin-top: 1rem;
+}
+
+.compliance-item__meter-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.compliance-item__meter-label {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+.compliance-item__meter-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.compliance-item__meter-value--ok {
   color: var(--color-secondary);
 }
 
-.compliance-item__counter--warning {
+.compliance-item__meter-value--warn {
   color: var(--color-error);
 }
 
-.compliance-item__progress {
-  --progress-color: var(--color-secondary);
-  --ring-size: 3.6rem;
-  --ring-thickness: 3.8;
-  flex-shrink: 0;
-  position: relative;
-  width: var(--ring-size);
-  height: var(--ring-size);
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background: var(--color-surface-container-lowest);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-outline-variant) 15%, transparent);
-}
-
-.compliance-item__progress span {
-  position: relative;
-  z-index: 1;
-  font-size: 0.72rem;
-  font-weight: 800;
-  color: var(--color-on-surface);
-}
-
-.compliance-item__progress-placeholder {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3.6rem;
-  height: 3.6rem;
-  border-radius: 50%;
-  background: var(--color-surface-container-high);
-  color: var(--color-on-surface-variant);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  text-align: center;
-  padding: 0.35rem;
-}
-
-.compliance-item__ring {
-  position: absolute;
-  inset: 0;
+.compliance-item__bar {
+  height: 0.5rem;
   width: 100%;
+  border-radius: 9999px;
+  background: var(--color-surface-variant);
+  overflow: hidden;
+}
+
+.compliance-item__bar-fill {
   height: 100%;
-  transform: rotate(-90deg);
+  border-radius: 9999px;
+  transition: width 0.35s ease;
 }
 
-.compliance-item__track,
-.compliance-item__value {
-  fill: none;
-  stroke-width: var(--ring-thickness);
+.compliance-item__bar-fill--ok {
+  background: var(--color-secondary);
 }
 
-.compliance-item__track {
-  stroke: var(--color-surface-container-high);
-}
-
-.compliance-item__value {
-  stroke: var(--progress-color);
-  stroke-linecap: round;
-}
-
-.compliance-item__progress--ok {
-  --progress-color: var(--color-secondary);
-}
-
-.compliance-item__progress--warning {
-  --progress-color: var(--color-error);
+.compliance-item__bar-fill--warn {
+  background: var(--color-error);
 }
 </style>

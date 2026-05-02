@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import InitialsAvatar from '~/components/shared/InitialsAvatar.vue';
+
 const props = defineProps<{
   name: string;
   phone: string;
@@ -11,17 +13,32 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 const hasDriver = computed(() => Boolean((props.name || '').trim()));
+
+const avatarAriaLabel = computed(() =>
+  hasDriver.value
+    ? props.name.trim()
+    : t('appSections.fleet.driverUnassigned'),
+);
 </script>
 
 <template>
   <article class="compliance-row__small">
     <p class="compliance-row__label">{{ t('appSections.fleet.vehicleDetails.assignedDriver') }}</p>
-    <p class="compliance-row__title">
-      {{ hasDriver ? name : t('appSections.fleet.driverUnassigned') }}
-    </p>
-    <p class="compliance-row__description">
-      {{ hasDriver ? phone : t('appSections.fleet.vehicleDetails.emptyDriverCopy') }}
-    </p>
+    <div class="compliance-row__identity">
+      <InitialsAvatar
+        :label="hasDriver ? name : ''"
+        size="md"
+        :aria-label="avatarAriaLabel"
+      />
+      <div class="compliance-row__text">
+        <p class="compliance-row__title">
+          {{ hasDriver ? name : t('appSections.fleet.driverUnassigned') }}
+        </p>
+        <p class="compliance-row__description">
+          {{ hasDriver ? phone : t('appSections.fleet.vehicleDetails.emptyDriverCopy') }}
+        </p>
+      </div>
+    </div>
     <div class="driver-actions">
       <button type="button" class="button button--primary" @click="emit('assignOther')">
         {{ t('appSections.fleet.vehicleDetails.assignOther') }}
@@ -54,8 +71,22 @@ const hasDriver = computed(() => Boolean((props.name || '').trim()));
   color: var(--color-on-surface-variant);
 }
 
+.compliance-row__identity {
+  margin-top: 0.55rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.compliance-row__text {
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
 .compliance-row__title {
-  margin: 0.4rem 0 0;
+  margin: 0;
   font-size: 1.1rem;
   line-height: 1.2;
   font-weight: 800;
@@ -63,7 +94,7 @@ const hasDriver = computed(() => Boolean((props.name || '').trim()));
 }
 
 .compliance-row__description {
-  margin: 0.45rem 0 0;
+  margin: 0.35rem 0 0;
   font-size: 0.875rem;
   line-height: 1.25;
   color: var(--color-on-surface-variant);

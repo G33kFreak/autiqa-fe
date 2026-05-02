@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import ListEmptyState from '~/components/shared/ListEmptyState.vue';
+
 defineProps<{
   items: Array<{
     id: string;
@@ -30,7 +32,6 @@ function formatCurrency(value: number): string {
   <section class="fleet-card fleet-card--timeline">
     <div class="fleet-card__header">
       <h2 class="fleet-card__title">{{ t('appSections.fleet.vehicleDetails.maintenanceHistory') }}</h2>
-      <slot name="header-action" />
     </div>
     <div class="timeline" v-if="items.length > 0">
       <article
@@ -67,8 +68,11 @@ function formatCurrency(value: number): string {
       </article>
     </div>
     <article v-else class="timeline-empty">
-      <p class="timeline-empty__title">{{ t('appSections.fleet.vehicleDetails.emptyMaintenanceTitle') }}</p>
-      <p class="timeline-empty__copy">{{ t('appSections.fleet.vehicleDetails.emptyMaintenanceCopy') }}</p>
+      <ListEmptyState
+        icon="build"
+        :title="t('appSections.fleet.vehicleDetails.emptyMaintenanceTitle')"
+        :description="t('appSections.fleet.vehicleDetails.emptyMaintenanceCopy')"
+      />
     </article>
     <div class="fleet-card__footer">
       <slot name="footer" />
@@ -85,10 +89,6 @@ function formatCurrency(value: number): string {
 
 .fleet-card__header {
   margin-bottom: 0.875rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.8rem;
 }
 
 .fleet-card__title {
@@ -221,21 +221,8 @@ function formatCurrency(value: number): string {
 }
 
 .timeline-empty {
-  border-radius: 0.875rem;
-  background: var(--color-surface-container-lowest);
-  padding: 0.95rem 1rem;
-}
-
-.timeline-empty__title {
   margin: 0;
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--color-on-surface);
-}
-
-.timeline-empty__copy {
-  margin: 0.4rem 0 0;
-  font-size: 0.8125rem;
-  color: var(--color-on-surface-variant);
+  padding: 0;
+  background: transparent;
 }
 </style>
