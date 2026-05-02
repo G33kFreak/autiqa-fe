@@ -5,11 +5,18 @@ const props = withDefaults(
     validUntil: string;
     attachments?: readonly string[];
     icon?: 'verified' | 'shield';
+    /** Show primary CTA in empty state (e.g. nudge user toward vehicle details). */
+    showEmptyCta?: boolean;
   }>(),
-  { icon: 'verified' },
+  { icon: 'verified', showEmptyCta: true },
 );
 
+const emit = defineEmits<{
+  emptyCtaClick: [];
+}>();
+
 const { t } = useI18n();
+const emptyHeadingId = useId();
 
 function formatDate(value: string): string {
   const date = new Date(value);
@@ -44,10 +51,25 @@ const isWarning = computed(() => inspectionDaysLeft.value <= 30);
 const hasValidDate = computed(() => !Number.isNaN(new Date(props.validUntil).getTime()));
 
 const iconName = computed(() => (props.icon === 'shield' ? 'shield' : 'verified'));
+
+const emptyCopyKey = computed(() =>
+  props.icon === 'shield'
+    ? 'appSections.fleet.vehicleDetails.complianceItemEmptyCopyInsurance'
+    : 'appSections.fleet.vehicleDetails.complianceItemEmptyCopy',
+);
+
+const emptyCtaKey = computed(() =>
+  props.icon === 'shield'
+    ? 'appSections.fleet.vehicleDetails.complianceItemEmptyCtaInsurance'
+    : 'appSections.fleet.vehicleDetails.complianceItemEmptyCtaInspection',
+);
 </script>
 
 <template>
-  <article class="compliance-item">
+  <article
+    v-if="hasValidDate"
+    class="compliance-item compliance-item--filled"
+  >
     <div class="compliance-item__head">
       <div class="compliance-item__head-text">
         <p class="compliance-item__eyebrow">
@@ -62,21 +84,16 @@ const iconName = computed(() => (props.icon === 'shield' ? 'shield' : 'verified'
       </div>
     </div>
 
-    <div
-      class="compliance-item__date-row"
-      :class="{ 'compliance-item__date-row--empty': !hasValidDate }"
-    >
+    <div class="compliance-item__date-row">
       <span class="compliance-item__date-label">{{
         t('appSections.fleet.vehicleDetails.validUntilLabel')
       }}</span>
       <span class="compliance-item__date-value">{{
-        hasValidDate
-          ? formatDate(props.validUntil)
-          : t('appSections.fleet.vehicleDetails.dateNotSet')
+        formatDate(props.validUntil)
       }}</span>
     </div>
 
-    <div v-if="hasValidDate" class="compliance-item__meter">
+    <div class="compliance-item__meter">
       <div class="compliance-item__meter-labels">
         <span class="compliance-item__meter-label">{{
           t('appSections.fleet.vehicleDetails.timeRemaining')
@@ -114,14 +131,167 @@ const iconName = computed(() => (props.icon === 'shield' ? 'shield' : 'verified'
       </div>
     </div>
   </article>
+
+  <article
+    v-else
+    class="compliance-item compliance-item--empty"
+    :aria-labelledby="emptyHeadingId"
+  >
+    <div class="compliance-item__empty-top">
+      <div class="compliance-item__head-text">
+        <p class="compliance-item__eyebrow">
+          {{ t('appSections.fleet.vehicleDetails.complianceItemStatusLabel') }}
+        </p>
+        <h3 :id="emptyHeadingId" class="compliance-item__title">
+          {{ props.title }}
+        </h3>
+      </div>
+      <div
+        class="compliance-item__icon-wrap compliance-item__icon-wrap--empty"
+        aria-hidden="true"
+      >
+        <span class="material-symbols-outlined compliance-item__icon compliance-item__icon--empty"
+          >event_upcoming</span
+        >
+      </div>
+    </div>
+
+    <div class="compliance-item__empty-body">
+      <p class="compliance-item__empty-lead">
+        {{ t('appSections.fleet.vehicleDetails.complianceItemEmptyTitle') }}
+      </p>
+      <p class="compliance-item__empty-copy">
+        {{ t(emptyCopyKey) }}
+      </p>
+      <button
+        v-if="showEmptyCta"
+        type="button"
+        class="compliance-item__empty-cta"
+        @click="emit('emptyCtaClick')"
+      >
+        <span
+          class="material-symbols-outlined compliance-item__empty-cta-icon"
+          aria-hidden="true"
+          >edit_calendar</span
+        >
+        {{ t(emptyCtaKey) }}
+      </button>
+    </div>
+  </article>
 </template>
 
 <style scoped>
 .compliance-item {
   border-radius: 1rem;
   padding: 1.15rem 1.2rem 1.2rem;
+}
+
+.compliance-item--filled {
   background: var(--color-surface-container-lowest);
   box-shadow: 0 8px 24px color-mix(in srgb, var(--color-on-surface) 2%, transparent);
+}
+
+.compliance-item--empty {
+  background: color-mix(
+    in srgb,
+    var(--color-secondary-fixed) 14%,
+    var(--color-surface-container-lowest)
+  );
+  border: 1px dashed
+    color-mix(in srgb, var(--color-secondary) 32%, var(--color-outline-variant));
+  box-shadow: none;
+}
+
+.compliance-item__empty-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.compliance-item__empty-body {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.45rem;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
+
+.compliance-item__empty-lead {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  color: var(--color-on-surface);
+}
+
+.compliance-item__empty-copy {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--color-on-surface-variant);
+}
+
+.compliance-item__empty-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  align-self: flex-start;
+  border: 0;
+  border-radius: 0.65rem;
+  padding: 0.5rem 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  color: var(--color-on-secondary);
+  background: var(--color-secondary);
+  transition:
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.compliance-item__empty-cta:hover {
+  filter: brightness(1.06);
+}
+
+.compliance-item__empty-cta:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-secondary) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.compliance-item__empty-cta-icon {
+  font-size: 1.05rem;
+  line-height: 1;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.compliance-item__icon-wrap--empty {
+  background: color-mix(in srgb, var(--color-surface-container) 80%, transparent);
+  color: var(--color-secondary);
+}
+
+.compliance-item__icon--empty {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
 }
 
 .compliance-item__head {
@@ -185,11 +355,6 @@ const iconName = computed(() => (props.icon === 'shield' ? 'shield' : 'verified'
   padding: 0.65rem 0.9rem;
   border-radius: 0.75rem;
   background: var(--color-surface-container);
-}
-
-.compliance-item__date-row--empty .compliance-item__date-value {
-  color: var(--color-on-surface-variant);
-  font-weight: 600;
 }
 
 .compliance-item__date-label {

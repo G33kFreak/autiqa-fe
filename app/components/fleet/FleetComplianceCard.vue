@@ -7,6 +7,7 @@ defineProps<{
     validUntil: string;
     attachments?: readonly string[];
     icon?: 'verified' | 'shield';
+    showEmptyCta?: boolean;
   }>;
   driver: {
     name: string;
@@ -17,6 +18,7 @@ defineProps<{
 const emit = defineEmits<{
   assignOther: [];
   removeDriver: [];
+  complianceEmptyCta: [];
 }>();
 
 const { t } = useI18n();
@@ -36,6 +38,8 @@ const { t } = useI18n();
           :valid-until="item.validUntil"
           :attachments="item.attachments"
           :icon="item.icon"
+          :show-empty-cta="item.showEmptyCta ?? true"
+          @empty-cta-click="emit('complianceEmptyCta')"
         />
       </template>
       <article v-else class="compliance-empty">

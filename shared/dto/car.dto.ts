@@ -12,6 +12,8 @@ export interface CarDto {
   plateNumber: string | null;
   driver: DriverDto | null;
   inspectionValidUntil: string | null;
+  /** Policy / OC–AC valid-until when provided by the API. */
+  insuranceValidUntil?: string | null;
   createdAt: string;
   updatedAt: string;
 }

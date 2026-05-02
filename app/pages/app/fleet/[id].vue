@@ -29,13 +29,6 @@ const assignSuggestions = ref<DriverDto[]>([]);
 const assignSearching = ref(false);
 let assignSearchTimer: ReturnType<typeof setTimeout> | null = null;
 
-const inspectionValidUntil = '2026-09-12';
-const insurance = {
-  provider: 'PZU',
-  policyNumber: 'PZU-99231',
-  validUntil: '2026-11-30',
-};
-
 const addExpenseDialog = ref<InstanceType<typeof AddExpenseDialog> | null>(null);
 const editExpenseDialog = ref<InstanceType<typeof EntityDialogShell> | null>(null);
 const deleteExpenseDialog = ref<InstanceType<typeof EntityDialogShell> | null>(null);
@@ -140,20 +133,44 @@ const totalCombinedExpenses = computed(
 const totalProfitLoss = computed(() => totalIncome.value - totalCombinedExpenses.value);
 const isProfit = computed(() => totalProfitLoss.value >= 0);
 
-const complianceItems = [
-  {
-    title: t('appSections.fleet.vehicleDetails.complianceItems.technicalInspection'),
-    validUntil: inspectionValidUntil,
-    attachments: ['inspection-report.pdf'],
-    icon: 'verified' as const,
-  },
-  {
-    title: t('appSections.fleet.vehicleDetails.complianceItems.ocAcPolicy'),
-    validUntil: insurance.validUntil,
-    attachments: ['policy-main.pdf', 'policy-ac-annex.pdf'],
-    icon: 'shield' as const,
-  },
-];
+function complianceDateFromCar(value: string | null | undefined): string {
+  if (value == null || String(value).trim() === '') return '';
+  return toComplianceIsoDate(String(value));
+}
+
+function toComplianceIsoDate(raw: string): string {
+  const trimmed = raw.trim();
+  if (trimmed.length >= 10 && /^\d{4}-\d{2}-\d{2}/.test(trimmed)) {
+    return trimmed.slice(0, 10);
+  }
+  const parsed = new Date(trimmed);
+  if (Number.isNaN(parsed.getTime())) return '';
+  const y = parsed.getFullYear();
+  const m = String(parsed.getMonth() + 1).padStart(2, '0');
+  const d = String(parsed.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
+const complianceItems = computed(() => {
+  const inspectionRaw = car.value?.inspectionValidUntil;
+  const inspection = complianceDateFromCar(inspectionRaw ?? null);
+  const policyRaw = car.value?.insuranceValidUntil;
+  const policy = complianceDateFromCar(policyRaw ?? null);
+  return [
+    {
+      title: t('appSections.fleet.vehicleDetails.complianceItems.technicalInspection'),
+      validUntil: inspection,
+      attachments: inspection ? (['inspection-report.pdf'] as const) : undefined,
+      icon: 'verified' as const,
+    },
+    {
+      title: t('appSections.fleet.vehicleDetails.complianceItems.ocAcPolicy'),
+      validUntil: policy,
+      attachments: policy ? (['policy-main.pdf', 'policy-ac-annex.pdf'] as const) : undefined,
+      icon: 'shield' as const,
+    },
+  ];
+});
 const driverCard = computed(() => {
   if (!car.value?.driver) return { name: '', phone: '' };
   return {
@@ -409,6 +426,13 @@ async function handleUpdateVehicleInfo(payload: {
   registrationNumber.value = updated.plateNumber ?? '';
   vin.value = updated.vin ?? '';
 }
+
+function handleComplianceEmptyCta() {
+  document.getElementById('fleet-vehicle-hero')?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'start',
+  });
+}
 </script>
 
 <template>
@@ -432,6 +456,7 @@ async function handleUpdateVehicleInfo(payload: {
     <template v-else>
     <div class="fleet-vehicle-page__hero fleet-vehicle-page__hero--split">
       <FleetVehicleHeader
+        id="fleet-vehicle-hero"
         class="fleet-vehicle-page__hero-header"
         :overline="t('appSections.fleet.vehicleDetails.commandView')"
         :car-name="carName"
@@ -563,6 +588,7 @@ async function handleUpdateVehicleInfo(payload: {
           :driver="driverCard"
           @assign-other="handleAssignOther"
           @remove-driver="handleRemoveDriver"
+          @compliance-empty-cta="handleComplianceEmptyCta"
         />
       </aside>
     </div>
