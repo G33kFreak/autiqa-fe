@@ -268,7 +268,7 @@ async function refreshIncomeDriverLabels(): Promise<void> {
       if (assigned && assigned.id === id) {
         return [id, driverDisplayName(assigned)] as const;
       }
-      const detail = await driversStore.getViewModelById(id);
+      const detail = await driversStore.fetchDriverById(id);
       const label = detail ? driverDisplayName(detail) : '';
       return [id, label] as const;
     }),
@@ -439,7 +439,7 @@ onMounted(async () => {
   detailsLoading.value = true;
   try {
     const [fetchedCar] = await Promise.all([
-      carsStore.getViewModelById(carId.value),
+      carsStore.fetchCarById(carId.value),
       fetchFees(1),
       fetchMaintenance(1),
       fetchExpensesSummary(),

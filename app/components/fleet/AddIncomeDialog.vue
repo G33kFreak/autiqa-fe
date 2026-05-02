@@ -96,11 +96,11 @@ async function showModalForEdit(income: IncomeDto) {
     driverSuggestions.value = drivers;
     selectedCar.value =
       cars.find((c) => c.id === income.carId) ??
-      (await carsStore.getViewModelById(income.carId));
+      (await carsStore.fetchCarById(income.carId));
     let driver: DriverDto | null =
       drivers.find((d) => d.id === income.driverId) ?? null;
     if (!driver) {
-      driver = await driversStore.getViewModelById(income.driverId);
+      driver = await driversStore.fetchDriverById(income.driverId);
     }
     selectedDriver.value = driver;
   } finally {

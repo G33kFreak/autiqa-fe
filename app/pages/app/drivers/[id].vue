@@ -137,7 +137,7 @@ async function uploadDriverDocuments(files: File[]) {
   if (!driver.value) return;
   const uploaded = await driversStore.uploadDocuments(driver.value.id, files);
   const uploadedViews = uploaded.map(toDocumentView);
-  const refreshed = await driversStore.getViewModelById(driver.value.id);
+  const refreshed = await driversStore.fetchDriverById(driver.value.id);
   if (refreshed) {
     driver.value = refreshed;
     documents.value = mergeDocumentViews(
@@ -168,11 +168,11 @@ useSeoMeta({
 onMounted(async () => {
   detailsLoading.value = true;
   try {
-    driver.value = await driversStore.getViewModelById(driverId.value);
+    driver.value = await driversStore.fetchDriverById(driverId.value);
     syncFormFromDriver(driver.value);
     documents.value = (driver.value?.documents ?? []).map(toDocumentView);
     if (driver.value?.carId) {
-      assignedCar.value = await carsStore.getViewModelById(driver.value.carId);
+      assignedCar.value = await carsStore.fetchCarById(driver.value.carId);
     } else {
       assignedCar.value = null;
     }

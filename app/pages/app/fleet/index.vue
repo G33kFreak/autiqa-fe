@@ -9,6 +9,8 @@ const carsStore = useCarsStore();
 
 const addVehicleDialog = ref<InstanceType<typeof AddVehicleDialog> | null>(null);
 
+const showListError = computed(() => carsStore.listError != null);
+
 const showEmpty = computed(
   () =>
     carsStore.listResolved &&
@@ -18,8 +20,9 @@ const showEmpty = computed(
 
 const showInitialLoading = computed(
   () =>
-    !carsStore.listResolved ||
-    (carsStore.loading && carsStore.items.length === 0),
+    !showListError.value &&
+    (!carsStore.listResolved ||
+      (carsStore.loading && carsStore.items.length === 0)),
 );
 
 const showFleetSummary = computed(
@@ -32,7 +35,11 @@ useSeoMeta({
 });
 
 onMounted(async () => {
-  await carsStore.getViewModel();
+  try {
+    await carsStore.fetchCars();
+  } catch {
+    /* listError set in store */
+  }
 });
 
 function openAddVehicle() {
@@ -42,7 +49,7 @@ function openAddVehicle() {
 
 <template>
   <div class="fleet-page">
-    <template v-if="!showEmpty">
+    <template v-if="!showEmpty && !showListError">
       <h1 class="app-page__title">{{ t('appSections.fleet.title') }}</h1>
       <p class="app-page__lead">{{ t('appSections.fleet.lead') }}</p>
     </template>
@@ -51,6 +58,14 @@ function openAddVehicle() {
       v-if="showInitialLoading"
       :text="t('appSections.fleet.loading')"
     />
+
+    <p
+      v-else-if="showListError"
+      class="fleet-page__load-error"
+      role="alert"
+    >
+      {{ t('common.loadError') }}
+    </p>
 
     <PageEmptyState
       v-else-if="showEmpty"
@@ -79,4 +94,11 @@ function openAddVehicle() {
 </template>
 
 <style scoped>
+.fleet-page__load-error {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 0.5rem;
+  color: var(--color-on-error-container);
+  background: var(--color-error-container);
+}
 </style>

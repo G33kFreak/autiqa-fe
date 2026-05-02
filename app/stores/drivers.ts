@@ -26,63 +26,69 @@ export const useDriversStore = defineStore('drivers', () => {
   const limit = ref(DEFAULT_LIMIT);
   const search = ref('');
 
-  async function loadDrivers(): Promise<PaginatedDriversResponseDto> {
-    const query: DriversPaginationQueryDto = {
-      page: page.value,
-      limit: limit.value,
-      search: search.value.trim() || undefined,
-    };
-    return await getDrivers(authenticatedApi, query);
-  }
+  const paginated = ref<PaginatedDriversResponseDto | null>(null);
+  const loading = ref(false);
+  const listError = ref<unknown | null>(null);
 
-  const vm = useLazyViewModel<PaginatedDriversResponseDto>({
-    load: loadDrivers,
-  });
-
-  const items = computed(() => vm.data.value?.data ?? []);
-  const meta = computed(() => vm.data.value?.meta ?? null);
-  /** True after the list has been loaded at least once. */
-  const listResolved = computed(() => vm.data.value !== undefined);
+  const items = computed(() => paginated.value?.data ?? []);
+  const meta = computed(() => paginated.value?.meta ?? null);
+  /** True after the list has loaded successfully at least once. */
+  const listResolved = computed(() => paginated.value !== null);
 
   const creating = ref(false);
   const updating = ref(false);
   const uploadingDocuments = ref(false);
   const deletingDocumentId = ref<string | null>(null);
 
-  async function getViewModel(): Promise<PaginatedDriversResponseDto | null> {
-    return vm.getViewModel();
-  }
-
   function reset() {
-    vm.reset();
+    paginated.value = null;
+    listError.value = null;
+    loading.value = false;
     creating.value = false;
     updating.value = false;
     uploadingDocuments.value = false;
     deletingDocumentId.value = null;
   }
 
-  async function getViewModelById(id: string): Promise<DriverDetailsDto | null> {
+  async function fetchDrivers(
+    overrides?: Partial<DriversPaginationQueryDto>,
+  ): Promise<PaginatedDriversResponseDto> {
+    if (overrides?.page !== undefined) page.value = overrides.page;
+    if (overrides?.limit !== undefined) limit.value = overrides.limit;
+    if (overrides?.search !== undefined) search.value = overrides.search;
+    loading.value = true;
+    listError.value = null;
+    try {
+      const query: DriversPaginationQueryDto = {
+        page: page.value,
+        limit: limit.value,
+        search: search.value.trim() || undefined,
+      };
+      const result = await getDrivers(authenticatedApi, query);
+      paginated.value = result;
+      return result;
+    } catch (e) {
+      listError.value = e;
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function fetchDriverById(id: string): Promise<DriverDetailsDto | null> {
     const fetched = await getDriverById(authenticatedApi, id);
-    if (vm.data.value) {
-      const exists = vm.data.value.data.some((item) => item.id === fetched.id);
+    if (paginated.value) {
+      const exists = paginated.value.data.some((item) => item.id === fetched.id);
       if (exists) {
-        vm.data.value = {
-          ...vm.data.value,
-          data: vm.data.value.data.map((item) =>
+        paginated.value = {
+          ...paginated.value,
+          data: paginated.value.data.map((item) =>
             item.id === fetched.id ? fetched : item,
           ),
         };
       }
     }
     return fetched;
-  }
-
-  async function fetchDrivers(overrides?: Partial<DriversPaginationQueryDto>) {
-    if (overrides?.page !== undefined) page.value = overrides.page;
-    if (overrides?.limit !== undefined) limit.value = overrides.limit;
-    if (overrides?.search !== undefined) search.value = overrides.search;
-    vm.reset();
-    return vm.getViewModel();
   }
 
   async function searchDrivers(
@@ -116,13 +122,13 @@ export const useDriversStore = defineStore('drivers', () => {
       const created = await createDriversBatchRequest(authenticatedApi, {
         drivers: payloads,
       });
-      if (vm.data.value) {
-        vm.data.value = {
-          ...vm.data.value,
-          data: [...created, ...vm.data.value.data],
+      if (paginated.value) {
+        paginated.value = {
+          ...paginated.value,
+          data: [...created, ...paginated.value.data],
         };
       } else {
-        await getViewModel();
+        await fetchDrivers();
       }
       return created;
     } catch (e) {
@@ -141,10 +147,10 @@ export const useDriversStore = defineStore('drivers', () => {
     updating.value = true;
     try {
       const updated = await updateDriverRequest(authenticatedApi, id, payload);
-      if (vm.data.value) {
-        vm.data.value = {
-          ...vm.data.value,
-          data: vm.data.value.data.map((item) =>
+      if (paginated.value) {
+        paginated.value = {
+          ...paginated.value,
+          data: paginated.value.data.map((item) =>
             item.id === updated.id ? updated : item,
           ),
         };
@@ -181,7 +187,8 @@ export const useDriversStore = defineStore('drivers', () => {
   return {
     items,
     meta,
-    loading: vm.loading,
+    loading,
+    listError,
     creating,
     updating,
     uploadingDocuments,
@@ -190,12 +197,11 @@ export const useDriversStore = defineStore('drivers', () => {
     limit,
     search,
     listResolved,
-    getViewModel,
     reset,
-    getViewModelById,
+    fetchDrivers,
+    fetchDriverById,
     searchDrivers,
     getDriverSuggestions,
-    fetchDrivers,
     createDrivers,
     update,
     uploadDocuments,

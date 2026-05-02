@@ -2,7 +2,8 @@
   "brand": "Autiqa",
   "common": {
     "loading": "Loading",
-    "clear": "Clear"
+    "clear": "Clear",
+    "loadError": "Couldn’t load this page. Please refresh or try again."
   },
   "meta": {
     "home": {

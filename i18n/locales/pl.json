@@ -2,7 +2,8 @@
   "brand": "Autiqa",
   "common": {
     "loading": "Ładowanie",
-    "clear": "Wyczyść"
+    "clear": "Wyczyść",
+    "loadError": "Nie udało się wczytać strony. Odśwież lub spróbuj ponownie."
   },
   "meta": {
     "home": {

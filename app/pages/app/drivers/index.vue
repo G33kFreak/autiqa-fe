@@ -9,14 +9,22 @@ const driversStore = useDriversStore();
 const searchInput = ref('');
 let searchTimer: ReturnType<typeof setTimeout> | null = null;
 
+const showListError = computed(() => driversStore.listError != null);
+
 const showEmpty = computed(
-  () => !driversStore.loading && driversStore.items.length === 0,
+  () =>
+    driversStore.listResolved &&
+    !driversStore.loading &&
+    driversStore.items.length === 0,
 );
 const showInitialLoading = computed(
-  () => driversStore.loading && driversStore.items.length === 0,
+  () =>
+    !showListError.value &&
+    (!driversStore.listResolved ||
+      (driversStore.loading && driversStore.items.length === 0)),
 );
 const showDriversList = computed(
-  () => driversStore.items.length > 0,
+  () => driversStore.listResolved && driversStore.items.length > 0,
 );
 const addDriverDialog = ref<InstanceType<typeof AddDriverDialog> | null>(null);
 
@@ -30,23 +38,31 @@ useSeoMeta({
 });
 
 onMounted(async () => {
-  await driversStore.getViewModel();
+  try {
+    await driversStore.fetchDrivers();
+  } catch {
+    /* listError set in store */
+  }
 });
 
 watch(searchInput, (value) => {
   if (searchTimer) clearTimeout(searchTimer);
   searchTimer = setTimeout(() => {
-    void driversStore.fetchDrivers({
-      page: 1,
-      search: value.trim(),
-    });
+    void driversStore
+      .fetchDrivers({
+        page: 1,
+        search: value.trim(),
+      })
+      .catch(() => {
+        /* listError set in store */
+      });
   }, 450);
 });
 </script>
 
 <template>
   <div class="drivers-page">
-    <template v-if="!showEmpty">
+    <template v-if="!showEmpty && !showListError">
       <h1 class="app-page__title">{{ t('appSections.drivers.title') }}</h1>
       <p class="app-page__lead">{{ t('appSections.drivers.lead') }}</p>
       <label class="drivers-page__search">
@@ -64,6 +80,14 @@ watch(searchInput, (value) => {
       v-if="showInitialLoading"
       :text="t('appSections.drivers.loading')"
     />
+
+    <p
+      v-else-if="showListError"
+      class="drivers-page__load-error"
+      role="alert"
+    >
+      {{ t('common.loadError') }}
+    </p>
 
     <PageEmptyState
       v-else-if="showEmpty"
@@ -104,5 +128,13 @@ watch(searchInput, (value) => {
 
 .drivers-page__search-input {
   padding-left: 2.2rem;
+}
+
+.drivers-page__load-error {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  border-radius: 0.5rem;
+  color: var(--color-on-error-container);
+  background: var(--color-error-container);
 }
 </style>

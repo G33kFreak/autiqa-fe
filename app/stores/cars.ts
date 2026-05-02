@@ -24,60 +24,63 @@ export const useCarsStore = defineStore('cars', () => {
   const page = ref(DEFAULT_PAGE);
   const limit = ref(DEFAULT_LIMIT);
 
-  async function loadCars(): Promise<PaginatedCarsResponseDto | null> {
-    const query: PaginationQueryDto = {
-      page: page.value,
-      limit: limit.value,
-    };
-    return await getCars(authenticatedApi, query);
-  }
+  const paginated = ref<PaginatedCarsResponseDto | null>(null);
+  const loading = ref(false);
+  const listError = ref<unknown | null>(null);
 
-  const vm = useLazyViewModel<PaginatedCarsResponseDto>({
-    load: loadCars,
-  });
-
-  const items = computed(() => vm.data.value?.data ?? []);
-  const meta = computed(() => vm.data.value?.meta ?? null);
-  /** True after the list has been loaded at least once (success or empty page). */
-  const listResolved = computed(() => vm.data.value !== undefined);
+  const items = computed(() => paginated.value?.data ?? []);
+  const meta = computed(() => paginated.value?.meta ?? null);
+  /** True after the list has loaded successfully at least once. */
+  const listResolved = computed(() => paginated.value !== null);
 
   const creating = ref(false);
   const updating = ref(false);
 
-  async function getViewModel(): Promise<PaginatedCarsResponseDto | null> {
-    return vm.getViewModel();
-  }
-
   function reset() {
-    vm.reset();
+    paginated.value = null;
+    listError.value = null;
+    loading.value = false;
     creating.value = false;
     updating.value = false;
   }
 
-  async function getViewModelById(id: string): Promise<CarDto | null> {
+  async function fetchCars(
+    overrides?: Partial<PaginationQueryDto>,
+  ): Promise<PaginatedCarsResponseDto> {
+    if (overrides?.page !== undefined) page.value = overrides.page;
+    if (overrides?.limit !== undefined) limit.value = overrides.limit;
+    loading.value = true;
+    listError.value = null;
+    try {
+      const query: PaginationQueryDto = {
+        page: page.value,
+        limit: limit.value,
+      };
+      const result = await getCars(authenticatedApi, query);
+      paginated.value = result;
+      return result;
+    } catch (e) {
+      listError.value = e;
+      throw e;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function fetchCarById(id: string): Promise<CarDto | null> {
     const car = await getCarById(authenticatedApi, id);
-    if (vm.data.value) {
-      const exists = vm.data.value.data.some((item) => item.id === car.id);
+    if (paginated.value) {
+      const exists = paginated.value.data.some((item) => item.id === car.id);
       if (exists) {
-        vm.data.value = {
-          ...vm.data.value,
-          data: vm.data.value.data.map((item) =>
+        paginated.value = {
+          ...paginated.value,
+          data: paginated.value.data.map((item) =>
             item.id === car.id ? car : item,
           ),
         };
       }
     }
     return car;
-  }
-
-  /**
-   * Refetch for the current (or overridden) page/limit — clears the lazy cache first.
-   */
-  async function fetchCars(overrides?: Partial<PaginationQueryDto>) {
-    if (overrides?.page !== undefined) page.value = overrides.page;
-    if (overrides?.limit !== undefined) limit.value = overrides.limit;
-    vm.reset();
-    return vm.getViewModel();
   }
 
   async function getCarSuggestions(limitValue = 20): Promise<CarDto[]> {
@@ -111,10 +114,10 @@ export const useCarsStore = defineStore('cars', () => {
     updating.value = true;
     try {
       const updated = await updateCarRequest(authenticatedApi, id, payload);
-      if (vm.data.value) {
-        vm.data.value = {
-          ...vm.data.value,
-          data: vm.data.value.data.map((car) =>
+      if (paginated.value) {
+        paginated.value = {
+          ...paginated.value,
+          data: paginated.value.data.map((car) =>
             car.id === updated.id ? updated : car,
           ),
         };
@@ -136,10 +139,10 @@ export const useCarsStore = defineStore('cars', () => {
         carId,
         driverId,
       );
-      if (vm.data.value) {
-        vm.data.value = {
-          ...vm.data.value,
-          data: vm.data.value.data.map((car) =>
+      if (paginated.value) {
+        paginated.value = {
+          ...paginated.value,
+          data: paginated.value.data.map((car) =>
             car.id === updated.id ? updated : car,
           ),
         };
@@ -155,10 +158,10 @@ export const useCarsStore = defineStore('cars', () => {
     updating.value = true;
     try {
       const updated = await unassignDriverFromCarRequest(authenticatedApi, carId);
-      if (vm.data.value) {
-        vm.data.value = {
-          ...vm.data.value,
-          data: vm.data.value.data.map((car) =>
+      if (paginated.value) {
+        paginated.value = {
+          ...paginated.value,
+          data: paginated.value.data.map((car) =>
             car.id === updated.id ? updated : car,
           ),
         };
@@ -173,16 +176,16 @@ export const useCarsStore = defineStore('cars', () => {
   return {
     items,
     meta,
-    loading: vm.loading,
+    loading,
+    listError,
     creating,
     updating,
     page,
     limit,
     listResolved,
-    getViewModel,
     reset,
-    getViewModelById,
     fetchCars,
+    fetchCarById,
     getCarSuggestions,
     createCars,
     updateCar,
