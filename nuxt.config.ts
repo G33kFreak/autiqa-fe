@@ -2,7 +2,25 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-
+  build: {
+    transpile: ['@vuepic/vue-datepicker'],
+  },
+  vite: {
+    optimizeDeps: {
+      include: [
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        'echarts/core',
+        'echarts/renderers',
+        'echarts/charts',
+        'echarts/components',
+        'http-status-codes',
+        'vue-echarts',
+        'date-fns/locale/en-US',
+        'date-fns/locale/pl',
+      ],
+    },
+  },
   runtimeConfig: {
     public: {
       /** API origin for browser `$fetch` and Nitro proxy (no trailing slash). */
@@ -10,9 +28,15 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@pinia/nuxt', '@nuxtjs/i18n', '@nuxt/eslint', '@nuxt/fonts', '@nuxt/hints'],
+  modules: [
+    '@pinia/nuxt',
+    '@nuxtjs/i18n',
+    '@nuxt/eslint',
+    '@nuxt/fonts',
+    '@nuxt/hints',
+  ],
 
-  css: ['~/assets/css/main.css'],
+  css: ['~/assets/css/main.css', '@vuepic/vue-datepicker/dist/main.css'],
 
   app: {
     head: {
@@ -63,4 +87,4 @@ export default defineNuxtConfig({
     '/app/**': { appLayout: 'dashboard' },
     '/en/app/**': { appLayout: 'dashboard' },
   },
-})
+});

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { enUS } from 'date-fns/locale/en-US';
+import { pl } from 'date-fns/locale/pl';
+import { VueDatePicker, WeekStart } from '@vuepic/vue-datepicker';
+
 const props = withDefaults(
   defineProps<{
     modelValue: string;
@@ -17,54 +21,21 @@ const emit = defineEmits<{
   'update:modelValue': [value: string];
 }>();
 
-const { locale, t } = useI18n();
+const { locale } = useI18n();
 
-const isCalendarOpen = ref(false);
-const calendarMonthCursor = ref(startOfMonth(new Date()));
 const root = ref<HTMLElement | null>(null);
-const inputEl = ref<HTMLInputElement | null>(null);
-const calendarPanel = ref<HTMLElement | null>(null);
-const calendarStyle = ref<Record<string, string>>({});
-const calendarTeleportTarget = ref<string | HTMLElement>('body');
+const teleportTarget = ref<string | HTMLElement>('body');
 
-const calendarWeekdays = computed(() => {
-  const formatter = new Intl.DateTimeFormat(locale.value, { weekday: 'short' });
-  const mondayFirst = new Date(Date.UTC(2024, 0, 1)); // Monday
-  return Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(mondayFirst);
-    d.setUTCDate(mondayFirst.getUTCDate() + i);
-    return formatter.format(d);
-  });
-});
+const dfLocale = computed(() => (locale.value === 'pl' ? pl : enUS));
 
-const calendarMonthLabel = computed(() =>
-  new Intl.DateTimeFormat(locale.value, {
-    month: 'long',
-    year: 'numeric',
-  }).format(calendarMonthCursor.value),
-);
-
-const calendarDays = computed(() => {
-  const monthStart = startOfMonth(calendarMonthCursor.value);
-  const weekdayOffset = (monthStart.getDay() + 6) % 7; // Monday-first index
-  const gridStart = new Date(monthStart);
-  gridStart.setDate(monthStart.getDate() - weekdayOffset);
-  const selectedIso = props.modelValue || null;
-  const todayIso = formatIsoDate(new Date());
-
-  return Array.from({ length: 42 }, (_, index) => {
-    const date = new Date(gridStart);
-    date.setDate(gridStart.getDate() + index);
-    const iso = formatIsoDate(date);
-    return {
-      key: `${iso}-${index}`,
-      iso,
-      day: date.getDate(),
-      isCurrentMonth: date.getMonth() === monthStart.getMonth(),
-      isSelected: selectedIso === iso,
-      isToday: iso === todayIso,
-    };
-  });
+const innerModel = computed<string | null>({
+  get() {
+    const v = props.modelValue?.trim();
+    return parseIsoDate(v) ? v : null;
+  },
+  set(v) {
+    emit('update:modelValue', v ?? '');
+  },
 });
 
 function parseIsoDate(value: string): Date | null {
@@ -92,209 +63,91 @@ function formatIsoDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-function startOfMonth(date: Date): Date {
-  return new Date(date.getFullYear(), date.getMonth(), 1);
-}
-
-function shiftMonth(delta: number) {
-  const next = new Date(calendarMonthCursor.value);
-  next.setMonth(next.getMonth() + delta);
-  calendarMonthCursor.value = startOfMonth(next);
-}
-
-function openCalendar() {
+function resolveTeleportTarget() {
   const hostDialog = root.value?.closest('dialog');
-  calendarTeleportTarget.value = hostDialog instanceof HTMLElement ? hostDialog : 'body';
-  isCalendarOpen.value = true;
-  const selectedDate = parseIsoDate(props.modelValue);
-  calendarMonthCursor.value = startOfMonth(selectedDate ?? new Date());
-  nextTick(() => {
-    updateCalendarPosition();
-  });
+  teleportTarget.value = hostDialog instanceof HTMLElement ? hostDialog : 'body';
 }
 
-function toggleCalendar() {
-  if (isCalendarOpen.value) {
-    isCalendarOpen.value = false;
-    return;
-  }
-  openCalendar();
-}
-
-function onInput(event: Event) {
-  const target = event.target;
-  if (!(target instanceof HTMLInputElement)) return;
-  emit('update:modelValue', target.value);
-}
-
-function normalizeInput() {
+function normalizeTypedValue() {
   const parsed = parseIsoDate(props.modelValue);
   if (!parsed) return;
   emit('update:modelValue', formatIsoDate(parsed));
 }
-
-function onFocusOut(event: FocusEvent) {
-  const currentTarget = event.currentTarget;
-  if (!(currentTarget instanceof HTMLElement)) return;
-  const nextFocused = event.relatedTarget;
-  if (nextFocused instanceof Node && currentTarget.contains(nextFocused)) return;
-  if (nextFocused instanceof Node && calendarPanel.value?.contains(nextFocused)) return;
-  isCalendarOpen.value = false;
-}
-
-function selectCalendarDay(iso: string) {
-  emit('update:modelValue', iso);
-  isCalendarOpen.value = false;
-}
-
-function updateCalendarPosition() {
-  const host = inputEl.value ?? root.value;
-  const panel = calendarPanel.value;
-  if (!host || !panel || !isCalendarOpen.value) return;
-
-  const rect = host.getBoundingClientRect();
-  const viewportPadding = 12;
-  const gap = 2;
-  const panelWidth = Math.min(
-    Math.max(rect.width, 260),
-    Math.min(320, window.innerWidth - viewportPadding * 2),
-  );
-
-  const left = Math.max(
-    viewportPadding,
-    Math.min(rect.left, window.innerWidth - panelWidth - viewportPadding),
-  );
-
-  const panelHeight = panel.offsetHeight || 320;
-  const spaceBelow = window.innerHeight - rect.bottom - viewportPadding;
-  const spaceAbove = rect.top - viewportPadding;
-  const placeAbove = spaceBelow < panelHeight && spaceAbove > spaceBelow;
-
-  const top = placeAbove
-    ? Math.max(viewportPadding, rect.top - panelHeight - gap)
-    : Math.min(window.innerHeight - panelHeight - viewportPadding, rect.bottom + gap);
-
-  calendarStyle.value = {
-    position: 'fixed',
-    left: `${left}px`,
-    top: `${top}px`,
-    width: `${panelWidth}px`,
-    zIndex: '10050',
-  };
-}
-
-function onViewportChange() {
-  updateCalendarPosition();
-}
-
-watch(
-  () => props.modelValue,
-  (nextValue, prevValue) => {
-    if (!isCalendarOpen.value || nextValue === prevValue) return;
-    if (!parseIsoDate(nextValue)) return;
-    isCalendarOpen.value = false;
-  },
-);
-
-watch(isCalendarOpen, (open) => {
-  if (typeof window === 'undefined') return;
-  if (open) {
-    window.addEventListener('resize', onViewportChange);
-    window.addEventListener('scroll', onViewportChange, true);
-    nextTick(() => {
-      updateCalendarPosition();
-    });
-    return;
-  }
-  window.removeEventListener('resize', onViewportChange);
-  window.removeEventListener('scroll', onViewportChange, true);
-});
-
-onBeforeUnmount(() => {
-  if (typeof window === 'undefined') return;
-  window.removeEventListener('resize', onViewportChange);
-  window.removeEventListener('scroll', onViewportChange, true);
-});
 </script>
 
 <template>
-  <div ref="root" class="fleet-date-input" @focusout="onFocusOut">
-    <div class="fleet-date-input__wrap">
-      <input
-        ref="inputEl"
-        :id="inputId"
-        :value="modelValue"
-        type="text"
-        inputmode="numeric"
-        class="ti-input fleet-date-input__control"
-        :placeholder="placeholder"
-        :title="title"
-        @focus="openCalendar"
-        @input="onInput"
-        @blur="normalizeInput"
+  <div ref="root" class="fleet-date-input">
+    <VueDatePicker
+      v-model="innerModel"
+      model-type="yyyy-MM-dd"
+      :locale="dfLocale"
+      :week-start="WeekStart.Monday"
+      :teleport="teleportTarget"
+      :time-picker="false"
+      :time-config="{ enableTimePicker: false }"
+      auto-apply
+      :formats="{ input: 'yyyy-MM-dd' }"
+      :text-input="{ format: 'yyyy-MM-dd', openMenu: 'open' }"
+      :input-attrs="{ clearable: false }"
+      class="fleet-date-input__dp"
+      @open="resolveTeleportTarget"
+    >
+      <template
+        #dp-input="{
+          value,
+          onInput,
+          onFocus,
+          onBlur,
+          onKeypress,
+          onPaste,
+          onEnter,
+          onTab,
+          toggleMenu,
+        }"
       >
-      <button
-        type="button"
-        class="fleet-date-input__toggle"
-        :aria-label="title || placeholder"
-        @click="toggleCalendar"
-      >
-        <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
-      </button>
-    </div>
-
-    <Teleport :to="calendarTeleportTarget">
-      <div
-        v-if="isCalendarOpen"
-        ref="calendarPanel"
-        class="fleet-date-input__calendar"
-        role="dialog"
-        :aria-label="title || placeholder"
-        :style="calendarStyle"
-      >
-        <div class="fleet-date-input__header">
+        <div class="fleet-date-input__wrap">
+          <input
+            :id="inputId"
+            type="text"
+            inputmode="numeric"
+            class="ti-input fleet-date-input__control"
+            :placeholder="placeholder"
+            :title="title"
+            :value="value"
+            @input="onInput($event)"
+            @focus="
+              () => {
+                resolveTeleportTarget();
+                onFocus();
+              }
+            "
+            @blur="
+              () => {
+                onBlur();
+                normalizeTypedValue();
+              }
+            "
+            @keypress="onKeypress($event)"
+            @paste="onPaste()"
+            @keydown.enter="onEnter($event)"
+            @keydown.tab="onTab($event)"
+          >
           <button
             type="button"
-            class="fleet-date-input__nav"
-            :aria-label="t('appSections.fleet.dateInput.previousMonth')"
-            @click="shiftMonth(-1)"
+            class="fleet-date-input__toggle"
+            :aria-label="title || placeholder"
+            @click="
+              () => {
+                resolveTeleportTarget();
+                toggleMenu();
+              }
+            "
           >
-            <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
-          </button>
-          <p class="fleet-date-input__month">{{ calendarMonthLabel }}</p>
-          <button
-            type="button"
-            class="fleet-date-input__nav"
-            :aria-label="t('appSections.fleet.dateInput.nextMonth')"
-            @click="shiftMonth(1)"
-          >
-            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+            <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
           </button>
         </div>
-
-        <div class="fleet-date-input__weekdays" aria-hidden="true">
-          <span v-for="day in calendarWeekdays" :key="day">{{ day }}</span>
-        </div>
-
-        <div class="fleet-date-input__grid">
-          <button
-            v-for="day in calendarDays"
-            :key="day.key"
-            type="button"
-            class="fleet-date-input__day"
-            :class="{
-              'fleet-date-input__day--outside': !day.isCurrentMonth,
-              'fleet-date-input__day--today': day.isToday,
-              'fleet-date-input__day--selected': day.isSelected,
-            }"
-            :aria-label="day.iso"
-            @click="selectCalendarDay(day.iso)"
-          >
-            {{ day.day }}
-          </button>
-        </div>
-      </div>
-    </Teleport>
+      </template>
+    </VueDatePicker>
   </div>
 </template>
 
@@ -306,6 +159,18 @@ onBeforeUnmount(() => {
 
 .fleet-date-input:focus-within {
   z-index: 40;
+}
+
+.fleet-date-input__dp {
+  width: 100%;
+}
+
+.fleet-date-input__dp :deep(.dp__input_wrap) {
+  width: 100%;
+}
+
+.fleet-date-input__dp :deep(.dp__input) {
+  display: none;
 }
 
 .fleet-date-input__wrap {
@@ -349,125 +214,5 @@ onBeforeUnmount(() => {
 .fleet-date-input__toggle:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--color-secondary) 35%, transparent);
   outline-offset: 2px;
-}
-
-.fleet-date-input__calendar {
-  z-index: 10050;
-  width: min(18rem, calc(100vw - 4.5rem));
-  padding: 0.65rem;
-  border-radius: 0.75rem;
-  background: color-mix(
-    in srgb,
-    var(--color-secondary-container) 16%,
-    var(--color-surface-container-lowest)
-  );
-  backdrop-filter: blur(12px);
-  box-shadow: 0 12px 32px rgba(25, 28, 30, 0.26);
-}
-
-.fleet-date-input__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.45rem;
-  margin-bottom: 0.5rem;
-}
-
-.fleet-date-input__month {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-  color: var(--color-on-surface);
-}
-
-.fleet-date-input__nav {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.65rem;
-  height: 1.65rem;
-  padding: 0;
-  border: none;
-  border-radius: 0.5rem;
-  color: var(--color-on-surface-variant);
-  background: var(--color-surface-container-low);
-  cursor: pointer;
-  transition:
-    background 0.18s ease,
-    color 0.18s ease;
-}
-
-.fleet-date-input__nav .material-symbols-outlined {
-  font-size: 1rem;
-}
-
-.fleet-date-input__nav:hover {
-  color: var(--color-on-surface);
-  background: var(--color-surface-container);
-}
-
-.fleet-date-input__nav:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-secondary) 35%, transparent);
-  outline-offset: 2px;
-}
-
-.fleet-date-input__weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  margin-bottom: 0.25rem;
-}
-
-.fleet-date-input__weekdays > span {
-  text-align: center;
-  font-family: var(--font-sans);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-}
-
-.fleet-date-input__grid {
-  display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  gap: 0.2rem;
-}
-
-.fleet-date-input__day {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 1.75rem;
-  padding: 0;
-  border: none;
-  border-radius: 0.45rem;
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: var(--color-on-surface);
-  background: transparent;
-  cursor: pointer;
-  transition:
-    background 0.16s ease,
-    color 0.16s ease;
-}
-
-.fleet-date-input__day:hover {
-  background: var(--color-surface-container);
-}
-
-.fleet-date-input__day--outside {
-  color: color-mix(in srgb, var(--color-on-surface-variant) 68%, transparent);
-}
-
-.fleet-date-input__day--today {
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-secondary) 40%, transparent);
-}
-
-.fleet-date-input__day--selected {
-  color: var(--color-on-secondary);
-  background: var(--color-secondary);
 }
 </style>

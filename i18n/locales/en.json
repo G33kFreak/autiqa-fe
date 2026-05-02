@@ -97,7 +97,9 @@
       "appSectionsAria": "App sections",
       "buildInfoAria": "Build information",
       "copyright": "© 2026 Autiqa. All rights reserved.",
-      "alphaVersion": "Alpha version"
+      "alphaVersion": "Alpha version",
+      "collapseNav": "Collapse sidebar",
+      "expandNav": "Expand sidebar"
     }
   },
   "nav": {

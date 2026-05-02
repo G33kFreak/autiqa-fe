@@ -97,7 +97,9 @@
       "appSectionsAria": "Sekcje aplikacji",
       "buildInfoAria": "Informacje o wersji",
       "copyright": "© 2026 Autiqa. Wszelkie prawa zastrzeżone.",
-      "alphaVersion": "Wersja alfa"
+      "alphaVersion": "Wersja alfa",
+      "collapseNav": "Zwiń panel nawigacji",
+      "expandNav": "Rozwiń panel nawigacji"
     }
   },
   "nav": {

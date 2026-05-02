@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { open, closeSidebar } = useAppSidebar();
+const { open, closeSidebar, collapsed } = useAppSidebar();
 
 if (import.meta.client) {
   function syncBodyScroll() {
@@ -41,7 +41,7 @@ function onBackdropClick() {
 </script>
 
 <template>
-  <div class="app-shell">
+  <div class="app-shell" :class="{ 'app-shell--sidebar-collapsed': collapsed }">
     <div
       class="app-shell__backdrop"
       :class="{ 'app-shell__backdrop--visible': open }"
@@ -97,6 +97,11 @@ function onBackdropClick() {
 @media (min-width: 768px) {
   .app-shell__main-wrap {
     margin-left: 16rem;
+    transition: margin-left 0.22s ease;
+  }
+
+  .app-shell--sidebar-collapsed .app-shell__main-wrap {
+    margin-left: 4.5rem;
   }
 }
 
