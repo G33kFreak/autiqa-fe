@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import type { CarDto } from '#shared/dto/car.dto';
+import {
+  inspectionDaysLeftClamped,
+  inspectionExpiryTone,
+  isInspectionDueOrExpired,
+} from '~/utils/fleet-inspection-expiry';
 
 const props = defineProps<{
   cars: CarDto[];
@@ -22,22 +27,13 @@ function formatDate(value: string | null): string {
   }).format(date);
 }
 
-function inspectionDaysLeft(value: string | null): number | null {
-  if (!value) return null;
-  const target = new Date(value);
-  if (Number.isNaN(target.getTime())) return null;
-
-  const now = new Date();
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startOfTarget = new Date(
-    target.getFullYear(),
-    target.getMonth(),
-    target.getDate(),
-  );
-
-  const msPerDay = 24 * 60 * 60 * 1000;
-  const diffDays = Math.ceil((startOfTarget.getTime() - startOfToday.getTime()) / msPerDay);
-  return Math.max(diffDays, 0);
+function inspectionCountdownClass(value: string | null) {
+  const tone = inspectionExpiryTone(value);
+  return {
+    'fleet-page__inspection-days-left--ok': tone === 'ok',
+    'fleet-page__inspection-days-left--warn': tone === 'warn',
+    'fleet-page__inspection-days-left--critical': tone === 'critical',
+  };
 }
 
 function driverName(car: CarDto): string {
@@ -125,19 +121,16 @@ function openCarDetails(carId: string) {
               >
                 {{ formatDate(car.inspectionValidUntil) }}
                 <span
-                  v-if="inspectionDaysLeft(car.inspectionValidUntil) !== null"
+                  v-if="inspectionDaysLeftClamped(car.inspectionValidUntil) !== null"
                   class="fleet-page__inspection-days-left"
-                  :class="{
-                    'fleet-page__inspection-days-left--ok':
-                      inspectionDaysLeft(car.inspectionValidUntil)! > 30,
-                    'fleet-page__inspection-days-left--warning':
-                      inspectionDaysLeft(car.inspectionValidUntil)! <= 30,
-                  }"
+                  :class="inspectionCountdownClass(car.inspectionValidUntil)"
                 >
                   {{
-                    t('appSections.fleet.inspectionDaysLeft', {
-                      count: inspectionDaysLeft(car.inspectionValidUntil),
-                    })
+                    isInspectionDueOrExpired(car.inspectionValidUntil)
+                      ? t('appSections.fleet.complianceExpired')
+                      : t('appSections.fleet.inspectionDaysLeft', {
+                          count: inspectionDaysLeftClamped(car.inspectionValidUntil),
+                        })
                   }}
                 </span>
               </span>
@@ -345,14 +338,20 @@ function openCarDetails(carId: string) {
 }
 
 .fleet-page__inspection-days-left {
+  display: inline-block;
   margin-left: 0.35rem;
+  font-weight: 700;
 }
 
 .fleet-page__inspection-days-left--ok {
-  color: var(--color-primary);
+  color: var(--color-secondary);
 }
 
-.fleet-page__inspection-days-left--warning {
+.fleet-page__inspection-days-left--warn {
+  color: #d97706;
+}
+
+.fleet-page__inspection-days-left--critical {
   color: var(--color-error);
 }
 </style>

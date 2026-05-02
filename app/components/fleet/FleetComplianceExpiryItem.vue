@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import {
+  inspectionDaysLeftClamped,
+  inspectionUrgencyFillPercent,
+  isInspectionDueOrExpired,
+} from '~/utils/fleet-inspection-expiry';
+
 const props = withDefaults(
   defineProps<{
     title: string;
@@ -41,32 +47,13 @@ function formatDate(value: string): string {
   }).format(date);
 }
 
-/** Calendar days until `validUntil` (negative if already passed). */
-function rawDaysUntil(value: string): number {
-  const target = new Date(value);
-  if (Number.isNaN(target.getTime())) return 0;
-
-  const now = new Date();
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const startOfTarget = new Date(target.getFullYear(), target.getMonth(), target.getDate());
-  const msPerDay = 24 * 60 * 60 * 1000;
-  return Math.ceil((startOfTarget.getTime() - startOfToday.getTime()) / msPerDay);
-}
-
-function daysLeft(value: string): number {
-  return Math.max(rawDaysUntil(value), 0);
-}
-
-/** Bar fill: 0% with lots of time left, 100% at the deadline (fills as expiry approaches). */
-function urgencyFillPercent(days: number, maxDays = 365): number {
-  const clamped = Math.min(Math.max(days, 0), maxDays);
-  return Math.round(((maxDays - clamped) / maxDays) * 100);
-}
-
-const inspectionDaysLeft = computed(() => daysLeft(props.validUntil));
-/** Due today or past due — show “Expired” instead of “0 days left”. */
-const isDueOrExpired = computed(() => rawDaysUntil(props.validUntil) <= 0);
-const urgencyFill = computed(() => urgencyFillPercent(inspectionDaysLeft.value));
+const inspectionDaysLeft = computed(
+  () => inspectionDaysLeftClamped(props.validUntil) ?? 0,
+);
+const isDueOrExpired = computed(() => isInspectionDueOrExpired(props.validUntil));
+const urgencyFill = computed(() =>
+  inspectionUrgencyFillPercent(inspectionDaysLeft.value),
+);
 const isWarning = computed(() => inspectionDaysLeft.value <= 30);
 /** ≤7d: critical (red). 8–30d: amber warning. */
 const isCritical = computed(() => inspectionDaysLeft.value <= 7);
