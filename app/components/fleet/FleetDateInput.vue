@@ -9,11 +9,14 @@ const props = withDefaults(
     inputId?: string;
     title?: string;
     placeholder?: string;
+    /** Renders the calendar inline (no text field / overlay). Use inside dialogs. */
+    inline?: boolean;
   }>(),
   {
     inputId: undefined,
     title: '',
     placeholder: 'YYYY-MM-DD',
+    inline: false,
   },
 );
 
@@ -76,8 +79,26 @@ function normalizeTypedValue() {
 </script>
 
 <template>
-  <div ref="root" class="fleet-date-input">
+  <div
+    ref="root"
+    class="fleet-date-input"
+    :class="{ 'fleet-date-input--inline': inline }"
+  >
     <VueDatePicker
+      v-if="inline"
+      v-model="innerModel"
+      inline
+      model-type="yyyy-MM-dd"
+      :locale="dfLocale"
+      :week-start="WeekStart.Monday"
+      :time-picker="false"
+      :time-config="{ enableTimePicker: false }"
+      auto-apply
+      :formats="{ input: 'yyyy-MM-dd' }"
+      class="fleet-date-input__dp fleet-date-input__dp--inline"
+    />
+    <VueDatePicker
+      v-else
       v-model="innerModel"
       model-type="yyyy-MM-dd"
       :locale="dfLocale"
@@ -163,6 +184,25 @@ function normalizeTypedValue() {
 
 .fleet-date-input__dp {
   width: 100%;
+}
+
+.fleet-date-input--inline {
+  z-index: auto;
+}
+
+.fleet-date-input__dp--inline {
+  width: 100%;
+}
+
+.fleet-date-input__dp--inline :deep(.dp__outer_menu_wrap) {
+  width: 100%;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.fleet-date-input__dp--inline :deep(.dp__menu_inner) {
+  padding: 0;
 }
 
 .fleet-date-input__dp :deep(.dp__input_wrap) {

@@ -151,6 +151,7 @@
       "driverUnassigned": "Nieprzypisany",
       "unknownModel": "Nieznany model",
       "inspectionDaysLeft": "pozostało {count} dni",
+      "complianceExpired": "Przeterminowane",
       "vehicleDetailsTitle": "Szczegóły pojazdu",
       "vehicleDetailsLead": "Szczegółowy widok karty pojazdu pojawi się wkrótce.",
       "vehicleIdLabel": "ID pojazdu",
@@ -228,6 +229,23 @@
         "loadMore": "Wczytaj więcej",
         "validUntil": "Ważne do {date}",
         "attachments": "Załączniki",
+        "complianceItemEditDateAria": "Edytuj datę ważności",
+        "inspectionDateDialog": {
+          "title": "Data ważności przeglądu",
+          "lead": "Wybierz datę, do której przegląd techniczny pozostaje ważny.",
+          "dateLabel": "Ważne do",
+          "save": "Zapisz",
+          "validation": "Wybierz prawidłową datę.",
+          "error": "Nie udało się zaktualizować pojazdu. Spróbuj ponownie."
+        },
+        "insuranceDateDialog": {
+          "title": "Data ważności polisy",
+          "lead": "Wybierz datę, do której obowiązuje ochrona OC/AC.",
+          "dateLabel": "Ważne do",
+          "save": "Zapisz",
+          "validation": "Wybierz prawidłową datę.",
+          "error": "Nie udało się zaktualizować pojazdu. Spróbuj ponownie."
+        },
         "complianceItems": {
           "technicalInspection": "Przegląd techniczny",
           "ocAcPolicy": "Polisa OC/AC"

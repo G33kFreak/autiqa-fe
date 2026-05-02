@@ -5,10 +5,13 @@ const props = withDefaults(defineProps<{
   lead?: string;
   width?: string;
   maxHeight?: string;
+  /** Scrollable body region; keep large enough for inline pickers. */
+  bodyMaxHeight?: string;
 }>(), {
   lead: '',
   width: 'min(52rem, calc(100vw - 2rem))',
   maxHeight: 'min(92dvh, 58rem)',
+  bodyMaxHeight: 'min(58dvh, 38rem)',
 });
 
 const emit = defineEmits<{
@@ -85,7 +88,10 @@ defineExpose({ showModal, close });
         </button>
       </header>
 
-      <section class="entity-dialog-shell__body">
+      <section
+        class="entity-dialog-shell__body"
+        :style="{ maxHeight: bodyMaxHeight }"
+      >
         <slot name="body" />
       </section>
 
@@ -174,7 +180,6 @@ defineExpose({ showModal, close });
   flex-direction: column;
   gap: 1rem;
   overflow-y: auto;
-  max-height: min(58dvh, 38rem);
 }
 
 .entity-dialog-shell__footer {

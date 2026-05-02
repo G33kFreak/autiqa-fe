@@ -19,7 +19,8 @@ defineProps<{
 const emit = defineEmits<{
   assignOther: [];
   removeDriver: [];
-  complianceEmptyCta: [];
+  complianceEmptyCta: [kind: 'inspection' | 'insurance'];
+  complianceEdit: [kind: 'inspection' | 'insurance'];
 }>();
 
 const { t } = useI18n();
@@ -40,7 +41,8 @@ const { t } = useI18n();
           :attachments="item.attachments"
           :icon="item.icon"
           :show-empty-cta="item.showEmptyCta ?? true"
-          @empty-cta-click="emit('complianceEmptyCta')"
+          @empty-cta-click="(k) => emit('complianceEmptyCta', k)"
+          @edit-click="(k) => emit('complianceEdit', k)"
         />
       </template>
       <article v-else class="compliance-empty">

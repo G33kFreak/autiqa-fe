@@ -151,6 +151,7 @@
       "driverUnassigned": "Unassigned",
       "unknownModel": "Unknown model",
       "inspectionDaysLeft": "{count} days left",
+      "complianceExpired": "Expired",
       "vehicleDetailsTitle": "Vehicle details",
       "vehicleDetailsLead": "Detailed fleet card view is coming soon.",
       "vehicleIdLabel": "Vehicle ID",
@@ -228,6 +229,23 @@
         "loadMore": "Load more",
         "validUntil": "Valid until {date}",
         "attachments": "Attachments",
+        "complianceItemEditDateAria": "Edit expiry date",
+        "inspectionDateDialog": {
+          "title": "Inspection expiry date",
+          "lead": "Choose the date through which the technical inspection remains valid.",
+          "dateLabel": "Valid until",
+          "save": "Save",
+          "validation": "Pick a valid date.",
+          "error": "Could not update the vehicle. Try again."
+        },
+        "insuranceDateDialog": {
+          "title": "Policy expiry date",
+          "lead": "Choose the date through which your OC/AC coverage remains valid.",
+          "dateLabel": "Valid until",
+          "save": "Save",
+          "validation": "Pick a valid date.",
+          "error": "Could not update the vehicle. Try again."
+        },
         "complianceItems": {
           "technicalInspection": "Technical inspection",
           "ocAcPolicy": "OC/AC policy"

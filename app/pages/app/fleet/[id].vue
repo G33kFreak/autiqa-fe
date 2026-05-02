@@ -8,6 +8,7 @@ import type { IncomeDto } from '#shared/dto/income.dto';
 import type { IncomesSummaryResponseDto } from '#shared/dto/incomes-summary-response.dto';
 import AddExpenseDialog from '~/components/fleet/AddExpenseDialog.vue';
 import AddIncomeDialog from '~/components/fleet/AddIncomeDialog.vue';
+import FleetDateInput from '~/components/fleet/FleetDateInput.vue';
 import FleetIncomeHistoryTable, {
   type FleetIncomeHistoryRow,
 } from '~/components/fleet/FleetIncomeHistoryTable.vue';
@@ -31,6 +32,34 @@ const vin = ref('');
 type VehicleLedgerTab = 'fees' | 'maintenance';
 const vehicleLedgerTab = ref<VehicleLedgerTab>('fees');
 const assignDialog = ref<InstanceType<typeof EntityDialogShell> | null>(null);
+const complianceDateDialog = ref<InstanceType<typeof EntityDialogShell> | null>(
+  null,
+);
+const complianceDateKind = ref<'inspection' | 'insurance' | null>(null);
+const complianceDateFieldLabelId = useId();
+const complianceDateValue = ref('');
+const complianceDateError = ref<string | null>(null);
+
+const complianceDateDialogTitle = computed(() => {
+  if (complianceDateKind.value === 'insurance') {
+    return t('appSections.fleet.vehicleDetails.insuranceDateDialog.title');
+  }
+  return t('appSections.fleet.vehicleDetails.inspectionDateDialog.title');
+});
+
+const complianceDateDialogLead = computed(() => {
+  if (complianceDateKind.value === 'insurance') {
+    return t('appSections.fleet.vehicleDetails.insuranceDateDialog.lead');
+  }
+  return t('appSections.fleet.vehicleDetails.inspectionDateDialog.lead');
+});
+
+const complianceDateLabel = computed(() => {
+  if (complianceDateKind.value === 'insurance') {
+    return t('appSections.fleet.vehicleDetails.insuranceDateDialog.dateLabel');
+  }
+  return t('appSections.fleet.vehicleDetails.inspectionDateDialog.dateLabel');
+});
 const assignSearchInput = ref('');
 const assignSuggestions = ref<DriverDto[]>([]);
 const assignSearching = ref(false);
@@ -324,6 +353,11 @@ function toComplianceIsoDate(raw: string): string {
   const m = String(parsed.getMonth() + 1).padStart(2, '0');
   const d = String(parsed.getDate()).padStart(2, '0');
   return `${y}-${m}-${d}`;
+}
+
+function optionalIsoForPatch(value: string | null | undefined): string | undefined {
+  const s = complianceDateFromCar(value ?? null);
+  return s || undefined;
 }
 
 const complianceItems = computed(() => {
@@ -709,7 +743,8 @@ async function handleUpdateVehicleInfo(payload: {
     model: payload.carName,
     plateNumber: payload.registrationNumber || undefined,
     vin: payload.vin || undefined,
-    inspectionValidUntil: car.value.inspectionValidUntil || undefined,
+    inspectionValidUntil: optionalIsoForPatch(car.value.inspectionValidUntil),
+    insuranceValidUntil: optionalIsoForPatch(car.value.insuranceValidUntil),
   };
   const updated = await carsStore.updateCar(car.value.id, updatePayload);
   car.value = updated;
@@ -718,11 +753,73 @@ async function handleUpdateVehicleInfo(payload: {
   vin.value = updated.vin ?? '';
 }
 
-function handleComplianceEmptyCta() {
-  document.getElementById('fleet-vehicle-hero')?.scrollIntoView({
-    behavior: 'smooth',
-    block: 'start',
-  });
+function resetComplianceDateDialog() {
+  complianceDateError.value = null;
+  complianceDateValue.value = '';
+  complianceDateKind.value = null;
+}
+
+function openComplianceDateDialog(kind: 'inspection' | 'insurance') {
+  complianceDateKind.value = kind;
+  complianceDateError.value = null;
+  const raw =
+    kind === 'inspection'
+      ? car.value?.inspectionValidUntil
+      : car.value?.insuranceValidUntil;
+  complianceDateValue.value = complianceDateFromCar(raw ?? null) || '';
+  complianceDateDialog.value?.showModal();
+}
+
+function closeComplianceDateDialog() {
+  complianceDateDialog.value?.close();
+}
+
+function handleComplianceEmptyCta(kind: 'inspection' | 'insurance') {
+  openComplianceDateDialog(kind);
+}
+
+function handleComplianceEdit(kind: 'inspection' | 'insurance') {
+  openComplianceDateDialog(kind);
+}
+
+async function saveComplianceDate() {
+  const iso = complianceDateValue.value?.trim();
+  const kind = complianceDateKind.value;
+  if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+    const key =
+      kind === 'insurance'
+        ? 'appSections.fleet.vehicleDetails.insuranceDateDialog.validation'
+        : 'appSections.fleet.vehicleDetails.inspectionDateDialog.validation';
+    complianceDateError.value = t(key);
+    return;
+  }
+  if (!car.value || !kind) return;
+  complianceDateError.value = null;
+  try {
+    const updatePayload: CreateCarDto = {
+      model: car.value.model,
+      plateNumber: car.value.plateNumber || undefined,
+      vin: car.value.vin || undefined,
+      inspectionValidUntil:
+        kind === 'inspection'
+          ? iso
+          : optionalIsoForPatch(car.value.inspectionValidUntil),
+      insuranceValidUntil:
+        kind === 'insurance'
+          ? iso
+          : optionalIsoForPatch(car.value.insuranceValidUntil),
+    };
+    const updated = await carsStore.updateCar(car.value.id, updatePayload);
+    car.value = updated;
+    closeComplianceDateDialog();
+    resetComplianceDateDialog();
+  } catch {
+    const key =
+      kind === 'insurance'
+        ? 'appSections.fleet.vehicleDetails.insuranceDateDialog.error'
+        : 'appSections.fleet.vehicleDetails.inspectionDateDialog.error';
+    complianceDateError.value = t(key);
+  }
 }
 </script>
 
@@ -923,6 +1020,7 @@ function handleComplianceEmptyCta() {
             @assign-other="handleAssignOther"
             @remove-driver="handleRemoveDriver"
             @compliance-empty-cta="handleComplianceEmptyCta"
+            @compliance-edit="handleComplianceEdit"
           />
         </aside>
       </div>
@@ -983,6 +1081,62 @@ function handleComplianceEmptyCta() {
                 </span>
               </button>
             </div>
+          </div>
+        </template>
+      </EntityDialogShell>
+      <EntityDialogShell
+        ref="complianceDateDialog"
+        title-id="fleet-compliance-date-dialog-title"
+        :title="complianceDateDialogTitle"
+        :lead="complianceDateDialogLead"
+        width="min(24rem, calc(100vw - 2rem))"
+        max-height="min(92dvh, 44rem)"
+        body-max-height="min(72dvh, 30rem)"
+        @close="resetComplianceDateDialog"
+      >
+        <template #body>
+          <div
+            class="fleet-expense-dialog__field fleet-expense-dialog__field--full"
+            role="group"
+            :aria-labelledby="complianceDateFieldLabelId"
+          >
+            <span :id="complianceDateFieldLabelId">{{ complianceDateLabel }}</span>
+            <FleetDateInput
+              v-model="complianceDateValue"
+              inline
+              :title="complianceDateLabel"
+            />
+          </div>
+        </template>
+        <template #footer>
+          <div class="fleet-expense-dialog__footer">
+            <p
+              v-if="complianceDateError"
+              class="fleet-expense-dialog__error"
+              role="alert"
+            >
+              {{ complianceDateError }}
+            </p>
+            <button
+              type="button"
+              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--ghost"
+              :disabled="carsStore.updating"
+              @click="closeComplianceDateDialog"
+            >
+              {{ t('appSections.fleet.vehicleDetails.cancel') }}
+            </button>
+            <button
+              type="button"
+              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--primary"
+              :disabled="carsStore.updating"
+              @click="saveComplianceDate"
+            >
+              {{
+                carsStore.updating
+                  ? t('common.loading')
+                  : t('appSections.fleet.vehicleDetails.save')
+              }}
+            </button>
           </div>
         </template>
       </EntityDialogShell>

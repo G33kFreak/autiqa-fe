@@ -12,8 +12,21 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  emptyCtaClick: [];
+  emptyCtaClick: [kind: 'inspection' | 'insurance'];
+  editClick: [kind: 'inspection' | 'insurance'];
 }>();
+
+function complianceKind(): 'inspection' | 'insurance' {
+  return props.icon === 'shield' ? 'insurance' : 'inspection';
+}
+
+function onEmptyCtaClick() {
+  emit('emptyCtaClick', complianceKind());
+}
+
+function onEditClick() {
+  emit('editClick', complianceKind());
+}
 
 const { t } = useI18n();
 const emptyHeadingId = useId();
@@ -28,7 +41,8 @@ function formatDate(value: string): string {
   }).format(date);
 }
 
-function daysLeft(value: string): number {
+/** Calendar days until `validUntil` (negative if already passed). */
+function rawDaysUntil(value: string): number {
   const target = new Date(value);
   if (Number.isNaN(target.getTime())) return 0;
 
@@ -36,21 +50,35 @@ function daysLeft(value: string): number {
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const startOfTarget = new Date(target.getFullYear(), target.getMonth(), target.getDate());
   const msPerDay = 24 * 60 * 60 * 1000;
-  const diffDays = Math.ceil((startOfTarget.getTime() - startOfToday.getTime()) / msPerDay);
-  return Math.max(diffDays, 0);
+  return Math.ceil((startOfTarget.getTime() - startOfToday.getTime()) / msPerDay);
 }
 
-function progressFromDaysLeft(days: number, maxDays = 365): number {
+function daysLeft(value: string): number {
+  return Math.max(rawDaysUntil(value), 0);
+}
+
+/** Bar fill: 0% with lots of time left, 100% at the deadline (fills as expiry approaches). */
+function urgencyFillPercent(days: number, maxDays = 365): number {
   const clamped = Math.min(Math.max(days, 0), maxDays);
-  return Math.round((clamped / maxDays) * 100);
+  return Math.round(((maxDays - clamped) / maxDays) * 100);
 }
 
 const inspectionDaysLeft = computed(() => daysLeft(props.validUntil));
-const progress = computed(() => progressFromDaysLeft(inspectionDaysLeft.value));
+/** Due today or past due — show “Expired” instead of “0 days left”. */
+const isDueOrExpired = computed(() => rawDaysUntil(props.validUntil) <= 0);
+const urgencyFill = computed(() => urgencyFillPercent(inspectionDaysLeft.value));
 const isWarning = computed(() => inspectionDaysLeft.value <= 30);
+/** ≤7d: critical (red). 8–30d: amber warning. */
+const isCritical = computed(() => inspectionDaysLeft.value <= 7);
 const hasValidDate = computed(() => !Number.isNaN(new Date(props.validUntil).getTime()));
 
-const iconName = computed(() => (props.icon === 'shield' ? 'shield' : 'verified'));
+/** Status glyph: warning when ≤30d, else verified/shield. */
+const statusIconName = computed(() => {
+  if (isWarning.value) {
+    return 'warning';
+  }
+  return props.icon === 'shield' ? 'shield' : 'verified';
+});
 
 const emptyCopyKey = computed(() =>
   props.icon === 'shield'
@@ -77,10 +105,34 @@ const emptyCtaKey = computed(() =>
         </p>
         <h3 class="compliance-item__title">{{ props.title }}</h3>
       </div>
-      <div class="compliance-item__icon-wrap" aria-hidden="true">
-        <span class="material-symbols-outlined compliance-item__icon">{{
-          iconName
-        }}</span>
+      <div class="compliance-item__head-actions">
+        <button
+          type="button"
+          class="compliance-item__edit"
+          :aria-label="t('appSections.fleet.vehicleDetails.complianceItemEditDateAria')"
+          @click="onEditClick"
+        >
+          <span class="material-symbols-outlined compliance-item__edit-icon" aria-hidden="true"
+            >edit</span
+          >
+        </button>
+        <div
+          class="compliance-item__icon-wrap"
+          :class="{
+            'compliance-item__icon-wrap--critical': isCritical,
+            'compliance-item__icon-wrap--warn': isWarning && !isCritical,
+          }"
+          aria-hidden="true"
+        >
+          <span
+            class="material-symbols-outlined compliance-item__icon"
+            :class="{
+              'compliance-item__icon--warn': isWarning && !isCritical,
+              'compliance-item__icon--critical': isCritical,
+            }"
+            >{{ statusIconName }}</span
+          >
+        </div>
       </div>
     </div>
 
@@ -102,31 +154,42 @@ const emptyCtaKey = computed(() =>
           class="compliance-item__meter-value"
           :class="{
             'compliance-item__meter-value--ok': !isWarning,
-            'compliance-item__meter-value--warn': isWarning,
+            'compliance-item__meter-value--critical': isCritical,
+            'compliance-item__meter-value--warn': isWarning && !isCritical,
           }"
         >
           {{
-            t('appSections.fleet.inspectionDaysLeft', {
-              count: inspectionDaysLeft,
-            })
+            isDueOrExpired
+              ? t('appSections.fleet.complianceExpired')
+              : t('appSections.fleet.inspectionDaysLeft', {
+                  count: inspectionDaysLeft,
+                })
           }}
         </span>
       </div>
       <div
         class="compliance-item__bar"
         role="progressbar"
-        :aria-valuenow="progress"
+        :aria-valuenow="urgencyFill"
         aria-valuemin="0"
         aria-valuemax="100"
+        :aria-valuetext="
+          isDueOrExpired
+            ? t('appSections.fleet.complianceExpired')
+            : t('appSections.fleet.inspectionDaysLeft', {
+                count: inspectionDaysLeft,
+              })
+        "
         :aria-label="t('appSections.fleet.vehicleDetails.timeRemaining')"
       >
         <div
           class="compliance-item__bar-fill"
           :class="{
             'compliance-item__bar-fill--ok': !isWarning,
-            'compliance-item__bar-fill--warn': isWarning,
+            'compliance-item__bar-fill--critical': isCritical,
+            'compliance-item__bar-fill--warn': isWarning && !isCritical,
           }"
-          :style="{ width: `${progress}%` }"
+          :style="{ width: `${urgencyFill}%` }"
         />
       </div>
     </div>
@@ -167,7 +230,7 @@ const emptyCtaKey = computed(() =>
         v-if="showEmptyCta"
         type="button"
         class="compliance-item__empty-cta"
-        @click="emit('emptyCtaClick')"
+        @click="onEmptyCtaClick"
       >
         <span
           class="material-symbols-outlined compliance-item__empty-cta-icon"
@@ -302,6 +365,52 @@ const emptyCtaKey = computed(() =>
   margin-bottom: 1rem;
 }
 
+.compliance-item__head-actions {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.compliance-item__edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 55%, transparent);
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-surface-container-lowest) 88%, transparent);
+  color: var(--color-on-surface-variant);
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.compliance-item__edit:hover {
+  background: var(--color-surface-container-high);
+  border-color: color-mix(in srgb, var(--color-secondary) 28%, var(--color-outline-variant));
+  color: var(--color-secondary);
+}
+
+.compliance-item__edit:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-secondary) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.compliance-item__edit-icon {
+  font-size: 1.05rem;
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
 .compliance-item__head-text {
   min-width: 0;
 }
@@ -338,10 +447,44 @@ const emptyCtaKey = computed(() =>
   color: var(--color-secondary-container);
 }
 
+.compliance-item__icon-wrap--warn {
+  background: color-mix(
+    in srgb,
+    #fbbf24 22%,
+    var(--color-surface-container-lowest)
+  );
+  color: #d97706;
+}
+
+.compliance-item__icon-wrap--critical {
+  background: color-mix(
+    in srgb,
+    var(--color-error) 14%,
+    var(--color-surface-container-lowest)
+  );
+  color: var(--color-error);
+}
+
 .compliance-item__icon {
   font-size: 1.25rem;
   font-variation-settings:
     'FILL' 0,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.compliance-item__icon--warn {
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.compliance-item__icon--critical {
+  font-variation-settings:
+    'FILL' 1,
     'wght' 500,
     'GRAD' 0,
     'opsz' 24;
@@ -401,6 +544,10 @@ const emptyCtaKey = computed(() =>
 }
 
 .compliance-item__meter-value--warn {
+  color: #d97706;
+}
+
+.compliance-item__meter-value--critical {
   color: var(--color-error);
 }
 
@@ -423,6 +570,10 @@ const emptyCtaKey = computed(() =>
 }
 
 .compliance-item__bar-fill--warn {
+  background: #f59e0b;
+}
+
+.compliance-item__bar-fill--critical {
   background: var(--color-error);
 }
 </style>

@@ -7,4 +7,5 @@ export interface CreateCarDto {
   plateNumber?: string;
   assignedDriverId?: string;
   inspectionValidUntil?: string;
+  insuranceValidUntil?: string;
 }
