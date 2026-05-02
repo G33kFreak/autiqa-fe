@@ -403,7 +403,7 @@ defineExpose({ showModal, close });
   align-items: center;
   gap: 0.35rem;
   cursor: pointer;
-  transition: opacity 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
+  transition: opacity 0.18s ease, background-color 0.18s ease, filter 0.18s ease;
 }
 
 .add-driver-dialog__btn:disabled,
@@ -424,15 +424,10 @@ defineExpose({ showModal, close });
 
 .add-driver-dialog__btn--primary {
   color: var(--color-on-secondary);
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
+  background: var(--color-secondary);
 }
 
-.add-driver-dialog__btn--primary:hover {
-  opacity: 0.94;
-  transform: translateY(-1px);
+.add-driver-dialog__btn--primary:hover:not(:disabled) {
+  filter: brightness(1.06);
 }
 </style>

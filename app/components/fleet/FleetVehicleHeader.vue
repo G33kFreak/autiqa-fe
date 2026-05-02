@@ -413,27 +413,17 @@ function setUppercaseField(
   cursor: pointer;
   transition:
     background-color 0.18s ease,
-    box-shadow 0.18s ease,
-    transform 0.18s ease;
+    filter 0.18s ease;
 }
 
 .fleet-vehicle-page__action:disabled {
   opacity: 0.75;
   cursor: not-allowed;
-  transform: none;
 }
 
 .fleet-vehicle-page__action--primary {
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
+  background: var(--color-secondary);
   color: var(--color-on-secondary);
-  box-shadow:
-    0 4px 16px
-      color-mix(in srgb, var(--color-secondary-container) 28%, transparent),
-    0 12px 32px color-mix(in srgb, var(--color-secondary) 12%, transparent);
 }
 
 .fleet-vehicle-page__action--secondary {
@@ -442,16 +432,11 @@ function setUppercaseField(
 }
 
 .fleet-vehicle-page__action--primary:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow:
-    0 6px 22px
-      color-mix(in srgb, var(--color-secondary-container) 32%, transparent),
-    0 14px 36px color-mix(in srgb, var(--color-secondary) 14%, transparent);
+  filter: brightness(1.06);
 }
 
 .fleet-vehicle-page__action--secondary:hover:not(:disabled) {
   background: var(--color-surface-variant);
-  transform: translateY(-1px);
 }
 
 .fleet-vehicle-page__action-icon {

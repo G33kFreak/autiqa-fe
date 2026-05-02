@@ -271,7 +271,7 @@ onBeforeUnmount(() => {
 }
 
 .range-picker__day--edge {
-  background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-container));
+  background: var(--color-secondary);
   color: var(--color-on-secondary);
 }
 </style>

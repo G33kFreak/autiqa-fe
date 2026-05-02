@@ -172,10 +172,12 @@ const complianceItems = computed(() => {
   ];
 });
 const driverCard = computed(() => {
-  if (!car.value?.driver) return { name: '', phone: '' };
+  if (!car.value?.driver) return { name: '', phone: '', email: '' };
+  const d = car.value.driver;
   return {
-    name: `${car.value.driver.firstName} ${car.value.driver.lastName}`.trim(),
-    phone: '',
+    name: `${d.firstName} ${d.lastName}`.trim(),
+    phone: (d.phoneNumber ?? '').trim(),
+    email: (d.email ?? '').trim(),
   };
 });
 
@@ -1159,11 +1161,11 @@ function handleComplianceEmptyCta() {
 
 .fleet-expense-dialog__btn--primary {
   color: var(--color-on-secondary);
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
+  background: var(--color-secondary);
+}
+
+.fleet-expense-dialog__btn--primary:hover:not(:disabled) {
+  filter: brightness(1.06);
 }
 
 .fleet-expense-dialog__btn--danger {

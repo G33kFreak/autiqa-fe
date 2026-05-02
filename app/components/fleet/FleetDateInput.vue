@@ -468,10 +468,6 @@ onBeforeUnmount(() => {
 
 .fleet-date-input__day--selected {
   color: var(--color-on-secondary);
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
+  background: var(--color-secondary);
 }
 </style>

@@ -12,6 +12,7 @@ defineProps<{
   driver: {
     name: string;
     phone: string;
+    email?: string;
   };
 }>();
 
@@ -53,6 +54,7 @@ const { t } = useI18n();
       <FleetAssignedDriverCard
         :name="driver.name"
         :phone="driver.phone"
+        :email="driver.email ?? ''"
         @assign-other="emit('assignOther')"
         @remove-driver="emit('removeDriver')"
       />

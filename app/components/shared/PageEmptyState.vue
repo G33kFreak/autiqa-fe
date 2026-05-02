@@ -160,15 +160,9 @@ const emit = defineEmits<{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(
-    145deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
+  background: var(--color-secondary);
   color: var(--color-on-secondary);
-  box-shadow:
-    0 6px 18px color-mix(in srgb, var(--color-secondary) 28%, transparent),
-    0 0 0 4px var(--color-surface-container-lowest);
+  box-shadow: 0 0 0 4px var(--color-surface-container-lowest);
 }
 
 .page-empty-state__badge-icon {
@@ -236,30 +230,16 @@ const emit = defineEmits<{
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease,
-    background 0.18s ease;
+  transition: filter 0.18s ease, background 0.18s ease;
 }
 
 .page-empty-state__cta--primary {
   color: var(--color-on-secondary);
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
-  box-shadow:
-    0 4px 16px color-mix(in srgb, var(--color-secondary-container) 28%, transparent),
-    0 12px 32px color-mix(in srgb, var(--color-secondary) 12%, transparent);
+  background: var(--color-secondary);
 }
 
 .page-empty-state__cta--primary:hover:not(:disabled) {
-  opacity: 0.96;
-  transform: translateY(-1px);
-  box-shadow:
-    0 6px 22px color-mix(in srgb, var(--color-secondary-container) 32%, transparent),
-    0 14px 36px color-mix(in srgb, var(--color-secondary) 14%, transparent);
+  filter: brightness(1.06);
 }
 
 .page-empty-state__cta--secondary {

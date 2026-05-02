@@ -83,7 +83,7 @@ const periods = ['currentWeek', 'currentMonth', 'currentYear', 'customRange'] as
 }
 
 .finance-filters__period-btn--active {
-  background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-container));
+  background: var(--color-secondary);
   color: var(--color-on-secondary);
 }
 
@@ -96,7 +96,7 @@ const periods = ['currentWeek', 'currentMonth', 'currentYear', 'customRange'] as
 
 .finance-filters__period-btn[aria-disabled='true'].finance-filters__period-btn--active {
   color: var(--color-on-secondary);
-  background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-container));
+  background: var(--color-secondary);
   font-weight: 700;
 }
 

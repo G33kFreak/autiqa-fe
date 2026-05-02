@@ -605,7 +605,7 @@ defineExpose({ showModal, close });
   font-size: 0.8125rem;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.18s ease, background-color 0.18s ease, transform 0.18s ease;
+  transition: opacity 0.18s ease, background-color 0.18s ease, filter 0.18s ease;
 }
 
 .expense-dialog__btn:disabled {
@@ -624,16 +624,11 @@ defineExpose({ showModal, close });
 
 .expense-dialog__btn--primary {
   color: var(--color-on-secondary);
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
+  background: var(--color-secondary);
 }
 
 .expense-dialog__btn--primary:hover:not(:disabled) {
-  opacity: 0.94;
-  transform: translateY(-1px);
+  filter: brightness(1.06);
 }
 
 @media (max-width: 34rem) {

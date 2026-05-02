@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import InitialsAvatar from '~/components/shared/InitialsAvatar.vue';
 
-const props = defineProps<{
-  name: string;
-  phone: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    name: string;
+    phone: string;
+    email?: string;
+  }>(),
+  { email: '' },
+);
 
 const emit = defineEmits<{
   assignOther: [];
@@ -19,6 +23,23 @@ const avatarAriaLabel = computed(() =>
     ? props.name.trim()
     : t('appSections.fleet.driverUnassigned'),
 );
+
+type ContactSegment = { kind: 'email' | 'phone'; value: string };
+
+/** Non-empty email / phone in stable order (email, then phone). */
+const contactSegments = computed<ContactSegment[]>(() => {
+  if (!hasDriver.value) return [];
+  const out: ContactSegment[] = [];
+  const email = (props.email ?? '').trim();
+  const phone = (props.phone ?? '').trim();
+  if (email) out.push({ kind: 'email', value: email });
+  if (phone) out.push({ kind: 'phone', value: phone });
+  return out;
+});
+
+function contactIcon(kind: ContactSegment['kind']): string {
+  return kind === 'email' ? 'mail' : 'call';
+}
 </script>
 
 <template>
@@ -34,8 +55,20 @@ const avatarAriaLabel = computed(() =>
         <p class="compliance-row__title">
           {{ hasDriver ? name : t('appSections.fleet.driverUnassigned') }}
         </p>
-        <p class="compliance-row__description">
-          {{ hasDriver ? phone : t('appSections.fleet.vehicleDetails.emptyDriverCopy') }}
+        <p v-if="hasDriver && contactSegments.length" class="compliance-row__subtitle">
+          <template v-for="(seg, i) in contactSegments" :key="`${seg.kind}-${i}`">
+            <span v-if="i > 0" class="compliance-row__subtitle-sep" aria-hidden="true">·</span>
+            <span class="compliance-row__subtitle-item">
+              <span
+                class="material-symbols-outlined compliance-row__subtitle-icon"
+                aria-hidden="true"
+              >{{ contactIcon(seg.kind) }}</span>
+              {{ seg.value }}
+            </span>
+          </template>
+        </p>
+        <p v-else-if="!hasDriver" class="compliance-row__description">
+          {{ t('appSections.fleet.vehicleDetails.emptyDriverCopy') }}
         </p>
       </div>
     </div>
@@ -74,7 +107,7 @@ const avatarAriaLabel = computed(() =>
 .compliance-row__identity {
   margin-top: 0.55rem;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
   gap: 0.75rem;
   width: 100%;
@@ -91,6 +124,45 @@ const avatarAriaLabel = computed(() =>
   line-height: 1.2;
   font-weight: 800;
   color: var(--color-on-surface);
+}
+
+.compliance-row__subtitle {
+  margin: 0.25rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.45rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  font-weight: 500;
+  color: var(--color-on-surface-variant);
+  word-break: break-word;
+}
+
+.compliance-row__subtitle-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  min-width: 0;
+}
+
+.compliance-row__subtitle-icon {
+  flex-shrink: 0;
+  font-size: 1rem;
+  line-height: 1;
+  color: var(--color-outline);
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 20;
+}
+
+.compliance-row__subtitle-sep {
+  color: color-mix(in srgb, var(--color-on-surface-variant) 55%, transparent);
+  user-select: none;
+  font-weight: 600;
 }
 
 .compliance-row__description {
@@ -120,15 +192,10 @@ const avatarAriaLabel = computed(() =>
   font-weight: 700;
   cursor: pointer;
   transition:
-    transform 0.15s ease,
     background-color 0.2s ease,
     color 0.2s ease,
     border-color 0.2s ease,
-    box-shadow 0.2s ease;
-}
-
-.button:hover {
-  transform: translateY(-1px);
+    filter 0.2s ease;
 }
 
 .button:focus-visible {
@@ -137,21 +204,12 @@ const avatarAriaLabel = computed(() =>
 }
 
 .button--primary {
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
+  background: var(--color-secondary);
   color: var(--color-on-secondary);
-  box-shadow: 0 4px 10px color-mix(in srgb, var(--color-secondary) 24%, transparent);
 }
 
 .button--primary:hover {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--color-secondary) 92%, white) 0%,
-    color-mix(in srgb, var(--color-secondary-container) 92%, white) 100%
-  );
+  filter: brightness(1.06);
 }
 
 .button--secondary {

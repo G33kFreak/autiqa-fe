@@ -95,15 +95,13 @@ const emit = defineEmits<{
   cursor: pointer;
   transition:
     background-color 0.18s ease,
-    box-shadow 0.2s ease,
-    transform 0.18s ease,
+    filter 0.18s ease,
     opacity 0.18s ease;
 }
 
 .driver-profile-header__action:disabled {
   opacity: 0.7;
   cursor: not-allowed;
-  transform: none;
 }
 
 .driver-profile-header__action--secondary {
@@ -113,25 +111,15 @@ const emit = defineEmits<{
 
 .driver-profile-header__action--secondary:hover {
   background: var(--color-surface-container);
-  transform: translateY(-1px);
 }
 
 .driver-profile-header__action--primary {
   color: var(--color-on-secondary);
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-secondary) 35%, transparent);
+  background: var(--color-secondary);
 }
 
-.driver-profile-header__action--primary:hover {
-  opacity: 0.96;
-  transform: translateY(-1px);
-  box-shadow:
-    0 6px 18px color-mix(in srgb, var(--color-secondary-container) 32%, transparent),
-    0 12px 32px color-mix(in srgb, var(--color-secondary) 16%, transparent);
+.driver-profile-header__action--primary:hover:not(:disabled) {
+  filter: brightness(1.06);
 }
 
 .driver-profile-header__action:focus-visible {

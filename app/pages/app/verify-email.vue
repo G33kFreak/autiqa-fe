@@ -394,25 +394,17 @@ onMounted(() => {
   font-weight: 600;
   color: var(--color-on-secondary);
   cursor: pointer;
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
-  transition:
-    opacity 0.2s ease,
-    transform 0.15s ease;
+  background: var(--color-secondary);
+  transition: opacity 0.2s ease, filter 0.15s ease;
 }
 
 .otp-screen__cta:hover:not(:disabled) {
-  opacity: 0.94;
-  transform: translateY(-1px);
+  filter: brightness(1.06);
 }
 
 .otp-screen__cta:disabled {
   opacity: 0.42;
   cursor: not-allowed;
-  transform: none;
 }
 
 .otp-screen__cta:focus-visible {

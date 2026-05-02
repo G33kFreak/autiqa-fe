@@ -154,12 +154,12 @@ function formatCurrency(value: number): string {
   font-size: 0.72rem;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  transition: opacity 0.18s ease, filter 0.18s ease;
 }
 
 .fees-card__item-action:hover {
   opacity: 0.92;
-  transform: translateY(-1px);
+  filter: brightness(0.97);
 }
 
 .fees-card__item-action--ghost {

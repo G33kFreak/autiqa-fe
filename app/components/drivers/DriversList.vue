@@ -135,11 +135,11 @@ function openDriverDetails(driverId: string) {
 
 .drivers-page__cta--primary {
   color: var(--color-on-secondary);
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
+  background: var(--color-secondary);
+}
+
+.drivers-page__cta--primary:hover:not(:disabled) {
+  filter: brightness(1.06);
 }
 
 .drivers-page__summary-add {

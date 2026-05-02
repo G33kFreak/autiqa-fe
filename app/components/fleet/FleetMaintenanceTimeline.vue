@@ -206,12 +206,12 @@ function formatCurrency(value: number): string {
   font-size: 0.72rem;
   font-weight: 700;
   cursor: pointer;
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  transition: opacity 0.18s ease, filter 0.18s ease;
 }
 
 .timeline-item__action-btn:hover {
   opacity: 0.92;
-  transform: translateY(-1px);
+  filter: brightness(0.97);
 }
 
 .timeline-item__action-btn--ghost {

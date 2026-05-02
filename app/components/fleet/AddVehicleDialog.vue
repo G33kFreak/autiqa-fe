@@ -592,7 +592,7 @@ defineExpose({ showModal, close });
   transition:
     opacity 0.18s ease,
     background-color 0.18s ease,
-    transform 0.18s ease;
+    filter 0.18s ease;
 }
 
 .add-vehicle-dialog__btn:disabled {
@@ -611,15 +611,10 @@ defineExpose({ showModal, close });
 
 .add-vehicle-dialog__btn--primary {
   color: var(--color-on-secondary);
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
+  background: var(--color-secondary);
 }
 
 .add-vehicle-dialog__btn--primary:hover:not(:disabled) {
-  opacity: 0.94;
-  transform: translateY(-1px);
+  filter: brightness(1.06);
 }
 </style>

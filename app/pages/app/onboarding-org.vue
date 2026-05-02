@@ -465,14 +465,8 @@ watch(step, () => {
   font-weight: 600;
   color: var(--color-on-secondary);
   cursor: pointer;
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary-container) 100%
-  );
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--color-secondary);
+  transition: opacity 0.2s ease, filter 0.2s ease;
 }
 
 .onboarding-org__cta--narrow {
@@ -485,14 +479,12 @@ watch(step, () => {
 }
 
 .onboarding-org__cta:hover:not(:disabled) {
-  opacity: 0.94;
-  transform: translateY(-1px);
+  filter: brightness(1.06);
 }
 
 .onboarding-org__cta:disabled {
   opacity: 0.42;
   cursor: not-allowed;
-  transform: none;
 }
 
 .onboarding-org__cta:focus-visible {
@@ -510,9 +502,7 @@ watch(step, () => {
   color: var(--color-on-surface);
   cursor: pointer;
   background: var(--color-surface-container-high);
-  transition:
-    background 0.2s ease,
-    transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background 0.2s ease;
 }
 
 .onboarding-org__secondary:hover {
