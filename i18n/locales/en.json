@@ -168,6 +168,7 @@
         "incomeHistoryTitle": "Income history",
         "emptyIncomeTitle": "No income recorded yet",
         "emptyIncomeCopy": "Rentals, partner payouts, and other credits will list here. Use Add income in the vehicle header to log the first entry.",
+        "incomeDefaultTitle": "Income",
         "ledgerTablistAria": "Tickets and service history",
         "carFeesTitle": "Vehicle tickets",
         "thisMonthFees": "This month: {total}",
@@ -246,8 +247,7 @@
             "CAR_PAYMENT": "Car payment",
             "INSURANCE": "Insurance",
             "FEE": "Ticket",
-            "OTHER": "Other",
-            "INCOME": "Income"
+            "OTHER": "Other"
           },
           "carPaymentKinds": {
             "BUY": "Buy",
@@ -256,6 +256,22 @@
           "submit": "Create expense",
           "validation": "Fill in required fields: title, amount, and date.",
           "error": "Could not create expense. Check fields and try again."
+        },
+        "incomeDialog": {
+          "title": "Record income",
+          "lead": "Log revenue for a vehicle and link the driver it belongs to.",
+          "amount": "Amount",
+          "titleField": "Title",
+          "titlePlaceholder": "e.g. Weekly rental",
+          "occurredAt": "Occurred at",
+          "notes": "Notes",
+          "notesPlaceholder": "Optional details about this income",
+          "linkedCar": "Linked car",
+          "linkedDriver": "Linked driver",
+          "searchCarPlaceholder": "Search by model or plate...",
+          "submit": "Save income",
+          "validation": "Fill in amount, date, linked car, and linked driver.",
+          "error": "Could not save income. Check fields and try again."
         }
       },
       "table": {

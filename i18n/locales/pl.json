@@ -168,6 +168,7 @@
         "incomeHistoryTitle": "Historia przychodów",
         "emptyIncomeTitle": "Brak zarejestrowanych przychodów",
         "emptyIncomeCopy": "Wynajmy, wypłaty od partnerów i inne wpływy pojawią się tutaj. Dodaj pierwszy wpis przez Dodaj przychód u góry strony.",
+        "incomeDefaultTitle": "Przychód",
         "ledgerTablistAria": "Mandaty i historia serwisu",
         "carFeesTitle": "Mandaty pojazdu",
         "thisMonthFees": "W tym miesiącu: {total}",
@@ -246,8 +247,7 @@
             "CAR_PAYMENT": "Płatność za auto",
             "INSURANCE": "Ubezpieczenie",
             "FEE": "Mandat",
-            "OTHER": "Inne",
-            "INCOME": "Przychód"
+            "OTHER": "Inne"
           },
           "carPaymentKinds": {
             "BUY": "Zakup",
@@ -256,6 +256,22 @@
           "submit": "Zapisz wydatek",
           "validation": "Uzupełnij wymagane pola: tytuł, kwota i data.",
           "error": "Nie udało się dodać wydatku. Sprawdź pola i spróbuj ponownie."
+        },
+        "incomeDialog": {
+          "title": "Dodaj przychód",
+          "lead": "Zapisz przychód dla pojazdu i przypisz kierowcę.",
+          "amount": "Kwota",
+          "titleField": "Tytuł",
+          "titlePlaceholder": "np. Tygodniowy wynajem",
+          "occurredAt": "Data zdarzenia",
+          "notes": "Notatki",
+          "notesPlaceholder": "Opcjonalne szczegóły przychodu",
+          "linkedCar": "Powiązany pojazd",
+          "linkedDriver": "Powiązany kierowca",
+          "searchCarPlaceholder": "Szukaj po modelu lub tablicy...",
+          "submit": "Zapisz przychód",
+          "validation": "Uzupełnij kwotę, datę, pojazd i kierowcę.",
+          "error": "Nie udało się zapisać przychodu. Sprawdź pola i spróbuj ponownie."
         }
       },
       "table": {

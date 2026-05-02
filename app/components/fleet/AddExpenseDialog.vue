@@ -61,25 +61,20 @@ const expenseTypeOptions = [
   'INSURANCE',
   'FEE',
   'OTHER',
-  'INCOME',
 ] as const;
 
 const carPaymentKindOptions = ['BUY', 'LEASE'] as const;
 
 const isCarPaymentType = computed(() => form.type === 'CAR_PAYMENT');
 const showsDriverRelation = computed(
-  () =>
-    form.type === 'FEE'
-    || form.type === 'OTHER'
-    || form.type === 'INCOME',
+  () => form.type === 'FEE' || form.type === 'OTHER',
 );
 const requiresCarRelation = computed(
   () =>
     form.type === 'MAINTENANCE'
     || form.type === 'FEE'
     || form.type === 'CAR_PAYMENT'
-    || form.type === 'INSURANCE'
-    || form.type === 'INCOME',
+    || form.type === 'INSURANCE',
 );
 const requiresDriverRelation = computed(() => form.type === 'FEE');
 

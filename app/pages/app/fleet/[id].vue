@@ -4,7 +4,9 @@ import type { CreateCarDto } from '#shared/dto/create-car.dto';
 import type { DriverDto } from '#shared/dto/driver.dto';
 import type { ExpenseDto } from '#shared/dto/expense.dto';
 import type { ExpenseSummaryItemDto } from '#shared/dto/expense-summary-item.dto';
+import type { IncomeDto } from '#shared/dto/income.dto';
 import AddExpenseDialog from '~/components/fleet/AddExpenseDialog.vue';
+import AddIncomeDialog from '~/components/fleet/AddIncomeDialog.vue';
 import EntityDialogShell from '~/components/shared/EntityDialogShell.vue';
 import ListEmptyState from '~/components/shared/ListEmptyState.vue';
 
@@ -13,6 +15,7 @@ const route = useRoute();
 const carsStore = useCarsStore();
 const driversStore = useDriversStore();
 const expensesStore = useExpensesStore();
+const incomesStore = useIncomesStore();
 
 const carId = computed(() => String(route.params.id || ''));
 const detailsLoading = ref(true);
@@ -29,9 +32,16 @@ const assignSuggestions = ref<DriverDto[]>([]);
 const assignSearching = ref(false);
 let assignSearchTimer: ReturnType<typeof setTimeout> | null = null;
 
-const addExpenseDialog = ref<InstanceType<typeof AddExpenseDialog> | null>(null);
-const editExpenseDialog = ref<InstanceType<typeof EntityDialogShell> | null>(null);
-const deleteExpenseDialog = ref<InstanceType<typeof EntityDialogShell> | null>(null);
+const addExpenseDialog = ref<InstanceType<typeof AddExpenseDialog> | null>(
+  null,
+);
+const addIncomeDialog = ref<InstanceType<typeof AddIncomeDialog> | null>(null);
+const editExpenseDialog = ref<InstanceType<typeof EntityDialogShell> | null>(
+  null,
+);
+const deleteExpenseDialog = ref<InstanceType<typeof EntityDialogShell> | null>(
+  null,
+);
 const feeExpenses = ref<ExpenseDto[]>([]);
 const maintenanceExpenses = ref<ExpenseDto[]>([]);
 const feesPage = ref(1);
@@ -43,6 +53,7 @@ const maintenanceHasMore = ref(false);
 const feesLoadingMore = ref(false);
 const maintenanceLoadingMore = ref(false);
 const expenseSummaryItems = ref<ExpenseSummaryItemDto[]>([]);
+const incomeRecords = ref<IncomeDto[]>([]);
 const activeMaintenanceExpenseId = ref<string | null>(null);
 const maintenanceFormError = ref<string | null>(null);
 const deleteExpenseError = ref<string | null>(null);
@@ -65,10 +76,37 @@ const carFees = computed(() =>
     })),
 );
 
-const totalIncome = computed(() => {
-  const summaryItem = expenseSummaryItems.value.find((item) => item.type === 'INCOME');
+/** Legacy expense rows typed as INCOME (expense summary). */
+const totalIncomeFromExpenseSummary = computed(() => {
+  const summaryItem = expenseSummaryItems.value.find(
+    (item) => item.type === 'INCOME',
+  );
   return Number(summaryItem?.totalAmount ?? 0) || 0;
 });
+
+const totalIncomeFromIncomesApi = computed(() =>
+  incomeRecords.value.reduce((sum, item) => sum + (Number(item.amount) || 0), 0),
+);
+
+const totalIncome = computed(
+  () => totalIncomeFromExpenseSummary.value + totalIncomeFromIncomesApi.value,
+);
+
+const incomeHistoryRows = computed(() =>
+  [...incomeRecords.value]
+    .sort(
+      (a: IncomeDto, b: IncomeDto) =>
+        new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
+    )
+    .map((item: IncomeDto) => ({
+      id: item.id,
+      date: item.occurredAt.slice(0, 10),
+      title: item.title?.trim() ?? '',
+      amount: item.amount,
+      currency: item.currency,
+      notes: item.notes?.trim() ?? '',
+    })),
+);
 
 const maintenanceHistory = computed(() =>
   [...maintenanceExpenses.value]
@@ -84,9 +122,11 @@ const maintenanceHistory = computed(() =>
       notes: expense.notes || '—',
     })),
 );
-const selectedExpense = computed(() =>
-  [...maintenanceExpenses.value, ...feeExpenses.value]
-    .find((item) => item.id === activeMaintenanceExpenseId.value) ?? null,
+const selectedExpense = computed(
+  () =>
+    [...maintenanceExpenses.value, ...feeExpenses.value].find(
+      (item) => item.id === activeMaintenanceExpenseId.value,
+    ) ?? null,
 );
 
 function formatExpenseDate(value: string): string {
@@ -109,8 +149,21 @@ function formatExpenseAmount(value: string): string {
   }).format(Number.isFinite(amount) ? amount : 0);
 }
 
+function formatIncomeAmount(value: string, currency: string): string {
+  const amount = Number(value);
+  const code = currency?.trim() || 'PLN';
+  return new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: code,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number.isFinite(amount) ? amount : 0);
+}
+
 const totalFees = computed(() => {
-  const summaryItem = expenseSummaryItems.value.find((item) => item.type === 'FEE');
+  const summaryItem = expenseSummaryItems.value.find(
+    (item) => item.type === 'FEE',
+  );
   return Number(summaryItem?.totalAmount ?? 0) || 0;
 });
 const totalMaintenance = computed(() => {
@@ -121,7 +174,11 @@ const totalMaintenance = computed(() => {
 });
 const totalOtherExpenses = computed(() =>
   expenseSummaryItems.value.reduce((sum, item) => {
-    if (item.type === 'INCOME' || item.type === 'MAINTENANCE' || item.type === 'FEE') {
+    if (
+      item.type === 'INCOME' ||
+      item.type === 'MAINTENANCE' ||
+      item.type === 'FEE'
+    ) {
       return sum;
     }
     return sum + (Number(item.totalAmount ?? 0) || 0);
@@ -130,7 +187,9 @@ const totalOtherExpenses = computed(() =>
 const totalCombinedExpenses = computed(
   () => totalFees.value + totalMaintenance.value + totalOtherExpenses.value,
 );
-const totalProfitLoss = computed(() => totalIncome.value - totalCombinedExpenses.value);
+const totalProfitLoss = computed(
+  () => totalIncome.value - totalCombinedExpenses.value,
+);
 const isProfit = computed(() => totalProfitLoss.value >= 0);
 
 function complianceDateFromCar(value: string | null | undefined): string {
@@ -158,15 +217,21 @@ const complianceItems = computed(() => {
   const policy = complianceDateFromCar(policyRaw ?? null);
   return [
     {
-      title: t('appSections.fleet.vehicleDetails.complianceItems.technicalInspection'),
+      title: t(
+        'appSections.fleet.vehicleDetails.complianceItems.technicalInspection',
+      ),
       validUntil: inspection,
-      attachments: inspection ? (['inspection-report.pdf'] as const) : undefined,
+      attachments: inspection
+        ? (['inspection-report.pdf'] as const)
+        : undefined,
       icon: 'verified' as const,
     },
     {
       title: t('appSections.fleet.vehicleDetails.complianceItems.ocAcPolicy'),
       validUntil: policy,
-      attachments: policy ? (['policy-main.pdf', 'policy-ac-annex.pdf'] as const) : undefined,
+      attachments: policy
+        ? (['policy-main.pdf', 'policy-ac-annex.pdf'] as const)
+        : undefined,
       icon: 'shield' as const,
     },
   ];
@@ -216,8 +281,34 @@ async function fetchExpensesSummary(): Promise<void> {
   expenseSummaryItems.value = response.items;
 }
 
+const INCOMES_FETCH_LIMIT = 50;
+
+/**
+ * Loads all income pages for this vehicle so the hero total and list stay accurate.
+ */
+async function fetchIncomesLedger(): Promise<void> {
+  let page = 1;
+  const all: IncomeDto[] = [];
+  while (true) {
+    const response = await incomesStore.fetchIncomes({
+      page,
+      limit: INCOMES_FETCH_LIMIT,
+      carId: carId.value,
+    });
+    all.push(...response.data);
+    if (!response.meta.hasNextPage) break;
+    page += 1;
+  }
+  incomeRecords.value = all.sort(
+    (a, b) =>
+      new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
+  );
+}
+
 useSeoMeta({
-  title: computed(() => `${t('appSections.fleet.vehicleDetailsTitle')} #${carId.value}`),
+  title: computed(
+    () => `${t('appSections.fleet.vehicleDetailsTitle')} #${carId.value}`,
+  ),
   description: computed(() => t('appSections.fleet.vehicleDetailsLead')),
 });
 
@@ -229,6 +320,7 @@ onMounted(async () => {
       fetchFees(1),
       fetchMaintenance(1),
       fetchExpensesSummary(),
+      fetchIncomesLedger(),
     ]);
     car.value = fetchedCar;
     carName.value = car.value?.model ?? '';
@@ -244,11 +336,14 @@ function handleAssignOther() {
   assignDialog.value?.showModal();
   assignSearchInput.value = '';
   assignSearching.value = true;
-  void driversStore.getDriverSuggestions(10).then((items) => {
-    assignSuggestions.value = items;
-  }).finally(() => {
-    assignSearching.value = false;
-  });
+  void driversStore
+    .getDriverSuggestions(10)
+    .then((items) => {
+      assignSuggestions.value = items;
+    })
+    .finally(() => {
+      assignSearching.value = false;
+    });
 }
 
 async function handleRemoveDriver() {
@@ -295,7 +390,7 @@ function handleOpenAddExpenseDialog() {
 }
 
 function handleOpenAddIncomeDialog() {
-  addExpenseDialog.value?.showModal('INCOME');
+  addIncomeDialog.value?.showModal();
 }
 
 function resetEditExpenseState() {
@@ -308,8 +403,9 @@ function resetEditExpenseState() {
 }
 
 function openEditExpenseDialog(expenseId: string) {
-  const expense = [...maintenanceExpenses.value, ...feeExpenses.value]
-    .find((item) => item.id === expenseId);
+  const expense = [...maintenanceExpenses.value, ...feeExpenses.value].find(
+    (item) => item.id === expenseId,
+  );
   if (!expense) return;
   activeMaintenanceExpenseId.value = expense.id;
   maintenanceFormError.value = null;
@@ -334,11 +430,13 @@ function closeDeleteExpenseDialog() {
 async function handleSaveExpenseEdit() {
   if (!activeMaintenanceExpenseId.value) return;
   if (
-    !editExpenseTitle.value.trim()
-    || !editExpenseAmount.value.trim()
-    || !editExpenseOccurredAt.value.trim()
+    !editExpenseTitle.value.trim() ||
+    !editExpenseAmount.value.trim() ||
+    !editExpenseOccurredAt.value.trim()
   ) {
-    maintenanceFormError.value = t('appSections.fleet.vehicleDetails.expenseDialog.validation');
+    maintenanceFormError.value = t(
+      'appSections.fleet.vehicleDetails.expenseDialog.validation',
+    );
     return;
   }
 
@@ -348,7 +446,9 @@ async function handleSaveExpenseEdit() {
       type: selectedExpense.value?.type ?? 'MAINTENANCE',
       amount: editExpenseAmount.value.trim(),
       currency: 'PLN',
-      occurredAt: new Date(`${editExpenseOccurredAt.value.trim()}T12:00:00.000Z`).toISOString(),
+      occurredAt: new Date(
+        `${editExpenseOccurredAt.value.trim()}T12:00:00.000Z`,
+      ).toISOString(),
       title: editExpenseTitle.value.trim(),
       notes: editExpenseNotes.value.trim() || undefined,
       carPaymentKind: selectedExpense.value?.carPaymentKind || undefined,
@@ -359,7 +459,9 @@ async function handleSaveExpenseEdit() {
     editExpenseDialog.value?.close();
     resetEditExpenseState();
   } catch {
-    maintenanceFormError.value = t('appSections.fleet.vehicleDetails.expenseDialog.error');
+    maintenanceFormError.value = t(
+      'appSections.fleet.vehicleDetails.expenseDialog.error',
+    );
   }
 }
 
@@ -371,7 +473,9 @@ async function handleConfirmDeleteExpense() {
     await handleExpenseCreated();
     deleteExpenseDialog.value?.close();
   } catch {
-    deleteExpenseError.value = t('appSections.fleet.vehicleDetails.expenseDeleteError');
+    deleteExpenseError.value = t(
+      'appSections.fleet.vehicleDetails.expenseDeleteError',
+    );
   }
 }
 
@@ -381,6 +485,10 @@ async function handleExpenseCreated() {
     fetchMaintenance(1),
     fetchExpensesSummary(),
   ]);
+}
+
+async function handleIncomeCreated() {
+  await Promise.all([fetchIncomesLedger(), fetchExpensesSummary()]);
 }
 
 async function handleLoadMoreFees() {
@@ -456,335 +564,478 @@ function handleComplianceEmptyCta() {
       </div>
     </template>
     <template v-else>
-    <div class="fleet-vehicle-page__hero fleet-vehicle-page__hero--split">
-      <FleetVehicleHeader
-        id="fleet-vehicle-hero"
-        class="fleet-vehicle-page__hero-header"
-        :overline="t('appSections.fleet.vehicleDetails.commandView')"
-        :car-name="carName"
-        :plate-label="t('appSections.fleet.table.plate')"
-        :registration-number="registrationNumber"
-        :vin-label="t('appSections.fleet.table.vin')"
-        :vin="vin"
-        :edit-vehicle-label="t('appSections.fleet.vehicleDetails.editVehicle')"
-        :add-expense-label="t('appSections.fleet.vehicleDetails.addExpense')"
-        :add-income-label="t('appSections.fleet.vehicleDetails.addIncome')"
-        :save-label="t('appSections.fleet.vehicleDetails.save')"
-        :saving-label="t('common.loading')"
-        :cancel-label="t('appSections.fleet.vehicleDetails.cancel')"
-        :is-saving="carsStore.updating"
-        @update-info="handleUpdateVehicleInfo"
-        @add-expense="handleOpenAddExpenseDialog"
-        @add-income="handleOpenAddIncomeDialog"
-      />
-      <FleetFinancialSummaryCard
-        class="fleet-vehicle-page__hero-bento"
-        :total-income="totalIncome"
-        :total-fees="totalFees"
-        :total-maintenance="totalMaintenance"
-        :total-other-expenses="totalOtherExpenses"
-        :total-combined-expenses="totalCombinedExpenses"
-        :total-profit-loss="totalProfitLoss"
-        :is-profit="isProfit"
-      />
-    </div>
+      <div class="fleet-vehicle-page__hero fleet-vehicle-page__hero--split">
+        <FleetVehicleHeader
+          id="fleet-vehicle-hero"
+          class="fleet-vehicle-page__hero-header"
+          :overline="t('appSections.fleet.vehicleDetails.commandView')"
+          :car-name="carName"
+          :plate-label="t('appSections.fleet.table.plate')"
+          :registration-number="registrationNumber"
+          :vin-label="t('appSections.fleet.table.vin')"
+          :vin="vin"
+          :edit-vehicle-label="
+            t('appSections.fleet.vehicleDetails.editVehicle')
+          "
+          :add-expense-label="t('appSections.fleet.vehicleDetails.addExpense')"
+          :add-income-label="t('appSections.fleet.vehicleDetails.addIncome')"
+          :save-label="t('appSections.fleet.vehicleDetails.save')"
+          :saving-label="t('common.loading')"
+          :cancel-label="t('appSections.fleet.vehicleDetails.cancel')"
+          :is-saving="carsStore.updating"
+          @update-info="handleUpdateVehicleInfo"
+          @add-expense="handleOpenAddExpenseDialog"
+          @add-income="handleOpenAddIncomeDialog"
+        />
+        <FleetFinancialSummaryCard
+          class="fleet-vehicle-page__hero-bento"
+          :total-income="totalIncome"
+          :total-fees="totalFees"
+          :total-maintenance="totalMaintenance"
+          :total-other-expenses="totalOtherExpenses"
+          :total-combined-expenses="totalCombinedExpenses"
+          :total-profit-loss="totalProfitLoss"
+          :is-profit="isProfit"
+        />
+      </div>
 
-    <div class="fleet-vehicle-page__grid">
-      <div class="fleet-vehicle-page__grid-main">
-        <section class="fleet-vehicle-page__income" aria-labelledby="fleet-income-heading">
-          <h2 id="fleet-income-heading" class="fleet-vehicle-page__income-title">
-            {{ t('appSections.fleet.vehicleDetails.incomeHistoryTitle') }}
-          </h2>
-          <ListEmptyState
-            icon="account_balance_wallet"
-            :title="t('appSections.fleet.vehicleDetails.emptyIncomeTitle')"
-            :description="t('appSections.fleet.vehicleDetails.emptyIncomeCopy')"
-          />
-        </section>
-        <div class="fleet-vehicle-page__ledger">
-          <div
-            class="fleet-vehicle-page__ledger-tabs"
-            role="tablist"
-            :aria-label="t('appSections.fleet.vehicleDetails.ledgerTablistAria')"
+      <div class="fleet-vehicle-page__grid">
+        <div class="fleet-vehicle-page__grid-main">
+          <section
+            class="fleet-vehicle-page__income"
+            aria-labelledby="fleet-income-heading"
           >
-            <button
-              id="fleet-ledger-tab-fees"
-              type="button"
-              class="fleet-vehicle-page__ledger-tab"
-              :class="{ 'fleet-vehicle-page__ledger-tab--active': vehicleLedgerTab === 'fees' }"
-              role="tab"
-              :aria-selected="vehicleLedgerTab === 'fees'"
-              :tabindex="vehicleLedgerTab === 'fees' ? 0 : -1"
-              @click="vehicleLedgerTab = 'fees'"
+            <h2
+              id="fleet-income-heading"
+              class="fleet-vehicle-page__income-title"
             >
-              {{ t('appSections.fleet.vehicleDetails.carFeesTitle') }}
-            </button>
-            <button
-              id="fleet-ledger-tab-maintenance"
-              type="button"
-              class="fleet-vehicle-page__ledger-tab"
-              :class="{ 'fleet-vehicle-page__ledger-tab--active': vehicleLedgerTab === 'maintenance' }"
-              role="tab"
-              :aria-selected="vehicleLedgerTab === 'maintenance'"
-              :tabindex="vehicleLedgerTab === 'maintenance' ? 0 : -1"
-              @click="vehicleLedgerTab = 'maintenance'"
+              {{ t('appSections.fleet.vehicleDetails.incomeHistoryTitle') }}
+            </h2>
+            <ul
+              v-if="incomeHistoryRows.length > 0"
+              class="fleet-vehicle-page__income-list"
+              :aria-label="
+                t('appSections.fleet.vehicleDetails.incomeHistoryTitle')
+              "
             >
-              {{ t('appSections.fleet.vehicleDetails.maintenanceHistory') }}
-            </button>
-          </div>
-          <div
-            v-show="vehicleLedgerTab === 'fees'"
-            class="fleet-vehicle-page__ledger-panel"
-            role="tabpanel"
-            aria-labelledby="fleet-ledger-tab-fees"
-          >
-            <FleetFeesCard
-              hide-heading
-              :items="carFees"
-              @edit="openEditExpenseDialog"
-              @delete="openDeleteExpenseDialog"
+              <li
+                v-for="row in incomeHistoryRows"
+                :key="row.id"
+                class="fleet-vehicle-page__income-row"
+              >
+                <div class="fleet-vehicle-page__income-row-main">
+                  <span class="fleet-vehicle-page__income-row-title">{{
+                    row.title ||
+                    t('appSections.fleet.vehicleDetails.incomeDefaultTitle')
+                  }}</span>
+                  <span class="fleet-vehicle-page__income-row-amount">{{
+                    formatIncomeAmount(row.amount, row.currency)
+                  }}</span>
+                </div>
+                <p class="fleet-vehicle-page__income-row-meta">
+                  {{ formatExpenseDate(row.date) }}
+                  <template v-if="row.notes">
+                    <span class="fleet-vehicle-page__income-row-notes">
+                      · {{ row.notes }}
+                    </span>
+                  </template>
+                </p>
+              </li>
+            </ul>
+            <ListEmptyState
+              v-else
+              icon="account_balance_wallet"
+              :title="t('appSections.fleet.vehicleDetails.emptyIncomeTitle')"
+              :description="
+                t('appSections.fleet.vehicleDetails.emptyIncomeCopy')
+              "
+            />
+          </section>
+          <div class="fleet-vehicle-page__ledger">
+            <div
+              class="fleet-vehicle-page__ledger-tabs"
+              role="tablist"
+              :aria-label="
+                t('appSections.fleet.vehicleDetails.ledgerTablistAria')
+              "
             >
-              <template #footer>
-                <button
-                  v-if="feesHasMore"
-                  type="button"
-                  class="fleet-load-more-btn"
-                  :disabled="feesLoadingMore"
-                  @click="handleLoadMoreFees"
-                >
-                  {{ feesLoadingMore ? t('common.loading') : t('appSections.fleet.vehicleDetails.loadMore') }}
-                </button>
-              </template>
-            </FleetFeesCard>
-          </div>
-          <div
-            v-show="vehicleLedgerTab === 'maintenance'"
-            class="fleet-vehicle-page__ledger-panel"
-            role="tabpanel"
-            aria-labelledby="fleet-ledger-tab-maintenance"
-          >
-            <FleetMaintenanceTimeline
-              hide-heading
-              :items="maintenanceHistory"
-              @edit="openEditExpenseDialog"
-              @delete="openDeleteExpenseDialog"
+              <button
+                id="fleet-ledger-tab-fees"
+                type="button"
+                class="fleet-vehicle-page__ledger-tab"
+                :class="{
+                  'fleet-vehicle-page__ledger-tab--active':
+                    vehicleLedgerTab === 'fees',
+                }"
+                role="tab"
+                :aria-selected="vehicleLedgerTab === 'fees'"
+                :tabindex="vehicleLedgerTab === 'fees' ? 0 : -1"
+                @click="vehicleLedgerTab = 'fees'"
+              >
+                {{ t('appSections.fleet.vehicleDetails.carFeesTitle') }}
+              </button>
+              <button
+                id="fleet-ledger-tab-maintenance"
+                type="button"
+                class="fleet-vehicle-page__ledger-tab"
+                :class="{
+                  'fleet-vehicle-page__ledger-tab--active':
+                    vehicleLedgerTab === 'maintenance',
+                }"
+                role="tab"
+                :aria-selected="vehicleLedgerTab === 'maintenance'"
+                :tabindex="vehicleLedgerTab === 'maintenance' ? 0 : -1"
+                @click="vehicleLedgerTab = 'maintenance'"
+              >
+                {{ t('appSections.fleet.vehicleDetails.maintenanceHistory') }}
+              </button>
+            </div>
+            <div
+              v-show="vehicleLedgerTab === 'fees'"
+              class="fleet-vehicle-page__ledger-panel"
+              role="tabpanel"
+              aria-labelledby="fleet-ledger-tab-fees"
             >
-              <template #footer>
-                <button
-                  v-if="maintenanceHasMore"
-                  type="button"
-                  class="fleet-load-more-btn"
-                  :disabled="maintenanceLoadingMore"
-                  @click="handleLoadMoreMaintenance"
-                >
-                  {{ maintenanceLoadingMore ? t('common.loading') : t('appSections.fleet.vehicleDetails.loadMore') }}
-                </button>
-              </template>
-            </FleetMaintenanceTimeline>
+              <FleetFeesCard
+                hide-heading
+                :items="carFees"
+                @edit="openEditExpenseDialog"
+                @delete="openDeleteExpenseDialog"
+              >
+                <template #footer>
+                  <button
+                    v-if="feesHasMore"
+                    type="button"
+                    class="fleet-load-more-btn"
+                    :disabled="feesLoadingMore"
+                    @click="handleLoadMoreFees"
+                  >
+                    {{
+                      feesLoadingMore
+                        ? t('common.loading')
+                        : t('appSections.fleet.vehicleDetails.loadMore')
+                    }}
+                  </button>
+                </template>
+              </FleetFeesCard>
+            </div>
+            <div
+              v-show="vehicleLedgerTab === 'maintenance'"
+              class="fleet-vehicle-page__ledger-panel"
+              role="tabpanel"
+              aria-labelledby="fleet-ledger-tab-maintenance"
+            >
+              <FleetMaintenanceTimeline
+                hide-heading
+                :items="maintenanceHistory"
+                @edit="openEditExpenseDialog"
+                @delete="openDeleteExpenseDialog"
+              >
+                <template #footer>
+                  <button
+                    v-if="maintenanceHasMore"
+                    type="button"
+                    class="fleet-load-more-btn"
+                    :disabled="maintenanceLoadingMore"
+                    @click="handleLoadMoreMaintenance"
+                  >
+                    {{
+                      maintenanceLoadingMore
+                        ? t('common.loading')
+                        : t('appSections.fleet.vehicleDetails.loadMore')
+                    }}
+                  </button>
+                </template>
+              </FleetMaintenanceTimeline>
+            </div>
           </div>
         </div>
+        <aside class="fleet-vehicle-page__grid-aside">
+          <FleetComplianceCard
+            :compliance-items="complianceItems"
+            :driver="driverCard"
+            @assign-other="handleAssignOther"
+            @remove-driver="handleRemoveDriver"
+            @compliance-empty-cta="handleComplianceEmptyCta"
+          />
+        </aside>
       </div>
-      <aside class="fleet-vehicle-page__grid-aside">
-        <FleetComplianceCard
-          :compliance-items="complianceItems"
-          :driver="driverCard"
-          @assign-other="handleAssignOther"
-          @remove-driver="handleRemoveDriver"
-          @compliance-empty-cta="handleComplianceEmptyCta"
-        />
-      </aside>
-    </div>
 
-    <EntityDialogShell
-      ref="assignDialog"
-      title-id="fleet-assign-dialog-title"
-      :title="t('appSections.fleet.vehicleDetails.assignOther')"
-      width="min(30rem, calc(100vw - 2rem))"
-      :lead="''"
-      @close="resetAssignDialogState"
-    >
-      <template #body>
-        <div class="fleet-assign-dialog__body">
-          <label class="fleet-assign-dialog__search">
-            <span class="material-symbols-outlined fleet-assign-dialog__search-icon" aria-hidden="true">search</span>
-            <input
-              :value="assignSearchInput"
-              class="ti-input fleet-assign-dialog__search-input"
-              type="text"
-              :placeholder="t('appSections.drivers.searchPlaceholder')"
-              @input="onAssignSearchInput"
+      <EntityDialogShell
+        ref="assignDialog"
+        title-id="fleet-assign-dialog-title"
+        :title="t('appSections.fleet.vehicleDetails.assignOther')"
+        width="min(30rem, calc(100vw - 2rem))"
+        :lead="''"
+        @close="resetAssignDialogState"
+      >
+        <template #body>
+          <div class="fleet-assign-dialog__body">
+            <label class="fleet-assign-dialog__search">
+              <span
+                class="material-symbols-outlined fleet-assign-dialog__search-icon"
+                aria-hidden="true"
+                >search</span
+              >
+              <input
+                :value="assignSearchInput"
+                class="ti-input fleet-assign-dialog__search-input"
+                type="text"
+                :placeholder="t('appSections.drivers.searchPlaceholder')"
+                @input="onAssignSearchInput"
+              >
+            </label>
+
+            <div class="fleet-assign-dialog__list">
+              <p v-if="assignSearching" class="fleet-assign-dialog__state">
+                {{ t('common.loading') }}
+              </p>
+              <p
+                v-else-if="assignSuggestions.length === 0"
+                class="fleet-assign-dialog__state"
+              >
+                {{ t('appSections.fleet.addVehicleDriverSearchNoResults') }}
+              </p>
+              <button
+                v-for="driver in assignSuggestions"
+                v-else
+                :key="driver.id"
+                type="button"
+                class="fleet-assign-dialog__item"
+                :disabled="carsStore.updating"
+                @click="assignDriver(driver)"
+              >
+                <span class="fleet-assign-dialog__item-name">
+                  {{ `${driver.firstName} ${driver.lastName}`.trim() }}
+                </span>
+                <span class="fleet-assign-dialog__item-meta">
+                  {{
+                    driver.email ||
+                    driver.phoneNumber ||
+                    t('appSections.drivers.details.common.emptyValue')
+                  }}
+                </span>
+              </button>
+            </div>
+          </div>
+        </template>
+      </EntityDialogShell>
+      <AddExpenseDialog
+        ref="addExpenseDialog"
+        :initial-car-id="carId"
+        @created="handleExpenseCreated"
+      />
+      <AddIncomeDialog
+        ref="addIncomeDialog"
+        :initial-car-id="carId"
+        :initial-driver-id="car?.driver?.id ?? ''"
+        @created="handleIncomeCreated"
+      />
+      <EntityDialogShell
+        ref="editExpenseDialog"
+        title-id="fleet-edit-expense-dialog-title"
+        :title="t('appSections.fleet.vehicleDetails.editExpenseTitle')"
+        :lead="t('appSections.fleet.vehicleDetails.editExpenseLead')"
+        width="min(34rem, calc(100vw - 2rem))"
+        @close="resetEditExpenseState"
+      >
+        <template #body>
+          <form
+            id="fleet-edit-expense-form"
+            class="fleet-expense-dialog__form"
+            @submit.prevent="handleSaveExpenseEdit"
+          >
+            <label class="fleet-expense-dialog__field">
+              <span>{{
+                `${t('appSections.fleet.vehicleDetails.expenseDialog.titleField')} *`
+              }}</span>
+              <input
+                v-model="editExpenseTitle"
+                class="ti-input"
+                type="text"
+                :placeholder="
+                  t(
+                    'appSections.fleet.vehicleDetails.expenseDialog.titlePlaceholder',
+                  )
+                "
+                required
+              >
+            </label>
+            <label class="fleet-expense-dialog__field">
+              <span>{{
+                `${t('appSections.fleet.vehicleDetails.expenseDialog.amount')} *`
+              }}</span>
+              <input
+                v-model="editExpenseAmount"
+                class="ti-input"
+                type="text"
+                inputmode="decimal"
+                placeholder="1499.99"
+                required
+              >
+            </label>
+            <div class="fleet-expense-dialog__field">
+              <span>{{
+                `${t('appSections.fleet.vehicleDetails.expenseDialog.occurredAt')} *`
+              }}</span>
+              <FleetDateInput
+                v-model="editExpenseOccurredAt"
+                input-id="fleet-edit-expense-occurred-at"
+                :title="
+                  t('appSections.fleet.vehicleDetails.expenseDialog.occurredAt')
+                "
+              />
+            </div>
+            <label
+              class="fleet-expense-dialog__field fleet-expense-dialog__field--full"
             >
-          </label>
-
-          <div class="fleet-assign-dialog__list">
-            <p v-if="assignSearching" class="fleet-assign-dialog__state">{{ t('common.loading') }}</p>
-            <p v-else-if="assignSuggestions.length === 0" class="fleet-assign-dialog__state">
-              {{ t('appSections.fleet.addVehicleDriverSearchNoResults') }}
+              <span>{{
+                t('appSections.fleet.vehicleDetails.expenseDialog.notes')
+              }}</span>
+              <textarea
+                v-model="editExpenseNotes"
+                class="ti-input fleet-expense-dialog__textarea"
+                rows="3"
+                :placeholder="
+                  t(
+                    'appSections.fleet.vehicleDetails.expenseDialog.notesPlaceholder',
+                  )
+                "
+              />
+            </label>
+          </form>
+        </template>
+        <template #footer>
+          <div class="fleet-expense-dialog__footer">
+            <p
+              v-if="maintenanceFormError"
+              class="fleet-expense-dialog__error"
+              role="alert"
+            >
+              {{ maintenanceFormError }}
             </p>
             <button
-              v-for="driver in assignSuggestions"
-              v-else
-              :key="driver.id"
               type="button"
-              class="fleet-assign-dialog__item"
-              :disabled="carsStore.updating"
-              @click="assignDriver(driver)"
+              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--ghost"
+              :disabled="expensesStore.updating"
+              @click="editExpenseDialog?.close()"
             >
-              <span class="fleet-assign-dialog__item-name">
-                {{ `${driver.firstName} ${driver.lastName}`.trim() }}
-              </span>
-              <span class="fleet-assign-dialog__item-meta">
-                {{ driver.email || driver.phoneNumber || t('appSections.drivers.details.common.emptyValue') }}
-              </span>
+              {{ t('appSections.fleet.vehicleDetails.cancel') }}
+            </button>
+            <button
+              form="fleet-edit-expense-form"
+              type="submit"
+              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--primary"
+              :disabled="expensesStore.updating"
+            >
+              {{
+                expensesStore.updating
+                  ? t('common.loading')
+                  : t('appSections.fleet.vehicleDetails.save')
+              }}
             </button>
           </div>
-        </div>
-      </template>
-    </EntityDialogShell>
-    <AddExpenseDialog
-      ref="addExpenseDialog"
-      :initial-car-id="carId"
-      @created="handleExpenseCreated"
-    />
-    <EntityDialogShell
-      ref="editExpenseDialog"
-      title-id="fleet-edit-expense-dialog-title"
-      :title="t('appSections.fleet.vehicleDetails.editExpenseTitle')"
-      :lead="t('appSections.fleet.vehicleDetails.editExpenseLead')"
-      width="min(34rem, calc(100vw - 2rem))"
-      @close="resetEditExpenseState"
-    >
-      <template #body>
-        <form id="fleet-edit-expense-form" class="fleet-expense-dialog__form" @submit.prevent="handleSaveExpenseEdit">
-          <label class="fleet-expense-dialog__field">
-            <span>{{ `${t('appSections.fleet.vehicleDetails.expenseDialog.titleField')} *` }}</span>
-            <input
-              v-model="editExpenseTitle"
-              class="ti-input"
-              type="text"
-              :placeholder="t('appSections.fleet.vehicleDetails.expenseDialog.titlePlaceholder')"
-              required
-            >
-          </label>
-          <label class="fleet-expense-dialog__field">
-            <span>{{ `${t('appSections.fleet.vehicleDetails.expenseDialog.amount')} *` }}</span>
-            <input
-              v-model="editExpenseAmount"
-              class="ti-input"
-              type="text"
-              inputmode="decimal"
-              placeholder="1499.99"
-              required
-            >
-          </label>
-          <div class="fleet-expense-dialog__field">
-            <span>{{ `${t('appSections.fleet.vehicleDetails.expenseDialog.occurredAt')} *` }}</span>
-            <FleetDateInput
-              v-model="editExpenseOccurredAt"
-              input-id="fleet-edit-expense-occurred-at"
-              :title="t('appSections.fleet.vehicleDetails.expenseDialog.occurredAt')"
-            />
+        </template>
+      </EntityDialogShell>
+      <EntityDialogShell
+        ref="deleteExpenseDialog"
+        title-id="fleet-delete-expense-dialog-title"
+        :title="t('appSections.fleet.vehicleDetails.deleteExpenseTitle')"
+        :lead="t('appSections.fleet.vehicleDetails.deleteExpenseConfirm')"
+        width="min(30rem, calc(100vw - 2rem))"
+        @close="closeDeleteExpenseDialog"
+      >
+        <template #body>
+          <div class="fleet-delete-expense">
+            <p class="fleet-delete-expense__body">
+              {{ t('appSections.fleet.vehicleDetails.deleteExpenseConfirm') }}
+            </p>
+            <dl v-if="selectedExpense" class="fleet-delete-expense__details">
+              <div class="fleet-delete-expense__row">
+                <dt>
+                  {{
+                    t(
+                      'appSections.fleet.vehicleDetails.expenseDialog.titleField',
+                    )
+                  }}
+                </dt>
+                <dd>{{ selectedExpense.title }}</dd>
+              </div>
+              <div class="fleet-delete-expense__row">
+                <dt>
+                  {{
+                    t('appSections.fleet.vehicleDetails.expenseDialog.amount')
+                  }}
+                </dt>
+                <dd>{{ formatExpenseAmount(selectedExpense.amount) }}</dd>
+              </div>
+              <div class="fleet-delete-expense__row">
+                <dt>
+                  {{
+                    t(
+                      'appSections.fleet.vehicleDetails.expenseDialog.occurredAt',
+                    )
+                  }}
+                </dt>
+                <dd>{{ formatExpenseDate(selectedExpense.occurredAt) }}</dd>
+              </div>
+              <div class="fleet-delete-expense__row">
+                <dt>
+                  {{ t('appSections.fleet.vehicleDetails.expenseDialog.type') }}
+                </dt>
+                <dd>
+                  {{
+                    t(
+                      `appSections.fleet.vehicleDetails.expenseDialog.expenseTypes.${selectedExpense.type}`,
+                    )
+                  }}
+                </dd>
+              </div>
+              <div
+                class="fleet-delete-expense__row fleet-delete-expense__row--full"
+              >
+                <dt>
+                  {{
+                    t('appSections.fleet.vehicleDetails.expenseDialog.notes')
+                  }}
+                </dt>
+                <dd>{{ selectedExpense.notes || '—' }}</dd>
+              </div>
+            </dl>
           </div>
-          <label class="fleet-expense-dialog__field fleet-expense-dialog__field--full">
-            <span>{{ t('appSections.fleet.vehicleDetails.expenseDialog.notes') }}</span>
-            <textarea
-              v-model="editExpenseNotes"
-              class="ti-input fleet-expense-dialog__textarea"
-              rows="3"
-              :placeholder="t('appSections.fleet.vehicleDetails.expenseDialog.notesPlaceholder')"
-            />
-          </label>
-        </form>
-      </template>
-      <template #footer>
-        <div class="fleet-expense-dialog__footer">
-          <p v-if="maintenanceFormError" class="fleet-expense-dialog__error" role="alert">
-            {{ maintenanceFormError }}
-          </p>
-          <button
-            type="button"
-            class="fleet-expense-dialog__btn fleet-expense-dialog__btn--ghost"
-            :disabled="expensesStore.updating"
-            @click="editExpenseDialog?.close()"
-          >
-            {{ t('appSections.fleet.vehicleDetails.cancel') }}
-          </button>
-          <button
-            form="fleet-edit-expense-form"
-            type="submit"
-            class="fleet-expense-dialog__btn fleet-expense-dialog__btn--primary"
-            :disabled="expensesStore.updating"
-          >
-            {{ expensesStore.updating ? t('common.loading') : t('appSections.fleet.vehicleDetails.save') }}
-          </button>
-        </div>
-      </template>
-    </EntityDialogShell>
-    <EntityDialogShell
-      ref="deleteExpenseDialog"
-      title-id="fleet-delete-expense-dialog-title"
-      :title="t('appSections.fleet.vehicleDetails.deleteExpenseTitle')"
-      :lead="t('appSections.fleet.vehicleDetails.deleteExpenseConfirm')"
-      width="min(30rem, calc(100vw - 2rem))"
-      @close="closeDeleteExpenseDialog"
-    >
-      <template #body>
-        <div class="fleet-delete-expense">
-          <p class="fleet-delete-expense__body">
-            {{ t('appSections.fleet.vehicleDetails.deleteExpenseConfirm') }}
-          </p>
-          <dl v-if="selectedExpense" class="fleet-delete-expense__details">
-            <div class="fleet-delete-expense__row">
-              <dt>{{ t('appSections.fleet.vehicleDetails.expenseDialog.titleField') }}</dt>
-              <dd>{{ selectedExpense.title }}</dd>
-            </div>
-            <div class="fleet-delete-expense__row">
-              <dt>{{ t('appSections.fleet.vehicleDetails.expenseDialog.amount') }}</dt>
-              <dd>{{ formatExpenseAmount(selectedExpense.amount) }}</dd>
-            </div>
-            <div class="fleet-delete-expense__row">
-              <dt>{{ t('appSections.fleet.vehicleDetails.expenseDialog.occurredAt') }}</dt>
-              <dd>{{ formatExpenseDate(selectedExpense.occurredAt) }}</dd>
-            </div>
-            <div class="fleet-delete-expense__row">
-              <dt>{{ t('appSections.fleet.vehicleDetails.expenseDialog.type') }}</dt>
-              <dd>
-                {{
-                  t(`appSections.fleet.vehicleDetails.expenseDialog.expenseTypes.${selectedExpense.type}`)
-                }}
-              </dd>
-            </div>
-            <div class="fleet-delete-expense__row fleet-delete-expense__row--full">
-              <dt>{{ t('appSections.fleet.vehicleDetails.expenseDialog.notes') }}</dt>
-              <dd>{{ selectedExpense.notes || '—' }}</dd>
-            </div>
-          </dl>
-        </div>
-      </template>
-      <template #footer>
-        <div class="fleet-expense-dialog__footer">
-          <p v-if="deleteExpenseError" class="fleet-expense-dialog__error" role="alert">
-            {{ deleteExpenseError }}
-          </p>
-          <button
-            type="button"
-            class="fleet-expense-dialog__btn fleet-expense-dialog__btn--ghost"
-            :disabled="expensesStore.deleting"
-            @click="deleteExpenseDialog?.close()"
-          >
-            {{ t('appSections.fleet.vehicleDetails.cancel') }}
-          </button>
-          <button
-            type="button"
-            class="fleet-expense-dialog__btn fleet-expense-dialog__btn--danger"
-            :disabled="expensesStore.deleting"
-            @click="handleConfirmDeleteExpense"
-          >
-            {{ expensesStore.deleting ? t('common.loading') : t('appSections.fleet.vehicleDetails.deleteExpense') }}
-          </button>
-        </div>
-      </template>
-    </EntityDialogShell>
+        </template>
+        <template #footer>
+          <div class="fleet-expense-dialog__footer">
+            <p
+              v-if="deleteExpenseError"
+              class="fleet-expense-dialog__error"
+              role="alert"
+            >
+              {{ deleteExpenseError }}
+            </p>
+            <button
+              type="button"
+              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--ghost"
+              :disabled="expensesStore.deleting"
+              @click="deleteExpenseDialog?.close()"
+            >
+              {{ t('appSections.fleet.vehicleDetails.cancel') }}
+            </button>
+            <button
+              type="button"
+              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--danger"
+              :disabled="expensesStore.deleting"
+              @click="handleConfirmDeleteExpense"
+            >
+              {{
+                expensesStore.deleting
+                  ? t('common.loading')
+                  : t('appSections.fleet.vehicleDetails.deleteExpense')
+              }}
+            </button>
+          </div>
+        </template>
+      </EntityDialogShell>
     </template>
   </section>
 </template>
@@ -843,6 +1094,55 @@ function handleComplianceEmptyCta() {
   color: var(--color-on-surface);
 }
 
+.fleet-vehicle-page__income-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.fleet-vehicle-page__income-row {
+  margin: 0;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  background: var(--color-surface-container-lowest);
+  box-shadow: var(--shadow-ambient);
+}
+
+.fleet-vehicle-page__income-row-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.fleet-vehicle-page__income-row-title {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-on-surface);
+  min-width: 0;
+}
+
+.fleet-vehicle-page__income-row-amount {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-secondary);
+}
+
+.fleet-vehicle-page__income-row-meta {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant);
+}
+
+.fleet-vehicle-page__income-row-notes {
+  font-weight: 500;
+}
+
 .fleet-vehicle-page__grid-aside {
   min-width: 0;
 }
@@ -888,8 +1188,14 @@ function handleComplianceEmptyCta() {
     box-shadow 0.18s ease;
 }
 
-.fleet-vehicle-page__ledger-tab:hover:not(.fleet-vehicle-page__ledger-tab--active) {
-  background: color-mix(in srgb, var(--color-surface-container-lowest) 55%, transparent);
+.fleet-vehicle-page__ledger-tab:hover:not(
+    .fleet-vehicle-page__ledger-tab--active
+  ) {
+  background: color-mix(
+    in srgb,
+    var(--color-surface-container-lowest) 55%,
+    transparent
+  );
   color: var(--color-on-surface);
 }
 
