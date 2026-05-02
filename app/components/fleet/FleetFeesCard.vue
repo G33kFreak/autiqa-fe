@@ -8,6 +8,8 @@ withDefaults(
       label: string;
       dueDate: string;
       value: number;
+      /** Shown under the title when non-empty (e.g. expense notes). */
+      notes?: string;
     }>;
     /** Hide the card title (e.g. when used with an external tab bar). */
     hideHeading?: boolean;
@@ -30,6 +32,7 @@ function formatCurrency(value: number): string {
     maximumFractionDigits: 2,
   }).format(value);
 }
+
 </script>
 
 <template>
@@ -40,9 +43,14 @@ function formatCurrency(value: number): string {
 
     <div class="fees-card__list" v-if="items.length > 0">
       <article v-for="fee in items" :key="fee.id" class="fees-card__item">
-        <p class="fees-card__item-date">{{ fee.dueDate }}</p>
-        <h3 class="fees-card__item-title">{{ fee.label }}</h3>
-        <p class="fees-card__item-value">-{{ formatCurrency(fee.value) }}</p>
+        <div class="fees-card__row">
+          <div class="fees-card__item-content">
+            <p class="fees-card__item-date">{{ fee.dueDate }}</p>
+            <h3 class="fees-card__item-title">{{ fee.label }}</h3>
+            <p v-if="fee.notes" class="fees-card__item-notes">{{ fee.notes }}</p>
+          </div>
+          <p class="fees-card__item-value">-{{ formatCurrency(fee.value) }}</p>
+        </div>
         <div class="fees-card__item-actions">
           <button
             type="button"
@@ -122,7 +130,18 @@ function formatCurrency(value: number): string {
 .fees-card__item {
   border-radius: 0.75rem;
   background: var(--color-surface-container-lowest);
-  padding: 0.75rem 0.8rem;
+  padding: 0.85rem 0.9rem;
+}
+
+.fees-card__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.fees-card__item-content {
+  min-width: 0;
 }
 
 .fees-card__item-date {
@@ -135,7 +154,7 @@ function formatCurrency(value: number): string {
 }
 
 .fees-card__item-title {
-  margin: 0.4rem 0 0;
+  margin: 0.4rem 0 0.2rem;
   font-family: var(--font-sans);
   font-size: 0.95rem;
   font-weight: 700;
@@ -143,11 +162,20 @@ function formatCurrency(value: number): string {
   color: var(--color-on-surface);
 }
 
+.fees-card__item-notes {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--color-on-surface-variant);
+}
+
 .fees-card__item-value {
-  margin: 0.4rem 0 0;
-  font-size: 0.95rem;
+  margin: 0;
+  font-size: 1.2rem;
   font-weight: 800;
   color: var(--color-error);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .fees-card__item-actions {

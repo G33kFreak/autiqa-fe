@@ -73,6 +73,7 @@ const carFees = computed(() =>
       label: expense.title,
       dueDate: expense.occurredAt.slice(0, 10),
       value: Math.abs(Number(expense.amount) || 0),
+      notes: expense.notes?.trim() ? expense.notes.trim() : undefined,
     })),
 );
 
@@ -119,7 +120,7 @@ const maintenanceHistory = computed(() =>
       date: expense.occurredAt.slice(0, 10),
       title: expense.title,
       amount: Number(expense.amount) || 0,
-      notes: expense.notes || '—',
+      notes: expense.notes?.trim() ? expense.notes.trim() : undefined,
     })),
 );
 const selectedExpense = computed(

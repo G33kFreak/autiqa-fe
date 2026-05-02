@@ -7,7 +7,7 @@ withDefaults(
       id: string;
       date: string;
       title: string;
-      notes: string;
+      notes?: string;
       amount: number;
     }>;
     hideHeading?: boolean;
@@ -49,7 +49,7 @@ function formatCurrency(value: number): string {
           <div class="timeline-item__content">
             <p class="timeline-item__date">{{ item.date }}</p>
             <h3 class="timeline-item__title">{{ item.title }}</h3>
-            <p class="timeline-item__notes">{{ item.notes }}</p>
+            <p v-if="item.notes" class="timeline-item__notes">{{ item.notes }}</p>
           </div>
           <p class="timeline-item__amount">-{{ formatCurrency(item.amount) }}</p>
         </div>
