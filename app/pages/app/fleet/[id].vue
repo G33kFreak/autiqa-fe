@@ -6,6 +6,7 @@ import type { ExpenseDto } from '#shared/dto/expense.dto';
 import type { ExpenseSummaryItemDto } from '#shared/dto/expense-summary-item.dto';
 import type { IncomeDto } from '#shared/dto/income.dto';
 import type { IncomesSummaryResponseDto } from '#shared/dto/incomes-summary-response.dto';
+import AddCarInsurancePolicyDialog from '~/components/fleet/AddCarInsurancePolicyDialog.vue';
 import AddExpenseDialog from '~/components/fleet/AddExpenseDialog.vue';
 import AddIncomeDialog from '~/components/fleet/AddIncomeDialog.vue';
 import FleetDateInput from '~/components/fleet/FleetDateInput.vue';
@@ -21,6 +22,7 @@ const carsStore = useCarsStore();
 const driversStore = useDriversStore();
 const expensesStore = useExpensesStore();
 const incomesStore = useIncomesStore();
+const carInsuranceStore = useCarInsuranceStore();
 
 const carId = computed(() => String(route.params.id || ''));
 const detailsLoading = ref(true);
@@ -69,6 +71,8 @@ const addExpenseDialog = ref<InstanceType<typeof AddExpenseDialog> | null>(
   null,
 );
 const addIncomeDialog = ref<InstanceType<typeof AddIncomeDialog> | null>(null);
+const addCarInsurancePolicyDialog =
+  ref<InstanceType<typeof AddCarInsurancePolicyDialog> | null>(null);
 const editExpenseDialog = ref<InstanceType<typeof EntityDialogShell> | null>(
   null,
 );
@@ -360,11 +364,21 @@ function optionalIsoForPatch(value: string | null | undefined): string | undefin
   return s || undefined;
 }
 
+const latestInsurancePolicy = computed(() => {
+  const insurancePolicies =
+    carInsuranceStore.carId === carId.value ? carInsuranceStore.items : [];
+  return insurancePolicies
+    .slice()
+    .sort(
+      (a, b) =>
+        new Date(b.coverageEnd).getTime() - new Date(a.coverageEnd).getTime(),
+    )[0] ?? null;
+});
+
 const complianceItems = computed(() => {
   const inspectionRaw = car.value?.inspectionValidUntil;
   const inspection = complianceDateFromCar(inspectionRaw ?? null);
-  const policyRaw = car.value?.insuranceValidUntil;
-  const policy = complianceDateFromCar(policyRaw ?? null);
+  const policy = complianceDateFromCar(latestInsurancePolicy.value?.coverageEnd ?? null);
   return [
     {
       title: t(
@@ -379,9 +393,7 @@ const complianceItems = computed(() => {
     {
       title: t('appSections.fleet.vehicleDetails.complianceItems.ocAcPolicy'),
       validUntil: policy,
-      attachments: policy
-        ? (['policy-main.pdf', 'policy-ac-annex.pdf'] as const)
-        : undefined,
+      attachments: policy ? (['policy-main.pdf'] as const) : undefined,
       icon: 'shield' as const,
     },
   ];
@@ -479,6 +491,7 @@ onMounted(async () => {
       fetchExpensesSummary(),
       fetchIncomesSummary(),
       fetchIncomesLedger(),
+      carInsuranceStore.fetchPoliciesForCar(carId.value).catch(() => undefined),
     ]);
     car.value = fetchedCar;
     carName.value = car.value?.model ?? '';
@@ -551,6 +564,10 @@ function handleOpenAddExpenseDialog() {
 
 function handleOpenAddIncomeDialog() {
   addIncomeDialog.value?.showModal();
+}
+
+async function handleCarInsurancePolicyCreated() {
+  await carInsuranceStore.fetchPoliciesForCar(carId.value);
 }
 
 function openIncomeAllDialog() {
@@ -775,10 +792,18 @@ function closeComplianceDateDialog() {
 }
 
 function handleComplianceEmptyCta(kind: 'inspection' | 'insurance') {
+  if (kind === 'insurance') {
+    addCarInsurancePolicyDialog.value?.showModal(latestInsurancePolicy.value);
+    return;
+  }
   openComplianceDateDialog(kind);
 }
 
 function handleComplianceEdit(kind: 'inspection' | 'insurance') {
+  if (kind === 'insurance') {
+    addCarInsurancePolicyDialog.value?.showModal(latestInsurancePolicy.value);
+    return;
+  }
   openComplianceDateDialog(kind);
 }
 
@@ -1150,6 +1175,11 @@ async function saveComplianceDate() {
         :initial-car-id="carId"
         :initial-driver-id="car?.driver?.id ?? ''"
         @created="handleIncomeCreated"
+      />
+      <AddCarInsurancePolicyDialog
+        ref="addCarInsurancePolicyDialog"
+        :car-id="carId"
+        @created="handleCarInsurancePolicyCreated"
       />
       <EntityDialogShell
         ref="incomeAllDialog"

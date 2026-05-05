@@ -1,18 +1,21 @@
 <script setup lang="ts">
-const props = withDefaults(defineProps<{
-  title: string;
-  titleId: string;
-  lead?: string;
-  width?: string;
-  maxHeight?: string;
-  /** Scrollable body region; keep large enough for inline pickers. */
-  bodyMaxHeight?: string;
-}>(), {
-  lead: '',
-  width: 'min(52rem, calc(100vw - 2rem))',
-  maxHeight: 'min(92dvh, 58rem)',
-  bodyMaxHeight: 'min(58dvh, 38rem)',
-});
+const props = withDefaults(
+  defineProps<{
+    title: string;
+    titleId: string;
+    lead?: string;
+    width?: string;
+    maxHeight?: string;
+    /** Scrollable body region; keep large enough for inline pickers. */
+    bodyMaxHeight?: string;
+  }>(),
+  {
+    lead: '',
+    width: 'min(52rem, calc(100vw - 2rem))',
+    maxHeight: 'min(92dvh, 58rem)',
+    bodyMaxHeight: 'min(58dvh, 38rem)',
+  },
+);
 
 const emit = defineEmits<{
   close: [];
@@ -83,8 +86,14 @@ defineExpose({ showModal, close });
           <h2 :id="titleId" class="entity-dialog-shell__title">{{ title }}</h2>
           <p v-if="lead" class="entity-dialog-shell__lead">{{ lead }}</p>
         </div>
-        <button type="button" class="entity-dialog-shell__icon-btn" @click="close">
-          <span class="material-symbols-outlined" aria-hidden="true">close</span>
+        <button
+          type="button"
+          class="entity-dialog-shell__icon-btn"
+          @click="close"
+        >
+          <span class="material-symbols-outlined" aria-hidden="true"
+            >close</span
+          >
         </button>
       </header>
 
@@ -166,7 +175,9 @@ defineExpose({ showModal, close });
   background: transparent;
   color: var(--color-on-surface-variant);
   cursor: pointer;
-  transition: background-color 0.18s ease, color 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    color 0.18s ease;
 }
 
 .entity-dialog-shell__icon-btn:hover {

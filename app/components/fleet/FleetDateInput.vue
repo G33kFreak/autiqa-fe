@@ -11,12 +11,15 @@ const props = withDefaults(
     placeholder?: string;
     /** Renders the calendar inline (no text field / overlay). Use inside dialogs. */
     inline?: boolean;
+    /** Smaller inline calendar (denser cells, no full-width stretch). Use in wide forms/dialogs. */
+    compact?: boolean;
   }>(),
   {
     inputId: undefined,
     title: '',
     placeholder: 'YYYY-MM-DD',
     inline: false,
+    compact: false,
   },
 );
 
@@ -82,7 +85,10 @@ function normalizeTypedValue() {
   <div
     ref="root"
     class="fleet-date-input"
-    :class="{ 'fleet-date-input--inline': inline }"
+    :class="{
+      'fleet-date-input--inline': inline,
+      'fleet-date-input--inline-compact': inline && compact,
+    }"
   >
     <VueDatePicker
       v-if="inline"
@@ -199,6 +205,38 @@ function normalizeTypedValue() {
   border: none;
   box-shadow: none;
   background: transparent;
+}
+
+.fleet-date-input--inline-compact {
+  width: fit-content;
+  max-width: min(100%, 16.25rem);
+}
+
+.fleet-date-input--inline-compact.fleet-date-input--inline .fleet-date-input__dp--inline {
+  width: auto;
+  max-width: 100%;
+}
+
+.fleet-date-input--inline-compact .fleet-date-input__dp--inline :deep(.dp__outer_menu_wrap) {
+  width: auto;
+  max-width: 100%;
+  --dp-font-size: 0.75rem;
+  --dp-cell-size: 1.75rem;
+  --dp-cell-padding: 1px;
+  --dp-row-margin: 2px 0;
+  --dp-menu-padding: 4px 4px;
+  --dp-month-year-row-height: 1.75rem;
+  --dp-month-year-row-button-size: 1.35rem;
+  --dp-button-icon-height: 0.875rem;
+  --dp-calendar-header-cell-padding: 0.15rem 0.05rem;
+  --dp-calendar-wrap-padding: 0 2px;
+  --dp-menu-min-width: 0;
+  --dp-border-radius: 0.35rem;
+  --dp-cell-border-radius: 0.25rem;
+}
+
+.fleet-date-input--inline-compact .fleet-date-input__dp--inline :deep(.dp__menu) {
+  min-width: 0;
 }
 
 .fleet-date-input__dp--inline :deep(.dp__menu_inner) {
