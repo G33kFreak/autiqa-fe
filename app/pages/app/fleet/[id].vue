@@ -93,12 +93,17 @@ const expenseSummaryItems = ref<ExpenseSummaryItemDto[]>([]);
 const incomesSummary = ref<IncomesSummaryResponseDto | null>(null);
 const incomeRecords = ref<IncomeDto[]>([]);
 const INCOME_PREVIEW_LIMIT = 4;
+const INCOMES_FETCH_LIMIT = 20;
+const incomesPage = ref(1);
+const incomesHasMore = ref(false);
 const INCOME_DIALOG_PAGE_SIZE = 10;
 const incomeDriverLabelById = ref<Record<string, string>>({});
 const incomeAllDialog = ref<InstanceType<typeof EntityDialogShell> | null>(
   null,
 );
 const incomeDialogPage = ref(1);
+const incomeDialogTotalPages = ref(1);
+const incomeDialogRecords = ref<IncomeDto[]>([]);
 const activeMaintenanceExpenseId = ref<string | null>(null);
 const maintenanceFormError = ref<string | null>(null);
 const deleteExpenseError = ref<string | null>(null);
@@ -172,21 +177,29 @@ const incomePreviewRows = computed(() =>
   incomeHistoryEnriched.value.slice(0, INCOME_PREVIEW_LIMIT),
 );
 
-const incomeDialogTotalPages = computed(() =>
-  Math.max(
-    1,
-    Math.ceil(
-      incomeHistoryEnriched.value.length / INCOME_DIALOG_PAGE_SIZE,
-    ),
-  ),
-);
-
-const incomeDialogPageRows = computed(() => {
-  const start = (incomeDialogPage.value - 1) * INCOME_DIALOG_PAGE_SIZE;
-  return incomeHistoryEnriched.value.slice(
-    start,
-    start + INCOME_DIALOG_PAGE_SIZE,
-  );
+const incomeDialogPageRows = computed<FleetIncomeHistoryRow[]>(() => {
+  const labels = incomeDriverLabelById.value;
+  return [...incomeDialogRecords.value]
+    .sort(
+      (a: IncomeDto, b: IncomeDto) =>
+        new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
+    )
+    .map((item: IncomeDto) => {
+      const titleLine =
+        item.title?.trim() ||
+        t('appSections.fleet.vehicleDetails.incomeDefaultTitle');
+      const notes = item.notes?.trim() ?? '';
+      return {
+        id: item.id,
+        titleLine,
+        sourceLine: notes,
+        driverName: labels[item.driverId] ?? '',
+        occurredLabel: formatIncomeOccurredAt(item.occurredAt),
+        amountNumber: formatIncomeAmountNumber(item.amount),
+        currencyCode: (item.currency?.trim() || 'PLN').toUpperCase(),
+        icon: inferIncomeRowIcon(titleLine, notes),
+      };
+    });
 });
 
 const maintenanceHistory = computed(() =>
@@ -450,27 +463,30 @@ async function fetchIncomesSummary(): Promise<void> {
   incomesSummary.value = response;
 }
 
-const INCOMES_FETCH_LIMIT = 50;
+async function fetchIncomesPage(page: number, append = false): Promise<void> {
+  const response = await incomesStore.fetchIncomes({
+    page,
+    limit: INCOMES_FETCH_LIMIT,
+    carId: carId.value,
+  });
+  incomeRecords.value = append
+    ? [...incomeRecords.value, ...response.data]
+    : response.data;
+  incomesPage.value = response.meta.page;
+  incomesHasMore.value = response.meta.hasNextPage;
+}
 
-/**
- * Loads all income pages for this vehicle so the hero total and list stay accurate.
- */
-async function fetchIncomesLedger(): Promise<void> {
-  let page = 1;
-  const all: IncomeDto[] = [];
-  while (true) {
-    const response = await incomesStore.fetchIncomes({
-      page,
-      limit: INCOMES_FETCH_LIMIT,
-      carId: carId.value,
-    });
-    all.push(...response.data);
-    if (!response.meta.hasNextPage) break;
-    page += 1;
-  }
-  incomeRecords.value = all.sort(
-    (a, b) =>
-      new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
+async function fetchIncomeDialogPage(page: number): Promise<void> {
+  const response = await incomesStore.fetchIncomes({
+    page,
+    limit: INCOME_DIALOG_PAGE_SIZE,
+    carId: carId.value,
+  });
+  incomeDialogRecords.value = response.data;
+  incomeDialogPage.value = response.meta.page;
+  incomeDialogTotalPages.value = Number(
+    (response.meta as { totalPages?: number }).totalPages ??
+    (response.meta.hasNextPage ? response.meta.page + 1 : response.meta.page),
   );
 }
 
@@ -490,7 +506,7 @@ onMounted(async () => {
       fetchMaintenance(1),
       fetchExpensesSummary(),
       fetchIncomesSummary(),
-      fetchIncomesLedger(),
+      fetchIncomesPage(1),
       carInsuranceStore.fetchPoliciesForCar(carId.value).catch(() => undefined),
     ]);
     car.value = fetchedCar;
@@ -567,20 +583,26 @@ function handleOpenAddIncomeDialog() {
 }
 
 async function handleCarInsurancePolicyCreated() {
-  await carInsuranceStore.fetchPoliciesForCar(carId.value);
+  await Promise.all([
+    carInsuranceStore.fetchPoliciesForCar(carId.value),
+    fetchExpensesSummary(),
+  ]);
 }
 
-function openIncomeAllDialog() {
-  incomeDialogPage.value = 1;
+async function openIncomeAllDialog() {
+  await fetchIncomeDialogPage(1);
   incomeAllDialog.value?.showModal();
 }
 
 function closeIncomeAllDialog() {
   incomeDialogPage.value = 1;
+  incomeDialogRecords.value = [];
 }
 
 function openEditIncomeDialog(incomeId: string) {
-  const inc = incomeRecords.value.find((item) => item.id === incomeId);
+  const inc =
+    incomeRecords.value.find((item) => item.id === incomeId) ??
+    incomeDialogRecords.value.find((item) => item.id === incomeId);
   if (!inc) return;
   addIncomeDialog.value?.showModalForEdit(inc);
 }
@@ -602,7 +624,7 @@ async function handleConfirmDeleteIncome() {
   try {
     await incomesStore.deleteIncome(activeIncomeId.value);
     await Promise.all([
-      fetchIncomesLedger(),
+      fetchIncomesPage(1),
       fetchIncomesSummary(),
       fetchExpensesSummary(),
     ]);
@@ -615,9 +637,19 @@ async function handleConfirmDeleteIncome() {
   }
 }
 
-watch(incomeDialogTotalPages, (max) => {
+watch(() => incomeDialogTotalPages.value, (max) => {
   if (incomeDialogPage.value > max) incomeDialogPage.value = max;
 });
+
+async function goToPrevIncomeDialogPage() {
+  if (incomeDialogPage.value <= 1) return;
+  await fetchIncomeDialogPage(incomeDialogPage.value - 1);
+}
+
+async function goToNextIncomeDialogPage() {
+  if (incomeDialogPage.value >= incomeDialogTotalPages.value) return;
+  await fetchIncomeDialogPage(incomeDialogPage.value + 1);
+}
 
 function resetEditExpenseState() {
   maintenanceFormError.value = null;
@@ -715,7 +747,7 @@ async function handleExpenseCreated() {
 
 async function handleIncomeCreated() {
   await Promise.all([
-    fetchIncomesLedger(),
+    fetchIncomesPage(1),
     fetchIncomesSummary(),
     fetchExpensesSummary(),
   ]);
@@ -1202,7 +1234,7 @@ async function saveComplianceDate() {
               type="button"
               class="fleet-income-dialog-pager__btn"
               :disabled="incomeDialogPage <= 1"
-              @click="incomeDialogPage -= 1"
+              @click="goToPrevIncomeDialogPage"
             >
               {{ t('appSections.fleet.vehicleDetails.incomeDialogPrev') }}
             </button>
@@ -1218,7 +1250,7 @@ async function saveComplianceDate() {
               type="button"
               class="fleet-income-dialog-pager__btn"
               :disabled="incomeDialogPage >= incomeDialogTotalPages"
-              @click="incomeDialogPage += 1"
+              @click="goToNextIncomeDialogPage"
             >
               {{ t('appSections.fleet.vehicleDetails.incomeDialogNext') }}
             </button>
