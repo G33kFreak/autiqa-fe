@@ -124,6 +124,9 @@ async function submit() {
           </p>
         </header>
 
+        <!--
+          TEMPORARILY DISABLED: Google SSO entrypoint and divider.
+          Keep this block commented for quick restore later.
         <button type="button" class="login__sso">
           <span class="login__sso-icon" aria-hidden="true">
             <svg
@@ -157,6 +160,7 @@ async function submit() {
           <span class="login__divider-label">{{ t('login.dividerOr') }}</span>
           <span class="login__divider-line" />
         </div>
+        -->
 
         <form class="login__form" :aria-busy="pending" @submit.prevent="submit">
           <p v-if="formError" class="login__error" role="alert">
