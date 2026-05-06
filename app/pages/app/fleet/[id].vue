@@ -41,6 +41,7 @@ const complianceDateKind = ref<'inspection' | 'insurance' | null>(null);
 const complianceDateFieldLabelId = useId();
 const complianceDateValue = ref('');
 const complianceDateError = ref<string | null>(null);
+const togglingInsuranceDueIds = ref<string[]>([]);
 
 const complianceDateDialogTitle = computed(() => {
   if (complianceDateKind.value === 'insurance') {
@@ -249,6 +250,17 @@ function formatExpenseAmount(value: string): string {
   }).format(Number.isFinite(amount) ? amount : 0);
 }
 
+function formatCurrencyAmount(value: string, currency: string): string {
+  const amount = Number(value);
+  const currencyCode = (currency?.trim() || 'PLN').toUpperCase();
+  return new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: currencyCode,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(Number.isFinite(amount) ? amount : 0);
+}
+
 function formatIncomeOccurredAt(value: string): string {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
@@ -391,7 +403,26 @@ const latestInsurancePolicy = computed(() => {
 const complianceItems = computed(() => {
   const inspectionRaw = car.value?.inspectionValidUntil;
   const inspection = complianceDateFromCar(inspectionRaw ?? null);
-  const policy = complianceDateFromCar(latestInsurancePolicy.value?.coverageEnd ?? null);
+  const latestPolicy = latestInsurancePolicy.value;
+  const policy = complianceDateFromCar(latestPolicy?.coverageEnd ?? null);
+  const dues = (latestPolicy?.installments ?? [])
+    .slice()
+    .sort(
+      (a, b) =>
+        new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime(),
+    )
+    .map((installment) => ({
+      id: installment.id,
+      policyId: latestPolicy?.id ?? '',
+      expenseId: installment.expenseId,
+      dueDate: installment.dueDate,
+      amountLabel: formatCurrencyAmount(
+        installment.amount,
+        latestPolicy?.currency ?? 'PLN',
+      ),
+      paid: Boolean(installment.expenseId),
+      processing: togglingInsuranceDueIds.value.includes(installment.id),
+    }));
   return [
     {
       title: t(
@@ -408,6 +439,7 @@ const complianceItems = computed(() => {
       validUntil: policy,
       attachments: policy ? (['policy-main.pdf'] as const) : undefined,
       icon: 'shield' as const,
+      dues,
     },
   ];
 });
@@ -587,6 +619,42 @@ async function handleCarInsurancePolicyCreated() {
     carInsuranceStore.fetchPoliciesForCar(carId.value),
     fetchExpensesSummary(),
   ]);
+}
+
+async function handleComplianceDueToggle(payload: {
+  dueId: string;
+  policyId: string;
+  expenseId: string | null;
+  dueDate: string;
+  paid: boolean;
+}) {
+  if (!payload.policyId) return;
+  if (togglingInsuranceDueIds.value.includes(payload.dueId)) return;
+
+  togglingInsuranceDueIds.value = [...togglingInsuranceDueIds.value, payload.dueId];
+  try {
+    if (payload.paid) {
+      if (!payload.expenseId) return;
+      await expensesStore.deleteExpense(payload.expenseId);
+    } else {
+      await carInsuranceStore.payInstallment(
+        carId.value,
+        payload.policyId,
+        payload.dueId,
+        { occurredAt: payload.dueDate },
+      );
+    }
+    await Promise.all([
+      carInsuranceStore.fetchPoliciesForCar(carId.value),
+      fetchExpensesSummary(),
+    ]);
+  } catch {
+    // Keep interaction resilient; policy refresh on next successful action will reconcile.
+  } finally {
+    togglingInsuranceDueIds.value = togglingInsuranceDueIds.value.filter(
+      (id) => id !== payload.dueId,
+    );
+  }
 }
 
 async function openIncomeAllDialog() {
@@ -1078,6 +1146,7 @@ async function saveComplianceDate() {
             @remove-driver="handleRemoveDriver"
             @compliance-empty-cta="handleComplianceEmptyCta"
             @compliance-edit="handleComplianceEdit"
+            @compliance-due-toggle="handleComplianceDueToggle"
           />
         </aside>
       </div>

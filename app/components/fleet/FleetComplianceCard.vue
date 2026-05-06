@@ -8,6 +8,15 @@ defineProps<{
     attachments?: readonly string[];
     icon?: 'verified' | 'shield';
     showEmptyCta?: boolean;
+    dues?: Array<{
+      id: string;
+      policyId: string;
+      expenseId?: string | null;
+      dueDate: string;
+      amountLabel: string;
+      paid: boolean;
+      processing?: boolean;
+    }>;
   }>;
   driver: {
     name: string;
@@ -21,6 +30,15 @@ const emit = defineEmits<{
   removeDriver: [];
   complianceEmptyCta: [kind: 'inspection' | 'insurance'];
   complianceEdit: [kind: 'inspection' | 'insurance'];
+  complianceDueToggle: [
+    payload: {
+      dueId: string;
+      policyId: string;
+      expenseId: string | null;
+      dueDate: string;
+      paid: boolean;
+    },
+  ];
 }>();
 
 const { t } = useI18n();
@@ -41,8 +59,10 @@ const { t } = useI18n();
           :attachments="item.attachments"
           :icon="item.icon"
           :show-empty-cta="item.showEmptyCta ?? true"
+          :dues="item.dues"
           @empty-cta-click="(k) => emit('complianceEmptyCta', k)"
           @edit-click="(k) => emit('complianceEdit', k)"
+          @due-toggle="(payload) => emit('complianceDueToggle', payload)"
         />
       </template>
       <article v-else class="compliance-empty">

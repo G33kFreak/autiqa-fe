@@ -11,6 +11,15 @@ const props = withDefaults(
     validUntil: string;
     attachments?: readonly string[];
     icon?: 'verified' | 'shield';
+    dues?: Array<{
+      id: string;
+      policyId: string;
+      expenseId?: string | null;
+      dueDate: string;
+      amountLabel: string;
+      paid: boolean;
+      processing?: boolean;
+    }>;
     /** Show primary CTA in empty state (e.g. nudge user toward vehicle details). */
     showEmptyCta?: boolean;
   }>(),
@@ -20,6 +29,15 @@ const props = withDefaults(
 const emit = defineEmits<{
   emptyCtaClick: [kind: 'inspection' | 'insurance'];
   editClick: [kind: 'inspection' | 'insurance'];
+  dueToggle: [
+    payload: {
+      dueId: string;
+      policyId: string;
+      expenseId: string | null;
+      dueDate: string;
+      paid: boolean;
+    },
+  ];
 }>();
 
 function complianceKind(): 'inspection' | 'insurance' {
@@ -32,6 +50,61 @@ function onEmptyCtaClick() {
 
 function onEditClick() {
   emit('editClick', complianceKind());
+}
+
+function onDueToggle(due: {
+  id: string;
+  policyId: string;
+  expenseId?: string | null;
+  dueDate: string;
+  paid: boolean;
+}) {
+  emit('dueToggle', {
+    dueId: due.id,
+    policyId: due.policyId,
+    expenseId: due.expenseId ?? null,
+    dueDate: due.dueDate,
+    paid: due.paid,
+  });
+}
+
+type DueState = 'paid' | 'overdue' | 'upcoming';
+
+function startOfLocalDay(date: Date): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+}
+
+function dueState(due: { dueDate: string; paid: boolean }): DueState {
+  if (due.paid) return 'paid';
+  const dueAt = new Date(due.dueDate);
+  if (Number.isNaN(dueAt.getTime())) return 'upcoming';
+  const today = startOfLocalDay(new Date()).getTime();
+  const dueDay = startOfLocalDay(dueAt).getTime();
+  return dueDay <= today ? 'overdue' : 'upcoming';
+}
+
+function dueStateIcon(state: DueState): string {
+  if (state === 'paid') return 'check_circle';
+  if (state === 'overdue') return 'warning';
+  return 'schedule';
+}
+
+function dueStateLabel(state: DueState): string {
+  if (state === 'paid') return t('appSections.fleet.vehicleDetails.complianceDuePaid');
+  if (state === 'overdue') {
+    return t('appSections.fleet.vehicleDetails.complianceDueOverdue');
+  }
+  return t('appSections.fleet.vehicleDetails.complianceDueUpcoming');
+}
+
+function dueStateTooltip(state: DueState): string {
+  if (state === 'paid') {
+    return t('appSections.fleet.vehicleDetails.complianceDueTooltipPaid');
+  }
+  if (state === 'overdue') {
+    return t('appSections.fleet.vehicleDetails.complianceDueTooltipOverdue');
+  }
+  return t('appSections.fleet.vehicleDetails.complianceDueTooltipUpcoming');
 }
 
 const { t } = useI18n();
@@ -58,6 +131,9 @@ const isWarning = computed(() => inspectionDaysLeft.value <= 30);
 /** ≤7d: critical (red). 8–30d: amber warning. */
 const isCritical = computed(() => inspectionDaysLeft.value <= 7);
 const hasValidDate = computed(() => !Number.isNaN(new Date(props.validUntil).getTime()));
+const hasDues = computed(
+  () => props.icon === 'shield' && (props.dues?.length ?? 0) > 0,
+);
 
 /** Status glyph: warning when ≤30d, else verified/shield. */
 const statusIconName = computed(() => {
@@ -179,6 +255,61 @@ const emptyCtaKey = computed(() =>
           :style="{ width: `${urgencyFill}%` }"
         />
       </div>
+    </div>
+
+    <div v-if="hasDues" class="compliance-item__dues">
+      <div class="compliance-item__dues-head">
+        <span class="compliance-item__dues-label">
+          {{ t('appSections.fleet.vehicleDetails.complianceDuesLabel') }}
+        </span>
+      </div>
+      <ul class="compliance-item__dues-list">
+        <li
+          v-for="due in props.dues"
+          :key="due.id"
+          class="compliance-item__due-item"
+        >
+          <span class="compliance-item__due-amount">{{ due.amountLabel }}</span>
+          <span class="compliance-item__due-date-wrap">
+            <span class="compliance-item__due-date">{{ formatDate(due.dueDate) }}</span>
+            <span
+              class="material-symbols-outlined compliance-item__due-date-status-icon"
+              :class="{
+                'compliance-item__due-date-status-icon--paid': dueState(due) === 'paid',
+                'compliance-item__due-date-status-icon--overdue': dueState(due) === 'overdue',
+                'compliance-item__due-date-status-icon--upcoming': dueState(due) === 'upcoming',
+              }"
+              :title="dueStateTooltip(dueState(due))"
+              :aria-label="dueStateTooltip(dueState(due))"
+              tabindex="0"
+            >{{ dueStateIcon(dueState(due)) }}</span>
+          </span>
+          <span
+            class="compliance-item__due-status"
+            :class="{
+              'compliance-item__due-status--paid': dueState(due) === 'paid',
+              'compliance-item__due-status--overdue': dueState(due) === 'overdue',
+              'compliance-item__due-status--upcoming': dueState(due) === 'upcoming',
+            }"
+          >
+            {{ dueStateLabel(dueState(due)) }}
+          </span>
+          <button
+            type="button"
+            class="compliance-item__due-action"
+            :disabled="due.processing"
+            @click="onDueToggle(due)"
+          >
+            {{
+              due.processing
+                ? t('common.loading')
+                : due.paid
+                  ? t('appSections.fleet.vehicleDetails.complianceDueMarkUnpaid')
+                  : t('appSections.fleet.vehicleDetails.complianceDueMarkPaid')
+            }}
+          </button>
+        </li>
+      </ul>
     </div>
   </article>
 
@@ -562,5 +693,170 @@ const emptyCtaKey = computed(() =>
 
 .compliance-item__bar-fill--critical {
   background: var(--color-error);
+}
+
+.compliance-item__dues {
+  margin-top: 0.95rem;
+  padding: 0.85rem;
+  border-radius: 0.75rem;
+  background: color-mix(in srgb, var(--color-surface-container) 76%, transparent);
+}
+
+.compliance-item__dues-head {
+  margin-bottom: 0.45rem;
+}
+
+.compliance-item__dues-label {
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+.compliance-item__dues-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.compliance-item__due-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto auto;
+  align-items: center;
+  column-gap: 0.65rem;
+  row-gap: 0.5rem;
+  padding: 0.58rem 0.62rem;
+  border-radius: 0.6rem;
+  background: var(--color-surface-container-lowest);
+}
+
+.compliance-item__due-date-wrap {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.compliance-item__due-date {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-on-surface-variant);
+}
+
+.compliance-item__due-amount {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+  font-family: var(--font-display);
+  font-size: 1.06rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  color: var(--color-on-surface);
+}
+
+.compliance-item__due-status {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  flex-shrink: 0;
+  border-radius: 999px;
+  padding: 0.22rem 0.55rem;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.compliance-item__due-status--paid {
+  color: #0f766e;
+  background: color-mix(in srgb, #14b8a6 20%, var(--color-surface-container-lowest));
+}
+
+.compliance-item__due-status--upcoming {
+  color: #b45309;
+  background: color-mix(in srgb, #f59e0b 23%, var(--color-surface-container-lowest));
+}
+
+.compliance-item__due-status--overdue {
+  color: var(--color-error);
+  background: color-mix(
+    in srgb,
+    var(--color-error) 18%,
+    var(--color-surface-container-lowest)
+  );
+}
+
+.compliance-item__due-date-status-icon {
+  font-size: 0.82rem;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: help;
+  border-radius: 999px;
+  padding: 0.14rem;
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 500,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.compliance-item__due-date-status-icon:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-secondary) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.compliance-item__due-date-status-icon--paid {
+  color: #0f766e;
+  background: color-mix(in srgb, #14b8a6 15%, transparent);
+}
+
+.compliance-item__due-date-status-icon--upcoming {
+  color: #b45309;
+  background: color-mix(in srgb, #f59e0b 18%, transparent);
+}
+
+.compliance-item__due-date-status-icon--overdue {
+  color: var(--color-error);
+  background: color-mix(in srgb, var(--color-error) 18%, transparent);
+}
+
+.compliance-item__due-action {
+  grid-column: 1 / -1;
+  grid-row: 3;
+  justify-self: stretch;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 0.5rem;
+  width: 100%;
+  text-align: center;
+  padding: 0.44rem 0.62rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-secondary);
+  background: color-mix(in srgb, var(--color-secondary-fixed) 30%, transparent);
+  cursor: pointer;
+}
+
+.compliance-item__due-action:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-secondary-fixed) 46%, transparent);
+}
+
+.compliance-item__due-action:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 </style>
