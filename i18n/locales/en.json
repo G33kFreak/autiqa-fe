@@ -113,7 +113,52 @@
   "appSections": {
     "dashboard": {
       "title": "Operational overview",
-      "lead": "High-level fleet health, utilization, and risk — tuned for taxi and rental operations that need signal without noise."
+      "lead": "High-level fleet health, utilization, and risk — tuned for taxi and rental operations that need signal without noise.",
+      "alerts": {
+        "hero": {
+          "kicker": "Tactical intelligence",
+          "title": "Command Center Overview",
+          "lead": "Monitor critical operational alerts and upcoming deadlines across your fleet."
+        },
+        "refresh": "Refresh alerts",
+        "refreshing": "Refreshing…",
+        "loading": "Loading alerts…",
+        "loadError": "Failed to load alerts. Please try again.",
+        "datePlaceholder": "N/A",
+        "badges": {
+          "unknownDate": "Unknown date",
+          "expired": "Expired",
+          "expiresToday": "Expires today",
+          "dueToday": "Due today",
+          "overdue": "Overdue",
+          "daysLeft": "{count}d left"
+        },
+        "meta": {
+          "due": "Due",
+          "coverageEnds": "Coverage ends",
+          "validUntil": "Valid until"
+        },
+        "dues": {
+          "title": "Insurance dues",
+          "subtitle": "Pending payments",
+          "cta": "View payment details",
+          "emptyTitle": "No payment risk",
+          "emptyCopy": "All insurance dues are settled in this time window."
+        },
+        "expiry": {
+          "title": "Insurance expiry",
+          "subtitle": "Upcoming renewals",
+          "cta": "Review expiring policies",
+          "emptyTitle": "No expiring policies",
+          "emptyCopy": "Coverage windows are healthy and fully active."
+        },
+        "inspection": {
+          "title": "Technical inspection",
+          "subtitle": "Technical inspection status",
+          "emptyTitle": "Inspections are current",
+          "emptyCopy": "No upcoming technical inspection deadlines."
+        }
+      }
     },
     "fleet": {
       "title": "Fleet",

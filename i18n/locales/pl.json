@@ -113,7 +113,52 @@
   "appSections": {
     "dashboard": {
       "title": "Przegląd operacyjny",
-      "lead": "Stan floty, wykorzystanie i ryzyko — dla taxi i wynajmu, gdzie liczy się sygnał, nie szum."
+      "lead": "Stan floty, wykorzystanie i ryzyko — dla taxi i wynajmu, gdzie liczy się sygnał, nie szum.",
+      "alerts": {
+        "hero": {
+          "kicker": "Taktyczna inteligencja",
+          "title": "Przegląd centrum dowodzenia",
+          "lead": "Monitoruj kluczowe alerty operacyjne i zbliżające się terminy w całej flocie."
+        },
+        "refresh": "Odśwież alerty",
+        "refreshing": "Odświeżanie…",
+        "loading": "Ładowanie alertów…",
+        "loadError": "Nie udało się wczytać alertów. Spróbuj ponownie.",
+        "datePlaceholder": "brak",
+        "badges": {
+          "unknownDate": "Nieznana data",
+          "expired": "Przeterminowane",
+          "expiresToday": "Wygasa dziś",
+          "dueToday": "Termin dziś",
+          "overdue": "Po terminie",
+          "daysLeft": "zostało {count} d"
+        },
+        "meta": {
+          "due": "Termin",
+          "coverageEnds": "Ubezpieczenie do",
+          "validUntil": "Ważny do"
+        },
+        "dues": {
+          "title": "Raty ubezpieczenia",
+          "subtitle": "Oczekujące płatności",
+          "cta": "Szczegóły płatności",
+          "emptyTitle": "Brak ryzyka płatności",
+          "emptyCopy": "Wszystkie raty w tym oknie są uregulowane."
+        },
+        "expiry": {
+          "title": "Wygaśnięcie polisy",
+          "subtitle": "Zbliżające się odnowienia",
+          "cta": "Polisy bliskie wygaśnięcia",
+          "emptyTitle": "Brak polis do odnowienia",
+          "emptyCopy": "Okresy ochrony są w porządku i aktywne."
+        },
+        "inspection": {
+          "title": "Przegląd techniczny",
+          "subtitle": "Status badań technicznych",
+          "emptyTitle": "Badania aktualne",
+          "emptyCopy": "Brak zbliżających się terminów przeglądu technicznego."
+        }
+      }
     },
     "fleet": {
       "title": "Flota",
