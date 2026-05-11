@@ -5,4 +5,6 @@
 export interface PaginationQueryDto {
   page: number;
   limit: number;
+  /** When set, filter by assignment; omit for all rows. */
+  isAssigned?: boolean | null;
 }

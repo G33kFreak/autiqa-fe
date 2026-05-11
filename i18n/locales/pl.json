@@ -114,6 +114,20 @@
     "dashboard": {
       "title": "Przegląd operacyjny",
       "lead": "Stan floty, wykorzystanie i ryzyko — dla taxi i wynajmu, gdzie liczy się sygnał, nie szum.",
+      "loading": "Ładowanie pulpitu…",
+      "fleetStats": {
+        "title": "Flota w skrócie",
+        "loading": "Ładowanie statystyk floty…",
+        "loadError": "Nie udało się wczytać statystyk floty.",
+        "carsTitle": "Pojazdy",
+        "driversTitle": "Kierowcy",
+        "assigned": "Przypisane",
+        "total": "Łącznie",
+        "totalCars": "Pojazdy łącznie",
+        "carsWithDriver": "Z przypisanym kierowcą",
+        "totalDrivers": "Kierowcy łącznie",
+        "driversAssigned": "Przypisani do pojazdu"
+      },
       "alerts": {
         "hero": {
           "kicker": "Taktyczna inteligencja",
@@ -124,6 +138,7 @@
         "refreshing": "Odświeżanie…",
         "loading": "Ładowanie alertów…",
         "loadError": "Nie udało się wczytać alertów. Spróbuj ponownie.",
+        "openCarDetails": "Otwórz szczegóły pojazdu: {model}",
         "datePlaceholder": "brak",
         "badges": {
           "unknownDate": "Nieznana data",

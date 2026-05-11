@@ -64,6 +64,9 @@ export const useDriversStore = defineStore('drivers', () => {
         limit: limit.value,
         search: search.value.trim() || undefined,
       };
+      if (overrides?.isAssigned !== undefined) {
+        query.isAssigned = overrides.isAssigned;
+      }
       const result = await getDrivers(authenticatedApi, query);
       paginated.value = result;
       return result;
@@ -73,6 +76,22 @@ export const useDriversStore = defineStore('drivers', () => {
     } finally {
       loading.value = false;
     }
+  }
+
+  /**
+   * Total row count for the current filter, using `limit: 1` so `meta.totalPages`
+   * equals item count when pagination is page-based.
+   */
+  async function fetchListItemCount(options?: {
+    isAssigned?: boolean;
+  }): Promise<number> {
+    const query: DriversPaginationQueryDto = {
+      page: 1,
+      limit: 1,
+      ...(options?.isAssigned !== undefined ? { isAssigned: options.isAssigned } : {}),
+    };
+    const result = await getDrivers(authenticatedApi, query);
+    return result.meta.totalPages;
   }
 
   async function fetchDriverById(id: string): Promise<DriverDetailsDto | null> {
@@ -199,6 +218,7 @@ export const useDriversStore = defineStore('drivers', () => {
     listResolved,
     reset,
     fetchDrivers,
+    fetchListItemCount,
     fetchDriverById,
     searchDrivers,
     getDriverSuggestions,

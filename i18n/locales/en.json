@@ -114,6 +114,20 @@
     "dashboard": {
       "title": "Operational overview",
       "lead": "High-level fleet health, utilization, and risk — tuned for taxi and rental operations that need signal without noise.",
+      "loading": "Loading dashboard…",
+      "fleetStats": {
+        "title": "Fleet at a glance",
+        "loading": "Loading fleet stats…",
+        "loadError": "Could not load fleet statistics.",
+        "carsTitle": "Vehicles",
+        "driversTitle": "Drivers",
+        "assigned": "Assigned",
+        "total": "Total",
+        "totalCars": "Total cars",
+        "carsWithDriver": "With assigned driver",
+        "totalDrivers": "Total drivers",
+        "driversAssigned": "Assigned to a vehicle"
+      },
       "alerts": {
         "hero": {
           "kicker": "Tactical intelligence",
@@ -124,6 +138,7 @@
         "refreshing": "Refreshing…",
         "loading": "Loading alerts…",
         "loadError": "Failed to load alerts. Please try again.",
+        "openCarDetails": "Open vehicle details: {model}",
         "datePlaceholder": "N/A",
         "badges": {
           "unknownDate": "Unknown date",

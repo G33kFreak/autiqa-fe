@@ -1,11 +1,47 @@
 <script setup lang="ts">
 import AlertsModuleCard from '~/components/dashboard/AlertsModuleCard.vue';
+import PageStateLoader from '~/components/shared/PageStateLoader.vue';
 
 const { t, locale } = useI18n();
-const authStore = useAuthStore();
+const localePath = useLocalePath();
 const alertsStore = useAlertsStore();
+const carsStore = useCarsStore();
+const driversStore = useDriversStore();
 
 const overview = computed(() => alertsStore.overview);
+
+const dashboardInitialLoading = ref(true);
+const fleetStatsError = ref(false);
+const fleetStats = ref({
+  totalCars: null as number | null,
+  carsWithDriver: null as number | null,
+  totalDrivers: null as number | null,
+  driversAssigned: null as number | null,
+});
+
+async function fetchFleetStats() {
+  fleetStatsError.value = false;
+  try {
+    const [totalCars, carsWithDriver, totalDrivers, driversAssigned] = await Promise.all([
+      carsStore.fetchListItemCount(),
+      carsStore.fetchListItemCount({ isAssigned: true }),
+      driversStore.fetchListItemCount(),
+      driversStore.fetchListItemCount({ isAssigned: true }),
+    ]);
+    fleetStats.value = { totalCars, carsWithDriver, totalDrivers, driversAssigned };
+  } catch {
+    fleetStatsError.value = true;
+  }
+}
+
+async function loadDashboardParallel() {
+  await Promise.all([
+    alertsStore.fetchOverview().catch(() => {
+      /* alertsStore.error */
+    }),
+    fetchFleetStats(),
+  ]);
+}
 
 function formatDate(value: string | null | undefined): string {
   if (!value) return t('appSections.dashboard.alerts.datePlaceholder');
@@ -127,7 +163,7 @@ const insuranceExpiryTone = computed<InspectionTone>(() => {
 });
 
 const insuranceExpiryRows = computed(() => {
-  locale.value;
+  void locale.value;
   const items = overview.value?.InsuranceExpiringSoon.items ?? [];
   return items.map((row) => ({
     row,
@@ -136,7 +172,7 @@ const insuranceExpiryRows = computed(() => {
 });
 
 const insuranceDuesRows = computed(() => {
-  locale.value;
+  void locale.value;
   const items = overview.value?.InsuranceDuesExpiringSoon.items ?? [];
   return items.map((row) => ({
     row,
@@ -145,7 +181,7 @@ const insuranceDuesRows = computed(() => {
 });
 
 const inspectionRows = computed(() => {
-  locale.value;
+  void locale.value;
   const items = overview.value?.inspectionExpiringSoon.items ?? [];
   return items.map((row) => ({
     row,
@@ -154,56 +190,83 @@ const inspectionRows = computed(() => {
 });
 
 useSeoMeta({
-  title: computed(() => t('meta.app.title')),
-  description: computed(() => t('meta.app.description')),
+  title: computed(() => t('appSections.dashboard.title')),
+  description: computed(() => t('appSections.dashboard.lead')),
 });
 
 onMounted(async () => {
+  dashboardInitialLoading.value = true;
   try {
-    await alertsStore.fetchOverview();
-  } catch {
-    // UI already reacts to store error state.
+    await loadDashboardParallel();
+  } finally {
+    dashboardInitialLoading.value = false;
   }
 });
 
-async function onLogout() {
-  await authStore.logout();
+function fleetCarPath(carId: string) {
+  return localePath(`/app/fleet/${carId}`);
 }
 </script>
 
 <template>
-  <div class="dash">
-    <header class="dash__hero">
-      <div>
-        <p class="dash__hero-kicker">{{ t('appSections.dashboard.alerts.hero.kicker') }}</p>
-        <h1 class="dash__hero-title">{{ t('appSections.dashboard.alerts.hero.title') }}</h1>
-        <p class="dash__hero-lead">
-          {{ t('appSections.dashboard.alerts.hero.lead') }}
-        </p>
-      </div>
-      <div class="dash__hero-actions">
-        <button
-          type="button"
-          class="dash__secondary"
-          :disabled="alertsStore.loading"
-          @click="alertsStore.fetchOverview"
-        >
-          {{
-            alertsStore.loading
-              ? t('appSections.dashboard.alerts.refreshing')
-              : t('appSections.dashboard.alerts.refresh')
-          }}
-        </button>
-        <button type="button" class="dash__ghost-btn" @click="onLogout">
-          {{ t('appShell.logoutDebug') }}
-        </button>
-      </div>
-    </header>
+  <PageStateLoader
+    v-if="dashboardInitialLoading"
+    :text="t('appSections.dashboard.loading')"
+    min-height="min(70vh, 28rem)"
+  />
+  <div v-else class="dash">
+    <h1 class="app-page__title">{{ t('appSections.dashboard.title') }}</h1>
 
-    <p v-if="alertsStore.loading && !overview" class="dash__alerts-state">
-      {{ t('appSections.dashboard.alerts.loading') }}
-    </p>
-    <p v-else-if="alertsStore.error" class="dash__alerts-state dash__alerts-state--error">
+    <section class="dash__fleet" :aria-label="t('appSections.dashboard.fleetStats.title')">
+      <p v-if="fleetStatsError" class="dash__fleet-error" role="alert">
+        {{ t('appSections.dashboard.fleetStats.loadError') }}
+      </p>
+      <div v-if="fleetStats.totalCars !== null" class="dash__fleet-cards">
+        <article class="dash__fleet-card dash__fleet-card--vehicles">
+          <div class="dash__fleet-card-accent" aria-hidden="true" />
+          <div class="dash__fleet-card-inner">
+            <div class="dash__fleet-card-head">
+              <span class="material-symbols-outlined dash__fleet-card-icon" aria-hidden="true">directions_car</span>
+              <h3 class="dash__fleet-card-title">{{ t('appSections.dashboard.fleetStats.carsTitle') }}</h3>
+            </div>
+            <div class="dash__fleet-card-metrics">
+              <div class="dash__fleet-metric">
+                <p class="dash__fleet-metric-label">{{ t('appSections.dashboard.fleetStats.assigned') }}</p>
+                <p class="dash__fleet-metric-value">{{ fleetStats.carsWithDriver }}</p>
+              </div>
+              <div class="dash__fleet-metric-divider" aria-hidden="true" />
+              <div class="dash__fleet-metric">
+                <p class="dash__fleet-metric-label">{{ t('appSections.dashboard.fleetStats.total') }}</p>
+                <p class="dash__fleet-metric-value dash__fleet-metric-value--muted">{{ fleetStats.totalCars }}</p>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="dash__fleet-card dash__fleet-card--drivers">
+          <div class="dash__fleet-card-accent dash__fleet-card-accent--drivers" aria-hidden="true" />
+          <div class="dash__fleet-card-inner">
+            <div class="dash__fleet-card-head">
+              <span class="material-symbols-outlined dash__fleet-card-icon" aria-hidden="true">badge</span>
+              <h3 class="dash__fleet-card-title">{{ t('appSections.dashboard.fleetStats.driversTitle') }}</h3>
+            </div>
+            <div class="dash__fleet-card-metrics">
+              <div class="dash__fleet-metric">
+                <p class="dash__fleet-metric-label">{{ t('appSections.dashboard.fleetStats.assigned') }}</p>
+                <p class="dash__fleet-metric-value">{{ fleetStats.driversAssigned }}</p>
+              </div>
+              <div class="dash__fleet-metric-divider" aria-hidden="true" />
+              <div class="dash__fleet-metric">
+                <p class="dash__fleet-metric-label">{{ t('appSections.dashboard.fleetStats.total') }}</p>
+                <p class="dash__fleet-metric-value dash__fleet-metric-value--muted">{{ fleetStats.totalDrivers }}</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <p v-if="alertsStore.error" class="dash__alerts-state dash__alerts-state--error" role="alert">
       {{ t('appSections.dashboard.alerts.loadError') }}
     </p>
 
@@ -220,36 +283,42 @@ async function onLogout() {
             <li
               v-for="{ row: item, badge } in insuranceDuesRows"
               :key="item.installment.id"
-              class="dash__alerts-item"
+              class="dash__alerts-list-item"
             >
-              <div class="dash__alerts-item-head">
-                <div class="dash__alerts-item-main">
-                  <p class="dash__alerts-item-title">{{ item.car.model }}</p>
-                  <p v-if="item.car.plateNumber" class="dash__plate-chip">{{ item.car.plateNumber }}</p>
-                </div>
-                <span
-                  class="dash__alerts-chip"
-                  :class="`dash__alerts-chip--${badge.tone}`"
-                >
+              <NuxtLink
+                :to="fleetCarPath(item.car.id)"
+                class="dash__alerts-item dash__alerts-item--link"
+                :aria-label="t('appSections.dashboard.alerts.openCarDetails', { model: item.car.model })"
+              >
+                <div class="dash__alerts-item-head">
+                  <div class="dash__alerts-item-main">
+                    <p class="dash__alerts-item-title">{{ item.car.model }}</p>
+                    <p v-if="item.car.plateNumber" class="dash__plate-chip">{{ item.car.plateNumber }}</p>
+                  </div>
                   <span
-                    v-if="inspectionChipIcon(badge.tone)"
-                    class="dash__alerts-chip-icon material-symbols-outlined"
-                    aria-hidden="true"
+                    class="dash__alerts-chip"
+                    :class="`dash__alerts-chip--${badge.tone}`"
                   >
-                    {{ inspectionChipIcon(badge.tone) }}
+                    <span
+                      v-if="inspectionChipIcon(badge.tone)"
+                      class="dash__alerts-chip-icon material-symbols-outlined"
+                      aria-hidden="true"
+                    >
+                      {{ inspectionChipIcon(badge.tone) }}
+                    </span>
+                    {{ badge.label }}
                   </span>
-                  {{ badge.label }}
-                </span>
-              </div>
-              <p class="dash__alerts-item-meta dash__alerts-item-meta--dues">
-                <span>
-                  {{ t('appSections.dashboard.alerts.meta.due') }}
-                  <span class="dash__alerts-item-meta-date">{{ formatDate(item.installment.dueDate) }}</span>
-                </span>
-                <span class="dash__alerts-item-amount">
-                  {{ item.installment.amount }} {{ item.insurance.currency }}
-                </span>
-              </p>
+                </div>
+                <p class="dash__alerts-item-meta dash__alerts-item-meta--dues">
+                  <span>
+                    {{ t('appSections.dashboard.alerts.meta.due') }}
+                    <span class="dash__alerts-item-meta-date">{{ formatDate(item.installment.dueDate) }}</span>
+                  </span>
+                  <span class="dash__alerts-item-amount">
+                    {{ item.installment.amount }} {{ item.insurance.currency }}
+                  </span>
+                </p>
+              </NuxtLink>
             </li>
           </ul>
           <button type="button" class="dash__card-action">
@@ -279,31 +348,37 @@ async function onLogout() {
             <li
               v-for="{ row: item, badge } in insuranceExpiryRows"
               :key="item.insurance.id"
-              class="dash__alerts-item"
+              class="dash__alerts-list-item"
             >
-              <div class="dash__alerts-item-head">
-                <div class="dash__alerts-item-main">
-                  <p class="dash__alerts-item-title">{{ item.car.model }}</p>
-                  <p v-if="item.car.plateNumber" class="dash__plate-chip">{{ item.car.plateNumber }}</p>
-                </div>
-                <span
-                  class="dash__alerts-chip"
-                  :class="`dash__alerts-chip--${badge.tone}`"
-                >
+              <NuxtLink
+                :to="fleetCarPath(item.car.id)"
+                class="dash__alerts-item dash__alerts-item--link"
+                :aria-label="t('appSections.dashboard.alerts.openCarDetails', { model: item.car.model })"
+              >
+                <div class="dash__alerts-item-head">
+                  <div class="dash__alerts-item-main">
+                    <p class="dash__alerts-item-title">{{ item.car.model }}</p>
+                    <p v-if="item.car.plateNumber" class="dash__plate-chip">{{ item.car.plateNumber }}</p>
+                  </div>
                   <span
-                    v-if="inspectionChipIcon(badge.tone)"
-                    class="dash__alerts-chip-icon material-symbols-outlined"
-                    aria-hidden="true"
+                    class="dash__alerts-chip"
+                    :class="`dash__alerts-chip--${badge.tone}`"
                   >
-                    {{ inspectionChipIcon(badge.tone) }}
+                    <span
+                      v-if="inspectionChipIcon(badge.tone)"
+                      class="dash__alerts-chip-icon material-symbols-outlined"
+                      aria-hidden="true"
+                    >
+                      {{ inspectionChipIcon(badge.tone) }}
+                    </span>
+                    {{ badge.label }}
                   </span>
-                  {{ badge.label }}
-                </span>
-              </div>
-              <p class="dash__alerts-item-meta">
-                {{ t('appSections.dashboard.alerts.meta.coverageEnds') }}
-                <span class="dash__alerts-item-meta-date">{{ formatDate(item.insurance.coverageEnd) }}</span>
-              </p>
+                </div>
+                <p class="dash__alerts-item-meta">
+                  {{ t('appSections.dashboard.alerts.meta.coverageEnds') }}
+                  <span class="dash__alerts-item-meta-date">{{ formatDate(item.insurance.coverageEnd) }}</span>
+                </p>
+              </NuxtLink>
             </li>
           </ul>
           <button type="button" class="dash__card-action">
@@ -333,33 +408,39 @@ async function onLogout() {
             <li
               v-for="{ row: car, badge } in inspectionRows"
               :key="car.id"
-              class="dash__alerts-item"
+              class="dash__alerts-list-item"
             >
-              <div class="dash__alerts-item-head">
-                <div class="dash__alerts-item-main">
-                  <p class="dash__alerts-item-title">{{ car.model }}</p>
-                  <p v-if="car.plateNumber" class="dash__plate-chip">{{ car.plateNumber }}</p>
-                </div>
-                <span
-                  class="dash__alerts-chip"
-                  :class="`dash__alerts-chip--${badge.tone}`"
-                >
+              <NuxtLink
+                :to="fleetCarPath(car.id)"
+                class="dash__alerts-item dash__alerts-item--link"
+                :aria-label="t('appSections.dashboard.alerts.openCarDetails', { model: car.model })"
+              >
+                <div class="dash__alerts-item-head">
+                  <div class="dash__alerts-item-main">
+                    <p class="dash__alerts-item-title">{{ car.model }}</p>
+                    <p v-if="car.plateNumber" class="dash__plate-chip">{{ car.plateNumber }}</p>
+                  </div>
                   <span
-                    v-if="inspectionChipIcon(badge.tone)"
-                    class="dash__alerts-chip-icon material-symbols-outlined"
-                    aria-hidden="true"
+                    class="dash__alerts-chip"
+                    :class="`dash__alerts-chip--${badge.tone}`"
                   >
-                    {{ inspectionChipIcon(badge.tone) }}
+                    <span
+                      v-if="inspectionChipIcon(badge.tone)"
+                      class="dash__alerts-chip-icon material-symbols-outlined"
+                      aria-hidden="true"
+                    >
+                      {{ inspectionChipIcon(badge.tone) }}
+                    </span>
+                    {{ badge.label }}
                   </span>
-                  {{ badge.label }}
-                </span>
-              </div>
-              <p class="dash__alerts-item-meta">
-                {{ t('appSections.dashboard.alerts.meta.validUntil') }}
-                <span class="dash__alerts-item-meta-date">
-                  {{ formatDate(car.inspectionValidUntil) }}
-                </span>
-              </p>
+                </div>
+                <p class="dash__alerts-item-meta">
+                  {{ t('appSections.dashboard.alerts.meta.validUntil') }}
+                  <span class="dash__alerts-item-meta-date">
+                    {{ formatDate(car.inspectionValidUntil) }}
+                  </span>
+                </p>
+              </NuxtLink>
             </li>
           </ul>
         </template>
@@ -383,69 +464,160 @@ async function onLogout() {
   gap: 1.5rem;
 }
 
-.dash__hero {
-  padding: 1.4rem 1.5rem;
-  border-radius: 1.1rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+.dash__fleet {
+  display: grid;
   gap: 1rem;
+}
+
+.dash__fleet-error {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--color-error);
+}
+
+.dash__fleet-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 720px) {
+  .dash__fleet-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.15rem;
+  }
+}
+
+.dash__fleet-card {
+  position: relative;
+  border-radius: 1rem;
+  overflow: hidden;
+  min-width: 0;
+  background: var(--color-surface-container-low);
+}
+
+.dash__fleet-card--vehicles {
   background: linear-gradient(
-    140deg,
-    color-mix(in srgb, var(--color-secondary-container) 92%, var(--color-secondary)) 0%,
-    color-mix(in srgb, var(--color-secondary-container) 72%, var(--color-surface-container-lowest)) 100%
+    155deg,
+    color-mix(in srgb, var(--color-secondary) 14%, var(--color-surface-container-low)) 0%,
+    var(--color-surface-container-low) 48%,
+    var(--color-surface-container-low) 100%
   );
-  color: var(--color-on-secondary);
 }
 
-.dash__hero-kicker {
-  margin: 0 0 0.4rem;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  opacity: 0.85;
+.dash__fleet-card--drivers {
+  background: linear-gradient(
+    155deg,
+    color-mix(in srgb, var(--color-tertiary, #2ba673) 12%, var(--color-surface-container-low)) 0%,
+    var(--color-surface-container-low) 50%,
+    var(--color-surface-container-low) 100%
+  );
 }
 
-.dash__hero-title {
+.dash__fleet-card-accent {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  border-radius: 4px 0 0 4px;
+  background: linear-gradient(
+    180deg,
+    var(--color-secondary) 0%,
+    color-mix(in srgb, var(--color-secondary-container) 70%, var(--color-secondary)) 100%
+  );
+}
+
+.dash__fleet-card-accent--drivers {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-tertiary, #2ba673) 88%, var(--color-secondary) 12%) 0%,
+    color-mix(in srgb, var(--color-tertiary, #2ba673) 55%, var(--color-on-surface)) 100%
+  );
+}
+
+.dash__fleet-card-inner {
+  position: relative;
+  padding: 1.15rem 1.15rem 1.15rem 1.35rem;
+  display: grid;
+  gap: 1.1rem;
+}
+
+.dash__fleet-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.dash__fleet-card-icon {
+  font-size: 1.35rem;
+  color: color-mix(in srgb, var(--color-secondary) 82%, var(--color-on-surface));
+}
+
+.dash__fleet-card--drivers .dash__fleet-card-icon {
+  color: color-mix(in srgb, var(--color-tertiary, #2ba673) 78%, var(--color-on-surface));
+}
+
+.dash__fleet-card-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(1.45rem, 3.5vw, 2rem);
-  line-height: 1.1;
-}
-
-.dash__hero-lead {
-  margin: 0.65rem 0 1rem;
-  font-size: 0.925rem;
-  max-width: 56ch;
-  opacity: 0.92;
-}
-
-.dash__hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.65rem;
-  align-items: flex-end;
-}
-
-.dash__secondary,
-.dash__ghost-btn {
-  border: none;
-  border-radius: 0.75rem;
-  padding: 0.55rem 0.95rem;
-  font-size: 0.8125rem;
+  font-size: 1.05rem;
   font-weight: 700;
-  cursor: pointer;
-}
-
-.dash__secondary {
+  letter-spacing: -0.02em;
   color: var(--color-on-surface);
-  background: var(--color-surface-container-high);
 }
 
-.dash__ghost-btn {
-  color: var(--color-on-secondary);
-  background: color-mix(in srgb, var(--color-on-secondary) 14%, transparent);
+.dash__fleet-card-metrics {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  gap: 0.65rem 0.85rem;
+  padding: 0.85rem 0.75rem;
+  border-radius: 0.85rem;
+  background: var(--color-surface-container-lowest);
+}
+
+.dash__fleet-metric {
+  display: grid;
+  gap: 0.25rem;
+  text-align: center;
+  min-width: 0;
+}
+
+.dash__fleet-metric-label {
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+.dash__fleet-metric-value {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.05;
+  color: var(--color-secondary);
+}
+
+.dash__fleet-card--drivers .dash__fleet-metric-value:not(.dash__fleet-metric-value--muted) {
+  color: color-mix(in srgb, var(--color-tertiary, #2ba673) 88%, var(--color-on-surface));
+}
+
+.dash__fleet-metric-value--muted {
+  color: var(--color-on-surface);
+  opacity: 0.88;
+}
+
+.dash__fleet-metric-divider {
+  width: 1px;
+  align-self: stretch;
+  min-height: 2.75rem;
+  margin: auto 0;
+  background: color-mix(in srgb, var(--color-outline-variant) 22%, transparent);
+  border-radius: 1px;
 }
 
 .dash__alerts {
@@ -503,10 +675,32 @@ async function onLogout() {
   gap: 0.55rem;
 }
 
+.dash__alerts-list-item {
+  display: block;
+}
+
 .dash__alerts-item {
   background: var(--color-surface-container-lowest);
   border-radius: 0.75rem;
   padding: 0.7rem 0.75rem;
+}
+
+.dash__alerts-item--link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  transition:
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.dash__alerts-item--link:hover {
+  background: color-mix(in srgb, var(--color-secondary) 12%, var(--color-surface-container-lowest));
+}
+
+.dash__alerts-item--link:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-secondary) 35%, transparent);
+  outline-offset: 2px;
 }
 
 .dash__alerts-item-head {

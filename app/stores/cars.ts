@@ -56,6 +56,9 @@ export const useCarsStore = defineStore('cars', () => {
         page: page.value,
         limit: limit.value,
       };
+      if (overrides?.isAssigned !== undefined) {
+        query.isAssigned = overrides.isAssigned;
+      }
       const result = await getCars(authenticatedApi, query);
       paginated.value = result;
       return result;
@@ -65,6 +68,22 @@ export const useCarsStore = defineStore('cars', () => {
     } finally {
       loading.value = false;
     }
+  }
+
+  /**
+   * Total row count for the current filter, using `limit: 1` so `meta.totalPages`
+   * equals item count when pagination is page-based.
+   */
+  async function fetchListItemCount(options?: {
+    isAssigned?: boolean;
+  }): Promise<number> {
+    const query: PaginationQueryDto = {
+      page: 1,
+      limit: 1,
+      ...(options?.isAssigned !== undefined ? { isAssigned: options.isAssigned } : {}),
+    };
+    const result = await getCars(authenticatedApi, query);
+    return result.meta.totalPages;
   }
 
   async function fetchCarById(id: string): Promise<CarDto | null> {
@@ -185,6 +204,7 @@ export const useCarsStore = defineStore('cars', () => {
     listResolved,
     reset,
     fetchCars,
+    fetchListItemCount,
     fetchCarById,
     getCarSuggestions,
     createCars,
