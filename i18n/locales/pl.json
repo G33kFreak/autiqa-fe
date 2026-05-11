@@ -7,8 +7,8 @@
   },
   "meta": {
     "home": {
-      "title": "Strona główna",
-      "description": "Operacje flotowe i wynajmu aut pod taxi i logistykę."
+      "title": "Inteligencja floty pod taxi i wynajem",
+      "description": "Pojazdy, kierowcy, finanse i alerty o terminach oraz obowiązkach formalnych w jednym miejscu Autiqa — dla operatorów, którzy wyrośli z arkuszy."
     },
     "login": {
       "title": "Logowanie",
@@ -40,7 +40,91 @@
     }
   },
   "landing": {
-    "cta": "Zaloguj się"
+    "a11y": {
+      "skip": "Przejdź do treści",
+      "menu": "Otwórz menu",
+      "subNav": "Sekcje strony",
+      "mainNav": "Linki marketingowe"
+    },
+    "nav": {
+      "features": "Funkcje",
+      "platform": "Platforma",
+      "start": "Plany",
+      "login": "Zaloguj się",
+      "cta": "Zacznij"
+    },
+    "hero": {
+      "badge": "Organizacje na planach Free i Standard",
+      "title1": "Inteligencja floty,",
+      "title2": "nie porozrzucane arkusze.",
+      "lead": "Autiqa łączy pojazdy, kierowców, przychody, koszty i harmonogramy ubezpieczeń w jednym centrum — tak by przeglądy, raty i sygnały finansowe opowiadały jedną historię.",
+      "ctaPrimary": "Załóż konto",
+      "ctaSecondary": "Zobacz możliwości",
+      "trust1": "Aktywacja e-mailem",
+      "trust2": "Dostępy wg ról",
+      "trust3": "Odzyskiwanie hasła krok po kroku",
+      "trustLabel": "Dlaczego zespoły wybierają Autiqę"
+    },
+    "visual": {
+      "chartLabel": "Skumulowany trend P/L",
+      "chartKpi": "42 500 PLN",
+      "chartDelta": "+12,4%",
+      "alertK": "Przegląd alertów",
+      "alertV": "Przeglądy do wykonania",
+      "cardTitle": "Ubezpieczenie i terminy",
+      "cardVehicle": "Toyota Camry (WW 12345)",
+      "cardDriver": "Jan Kowalski",
+      "cardUntil": "Ważne do 24 paź"
+    },
+    "compare": {
+      "sectionTitle": "Arkusze vs. jeden obraz operacyjny",
+      "sectionLead": "Gdy finanse i formalności flotowe żyją w osobnych plikach, odnowienia się gubią, a KPI się spóźniają. Autiqa trzyma narrację w jednym miejscu.",
+      "badTitle": "Statyczne arkusze",
+      "goodTitle": "Przestrzeń Autiqa",
+      "bad1Title": "Nieaktualne migawki",
+      "bad1Body": "Liczby są świeże tylko do ostatniego eksportu — łatwo o pomyłkę i żmudne uzgadnianie.",
+      "bad2Title": "Rozbite źródła prawdy",
+      "bad2Body": "Operacje widzi pojazdy w jednym miejscu, finanse w drugim. Ryzyko i koszt rzadko się spotykają.",
+      "bad3Title": "Ciche ryzyko wygaśnięć",
+      "bad3Body": "Przeglądy i okna polis chowają się w wierszach. Jeden przeoczony termin może zamrozić przychód.",
+      "good1Title": "Spójny hub alertów",
+      "good1Body": "Przegląd pulpitu podświetla raty OC/AC, wygaśnięcia i okna przeglądów technicznych w całej flocie.",
+      "good2Title": "Finanse zsynchronizowane z operacją",
+      "good2Body": "Śledź przychody, wydatki i podsumowania z wykresami odzwierciedlającymi tę samą flotę, którą prowadzisz co dnia.",
+      "good3Title": "Ewidencja pojazdów i kierowców",
+      "good3Body": "Rejestruj pojazdy i kierowców, przypisuj miejsca i schodź do statusów formalnych oraz ekonomicznych przy każdym pojeździe."
+    },
+    "deep": {
+      "title": "Formalności i finanse w jednej narracji",
+      "lead": "Autiqa scala operacyjne ryzyko z wynikiem finansowym, żeby reagować wcześniej — zanim arkusz się zaczerwieni.",
+      "finTitle": "Inteligencja finansowa",
+      "finBody": "Monitoruj przychody, koszty i mix kategorii z podsumowaniami i trendami pod operatorów floty.",
+      "finStripLabel": "Przychód łącznie",
+      "finStripValue": "142 500 PLN",
+      "compTitle": "Harmonogramy przeglądów i ubezpieczeń",
+      "compBody": "Modeluj polisy z ratami, śledź ważność przeglądów i widzisz, co wymaga uwagi jako następne.",
+      "compStripLabel": "Nadchodzące raty",
+      "compStripValue": "3 raty"
+    },
+    "bento": {
+      "title": "Co prowadzisz w Autiqa",
+      "fleetTitle": "Rejestr floty i przypisania",
+      "fleetBody": "Centralna ewidencja pojazdów z tablicami, polisami i przypisanymi kierowcami.",
+      "fleetLink": "Rozpocznij onboarding",
+      "alertsTitle": "Przegląd alertów",
+      "alertsBody": "W jednej karcie pulpitu: raty ubezpieczenia, wygaśnięcia i pilność przeglądów.",
+      "timelineTitle": "Terminy i formalności w profilu pojazdu",
+      "timelineBody": "Polisy i przeglądy obok notatek serwisowych na profilu pojazdu.",
+      "financeTitle": "Przestrzeń finansów",
+      "financeBody": "Przychody i koszty z filtrami dat, podsumowaniami i wykresami pod rozmowy o cashflow.",
+      "financeLink": "Finanse po zalogowaniu"
+    },
+    "footer": {
+      "tagline": "Inteligencja operacyjna dla taxi, wynajmu i flot mieszanych — bez ślepych plam.",
+      "signIn": "Zaloguj się",
+      "createAccount": "Załóż konto",
+      "copy": "© 2026 Autiqa. Wszelkie prawa zastrzeżone."
+    }
   },
   "login": {
     "asideHeadline": "Panuj nad każdym pojazdem. Spokój na każdej zmianie.",

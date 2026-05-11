@@ -7,8 +7,8 @@
   },
   "meta": {
     "home": {
-      "title": "Home",
-      "description": "Fleet and car rental operations for taxi and logistics."
+      "title": "Fleet intelligence for taxi & rental",
+      "description": "Vehicles, drivers, finance, and compliance alerts in one Autiqa workspace—built for operators who outgrew spreadsheets."
     },
     "login": {
       "title": "Sign in",
@@ -40,7 +40,91 @@
     }
   },
   "landing": {
-    "cta": "Sign in"
+    "a11y": {
+      "skip": "Skip to content",
+      "menu": "Open menu",
+      "subNav": "Page sections",
+      "mainNav": "Marketing links"
+    },
+    "nav": {
+      "features": "Features",
+      "platform": "Platform",
+      "start": "Plans",
+      "login": "Sign in",
+      "cta": "Get started"
+    },
+    "hero": {
+      "badge": "Organizations on Free & Standard plans",
+      "title1": "Fleet intelligence,",
+      "title2": "not scattered sheets.",
+      "lead": "Autiqa brings vehicles, drivers, income, expenses, and insurance timelines into one control center—so inspections, installments, and financial signals stay in the same story.",
+      "ctaPrimary": "Create account",
+      "ctaSecondary": "See capabilities",
+      "trust1": "Email activation",
+      "trust2": "Role-based access",
+      "trust3": "Guided password recovery",
+      "trustLabel": "Why teams trust Autiqa"
+    },
+    "visual": {
+      "chartLabel": "Cumulative P/L trend",
+      "chartKpi": "$42,500",
+      "chartDelta": "+12.4%",
+      "alertK": "Alert overview",
+      "alertV": "Inspections due",
+      "cardTitle": "Insurance & timelines",
+      "cardVehicle": "Toyota Camry (WW 12345)",
+      "cardDriver": "Jan Kowalski",
+      "cardUntil": "Valid until Oct 24"
+    },
+    "compare": {
+      "sectionTitle": "Spreadsheets vs. one operating picture",
+      "sectionLead": "When finance and compliance live in different files, renewals slip and KPIs lag. Autiqa keeps the narrative unified.",
+      "badTitle": "Static spreadsheets",
+      "goodTitle": "Autiqa workspace",
+      "bad1Title": "Stale snapshots",
+      "bad1Body": "Numbers are only as fresh as the last export—easy to mis-key and painful to reconcile.",
+      "bad2Title": "Split sources of truth",
+      "bad2Body": "Operations tracks vehicles in one place while finance chases another. Nobody sees risk and cost together.",
+      "bad3Title": "Silent expiry risk",
+      "bad3Body": "Inspections and policy windows hide in rows. One missed date can ground revenue.",
+      "good1Title": "Unified alert hub",
+      "good1Body": "Dashboard overview highlights insurance installments, expiries, and inspection windows across the fleet.",
+      "good2Title": "Finance that matches operations",
+      "good2Body": "Track income, spend, and summaries with charts that reflect the same fleet you run day to day.",
+      "good3Title": "Fleet & driver records",
+      "good3Body": "Register vehicles and drivers, assign seats, and drill into per-asset compliance and economics."
+    },
+    "deep": {
+      "title": "Compliance and money in one narrative",
+      "lead": "Autiqa connects operational risk with financial performance so leaders can act early—not after a spreadsheet turns red.",
+      "finTitle": "Finance intelligence",
+      "finBody": "Monitor revenue, expenses, and category mix with summaries and trend views tuned for fleet operators.",
+      "finStripLabel": "Total revenue",
+      "finStripValue": "$142,500",
+      "compTitle": "Compliance timelines",
+      "compBody": "Model insurance policies with installments, track valid-until inspection dates, and see what needs attention next.",
+      "compStripLabel": "Upcoming installments",
+      "compStripValue": "3 installments"
+    },
+    "bento": {
+      "title": "What you run inside Autiqa",
+      "fleetTitle": "Fleet registry & assignments",
+      "fleetBody": "Central inventory for every vehicle with plates, policies, and driver seat assignments.",
+      "fleetLink": "Start onboarding",
+      "alertsTitle": "Alerts overview",
+      "alertsBody": "Surface insurance dues, expiries, and inspection urgency from a single dashboard card.",
+      "timelineTitle": "Per-vehicle compliance",
+      "timelineBody": "Insurance and inspection timelines stay next to maintenance notes on each vehicle profile.",
+      "financeTitle": "Finance workspace",
+      "financeBody": "Income and expense ledgers with date filters, summaries, and charts for cashflow conversations.",
+      "financeLink": "Open finance when you sign in"
+    },
+    "footer": {
+      "tagline": "Tactical intelligence for taxi, rental, and mixed fleets that cannot afford blind spots.",
+      "signIn": "Sign in",
+      "createAccount": "Create account",
+      "copy": "© 2026 Autiqa. All rights reserved."
+    }
   },
   "login": {
     "asideHeadline": "Command every vehicle. Calm every shift.",
