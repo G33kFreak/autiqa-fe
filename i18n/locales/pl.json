@@ -156,14 +156,12 @@
         "dues": {
           "title": "Raty ubezpieczenia",
           "subtitle": "Oczekujące płatności",
-          "cta": "Szczegóły płatności",
           "emptyTitle": "Brak ryzyka płatności",
           "emptyCopy": "Wszystkie raty w tym oknie są uregulowane."
         },
         "expiry": {
           "title": "Wygaśnięcie polisy",
           "subtitle": "Zbliżające się odnowienia",
-          "cta": "Polisy bliskie wygaśnięcia",
           "emptyTitle": "Brak polis do odnowienia",
           "emptyCopy": "Okresy ochrony są w porządku i aktywne."
         },

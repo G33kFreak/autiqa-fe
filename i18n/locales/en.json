@@ -156,14 +156,12 @@
         "dues": {
           "title": "Insurance dues",
           "subtitle": "Pending payments",
-          "cta": "View payment details",
           "emptyTitle": "No payment risk",
           "emptyCopy": "All insurance dues are settled in this time window."
         },
         "expiry": {
           "title": "Insurance expiry",
           "subtitle": "Upcoming renewals",
-          "cta": "Review expiring policies",
           "emptyTitle": "No expiring policies",
           "emptyCopy": "Coverage windows are healthy and fully active."
         },

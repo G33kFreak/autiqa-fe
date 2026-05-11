@@ -321,9 +321,6 @@ function fleetCarPath(carId: string) {
               </NuxtLink>
             </li>
           </ul>
-          <button type="button" class="dash__card-action">
-            {{ t('appSections.dashboard.alerts.dues.cta') }}
-          </button>
         </template>
         <template v-else>
           <div class="dash__success-empty">
@@ -381,9 +378,6 @@ function fleetCarPath(carId: string) {
               </NuxtLink>
             </li>
           </ul>
-          <button type="button" class="dash__card-action">
-            {{ t('appSections.dashboard.alerts.expiry.cta') }}
-          </button>
         </template>
         <template v-else>
           <div class="dash__success-empty">
@@ -793,18 +787,6 @@ function fleetCarPath(carId: string) {
 .dash__alerts-chip--neutral {
   background: var(--color-surface-container-high);
   color: var(--color-on-surface-variant);
-}
-
-.dash__card-action {
-  margin-top: auto;
-  border: none;
-  background: transparent;
-  color: var(--color-secondary);
-  font-weight: 700;
-  font-size: 0.83rem;
-  padding: 0;
-  text-align: left;
-  cursor: pointer;
 }
 
 .dash__alerts-state {
