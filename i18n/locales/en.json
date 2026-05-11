@@ -616,7 +616,8 @@
     },
     "settings": {
       "title": "Settings",
-      "lead": "Workspace preferences, integrations, and access controls."
+      "lead": "Workspace preferences, integrations, and access controls.",
+      "signOut": "Sign out"
     }
   },
   "appShell": {

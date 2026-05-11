@@ -616,7 +616,8 @@
     },
     "settings": {
       "title": "Ustawienia",
-      "lead": "Preferencje przestrzeni, integracje i kontrola dostępu."
+      "lead": "Preferencje przestrzeni, integracje i kontrola dostępu.",
+      "signOut": "Wyloguj się"
     }
   },
   "appShell": {
