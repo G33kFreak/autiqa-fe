@@ -8,12 +8,14 @@ const LOGIN_PLUS_KEYS = ['liveMap', 'kpis', 'roles', 'margins'] as const;
 const { t } = useI18n();
 const localePath = useLocalePath();
 const route = useRoute();
+const router = useRouter();
 const authStore = useAuthStore();
 
 const email = ref('');
 const password = ref('');
 const pending = ref(false);
 const formError = ref('');
+const passwordResetBanner = ref(false);
 
 const pluses = computed(() =>
   LOGIN_PLUS_KEYS.map((key) => t(`login.pluses.${key}`)),
@@ -22,6 +24,13 @@ const pluses = computed(() =>
 const showAuthLoader = ref(!authStore.getIsInitialized);
 
 onMounted(async () => {
+  if (route.query.reset === '1') {
+    passwordResetBanner.value = true;
+    const q = { ...route.query };
+    delete q.reset;
+    await router.replace({ path: route.path, query: q });
+  }
+
   if (authStore.getIsInitialized) return;
 
   const isAuthenticated = await authStore.initAuth();
@@ -163,6 +172,13 @@ async function submit() {
         -->
 
         <form class="login__form" :aria-busy="pending" @submit.prevent="submit">
+          <p
+            v-if="passwordResetBanner"
+            class="login__success"
+            role="status"
+          >
+            {{ t('login.passwordResetSuccess') }}
+          </p>
           <p v-if="formError" class="login__error" role="alert">
             {{ formError }}
           </p>
@@ -189,9 +205,12 @@ async function submit() {
               <label class="login__label" for="login-password">{{
                 t('login.passwordLabel')
               }}</label>
-              <a href="#" class="login__link login__link--small" @click.prevent>
+              <NuxtLink
+                class="login__link login__link--small"
+                :to="localePath('/forgot-password')"
+              >
                 {{ t('login.forgotPassword') }}
-              </a>
+              </NuxtLink>
             </div>
             <input
               id="login-password"
@@ -566,6 +585,17 @@ async function submit() {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+}
+
+.login__success {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--color-on-secondary-fixed-variant);
+  background: color-mix(in srgb, var(--color-secondary) 14%, transparent);
+  padding: 0.75rem 1rem;
+  border-radius: 0.375rem;
 }
 
 .login__error {

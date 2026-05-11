@@ -18,6 +18,14 @@
       "title": "Register",
       "description": "Create your Autiqa fleet account."
     },
+    "forgotPassword": {
+      "title": "Reset password",
+      "description": "Request a code and set a new password for your Autiqa account."
+    },
+    "resetPassword": {
+      "title": "Enter code & new password",
+      "description": "Use the code from your email and choose a new Autiqa password."
+    },
     "app": {
       "title": "App",
       "description": "Autiqa main application."
@@ -59,6 +67,7 @@
       "invalid": "Invalid email or password.",
       "generic": "Could not sign you in. Please try again."
     },
+    "passwordResetSuccess": "Your password was updated. You can sign in with your new password.",
     "footerLead": "Don’t have an account?",
     "requestAccess": "Register!"
   },
@@ -87,6 +96,66 @@
       "conflict": "An account with this email already exists.",
       "badRequest": "Registration could not be completed. Check your details and try again.",
       "generic": "Something went wrong. Please try again."
+    }
+  },
+  "forgotPassword": {
+    "asideHeadline": "Locked out? We will get you back in.",
+    "asideLede": "Password reset uses a short code by email — no magic links, no guesswork. You will be back on the map in minutes.",
+    "pluses": {
+      "otp": "Six-digit code delivered only to your inbox — not shown in the product or shared via link.",
+      "window": "Codes stay valid for 30 minutes so you have time without leaving the flow.",
+      "login": "After reset, sign in with your new password using the same login screen as always."
+    },
+    "formTitle": "Request a reset code",
+    "formSubtitle": "Enter the email you use for Autiqa. If an account exists, we will send a code.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "name{'@'}company.com",
+    "sendCode": "Send code",
+    "sending": "Sending…",
+    "backToLogin": "Back to sign in",
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "rateLimit": "Too many attempts from this network. Please wait up to an hour and try again.",
+      "badRequest": "We could not send a code. Check your email address and try again.",
+      "emailRequired": "Enter your email address.",
+      "emailInvalid": "Enter a valid email address."
+    }
+  },
+  "resetPassword": {
+    "asideHeadline": "Almost there.",
+    "asideLede": "Use the code from your email together with a new password. You can resend the code after a short wait if you need a fresh one.",
+    "pluses": {
+      "otp": "Six-digit code delivered only to your inbox — not shown in the product or shared via link.",
+      "window": "Codes stay valid for 30 minutes (server). The resend button has a short client-side cooldown.",
+      "login": "After reset, sign in with your new password using the same login screen as always."
+    },
+    "formTitle": "Code and new password",
+    "formSubtitle": "No email field here — use the address you already submitted. Check your inbox for the six-digit code.",
+    "codeLabel": "Code from email",
+    "codePlaceholder": "000000",
+    "codeHint": "The code expires in 30 minutes (see email).",
+    "newPasswordLabel": "New password",
+    "newPasswordPlaceholder": "••••••••",
+    "passwordHint": "At least 8 characters.",
+    "confirmPasswordLabel": "Confirm new password",
+    "confirmPasswordPlaceholder": "••••••••",
+    "submit": "Update password",
+    "submitting": "Updating…",
+    "sendAgain": "Send code again",
+    "sendAgainSending": "Sending…",
+    "sendAgainWait": "Resend in {n}s",
+    "backToForgot": "Use a different email",
+    "backToLogin": "Back to sign in",
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "rateLimit": "Too many attempts from this network. Please wait up to an hour and try again.",
+      "rateLimitReset": "Too many reset attempts. Please wait up to an hour and try again.",
+      "badRequestReset": "We could not update your password. Check your details and try again.",
+      "codeLength": "Enter the full six-digit code from the email.",
+      "passwordShort": "Password must be at least 8 characters.",
+      "passwordMismatch": "Passwords must match.",
+      "invalidCode": "Invalid or expired reset code.",
+      "samePassword": "New password must differ from your current password."
     }
   },
   "layout": {

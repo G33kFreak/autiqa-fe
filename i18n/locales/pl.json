@@ -18,6 +18,14 @@
       "title": "Rejestracja",
       "description": "Załóż konto w Autiqa — CRM floty."
     },
+    "forgotPassword": {
+      "title": "Reset hasła",
+      "description": "Poproś o kod i ustaw nowe hasło do konta Autiqa."
+    },
+    "resetPassword": {
+      "title": "Kod i nowe hasło",
+      "description": "Użyj kodu z e-maila i ustaw nowe hasło Autiqa."
+    },
     "app": {
       "title": "Panel",
       "description": "Główna aplikacja Autiqa."
@@ -59,6 +67,7 @@
       "invalid": "Nieprawidłowy e-mail lub hasło.",
       "generic": "Nie udało się zalogować. Spróbuj ponownie."
     },
+    "passwordResetSuccess": "Hasło zostało zmienione. Możesz zalogować się nowym hasłem.",
     "footerLead": "Nie masz konta?",
     "requestAccess": "Zarejestruj się!"
   },
@@ -87,6 +96,66 @@
       "conflict": "Konto z tym adresem e-mail już istnieje.",
       "badRequest": "Nie udało się zarejestrować. Sprawdź dane i spróbuj ponownie.",
       "generic": "Coś poszło nie tak. Spróbuj ponownie."
+    }
+  },
+  "forgotPassword": {
+    "asideHeadline": "Nie możesz wejść? Wrócimy Cię do środka.",
+    "asideLede": "Reset hasła działa na krótki kod e-mailem — bez magicznych linków i zgadywania. W kilka minut wracasz do pracy.",
+    "pluses": {
+      "otp": "Sześciocyfrowy kod tylko na skrzynce — nie pokazujemy go w produkcie ani nie wysyłamy linkiem.",
+      "window": "Kod ważny jest 30 minut, więc masz czas bez wychodzenia z procesu.",
+      "login": "Po resecie logujesz się nowym hasłem tym samym ekranem co zawsze."
+    },
+    "formTitle": "Poproś o kod resetu",
+    "formSubtitle": "Podaj adres e-mail z Autiqy. Jeśli konto istnieje, wyślemy kod.",
+    "emailLabel": "Adres e-mail",
+    "emailPlaceholder": "jan{'@'}firma.pl",
+    "sendCode": "Wyślij kod",
+    "sending": "Wysyłanie…",
+    "backToLogin": "Wróć do logowania",
+    "errors": {
+      "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+      "rateLimit": "Zbyt wiele prób z tej sieci. Odczekaj do godziny i spróbuj ponownie.",
+      "badRequest": "Nie udało się wysłać kodu. Sprawdź adres e-mail i spróbuj ponownie.",
+      "emailRequired": "Podaj adres e-mail.",
+      "emailInvalid": "Podaj prawidłowy adres e-mail."
+    }
+  },
+  "resetPassword": {
+    "asideHeadline": "Już prawie.",
+    "asideLede": "Użyj kodu z wiadomości razem z nowym hasłem. Możesz wysłać kod ponownie po krótkim oczekiwaniu.",
+    "pluses": {
+      "otp": "Sześciocyfrowy kod tylko na skrzynce — nie pokazujemy go w produkcie ani nie wysyłamy linkiem.",
+      "window": "Kod ważny jest 30 minut (serwer). Przycisk ponownego wysłania ma krótki limit po stronie aplikacji.",
+      "login": "Po resecie logujesz się nowym hasłem tym samym ekranem co zawsze."
+    },
+    "formTitle": "Kod i nowe hasło",
+    "formSubtitle": "Bez pola e-mail — użyj adresu, który już podałeś. Sprawdź skrzynkę po sześciocyfrowy kod.",
+    "codeLabel": "Kod z wiadomości",
+    "codePlaceholder": "000000",
+    "codeHint": "Kod wygasa po 30 minutach (treść w e-mailu).",
+    "newPasswordLabel": "Nowe hasło",
+    "newPasswordPlaceholder": "••••••••",
+    "passwordHint": "Co najmniej 8 znaków.",
+    "confirmPasswordLabel": "Potwierdź nowe hasło",
+    "confirmPasswordPlaceholder": "••••••••",
+    "submit": "Zapisz hasło",
+    "submitting": "Zapisywanie…",
+    "sendAgain": "Wyślij kod ponownie",
+    "sendAgainSending": "Wysyłanie…",
+    "sendAgainWait": "Ponownie za {n}s",
+    "backToForgot": "Inny adres e-mail",
+    "backToLogin": "Wróć do logowania",
+    "errors": {
+      "generic": "Coś poszło nie tak. Spróbuj ponownie.",
+      "rateLimit": "Zbyt wiele prób z tej sieci. Odczekaj do godziny i spróbuj ponownie.",
+      "rateLimitReset": "Zbyt wiele prób resetu. Odczekaj do godziny i spróbuj ponownie.",
+      "badRequestReset": "Nie udało się zmienić hasła. Sprawdź dane i spróbuj ponownie.",
+      "codeLength": "Wpisz pełny sześciocyfrowy kod z wiadomości.",
+      "passwordShort": "Hasło musi mieć co najmniej 8 znaków.",
+      "passwordMismatch": "Hasła muszą być takie same.",
+      "invalidCode": "Nieprawidłowy lub wygasły kod resetu.",
+      "samePassword": "Nowe hasło musi różnić się od obecnego."
     }
   },
   "layout": {

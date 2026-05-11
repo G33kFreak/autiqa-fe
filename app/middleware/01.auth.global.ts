@@ -5,6 +5,7 @@ const PUBLIC_PATHS = new Set([
   '/login',
   '/register',
   '/forgot-password',
+  '/reset-password',
   '/about',
 ]);
 
@@ -15,7 +16,10 @@ export default defineNuxtRouteMiddleware((to) => {
 
   if (
     authStore.isAuthenticated &&
-    (path === '/login' || path === '/register')
+    (path === '/login' ||
+      path === '/register' ||
+      path === '/forgot-password' ||
+      path === '/reset-password')
   ) {
     const { redirect } = to.query;
     return navigateTo(redirect?.toString() ?? '/app');

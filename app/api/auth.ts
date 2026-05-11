@@ -3,6 +3,11 @@ import type { LoginDto } from '#shared/dto/login.dto';
 import type { RegisterDto } from '#shared/dto/register.dto';
 import type { RegisterResponseDto } from '#shared/dto/register-response.dto';
 import type { SessionResponseDto } from '#shared/dto/session-response.dto';
+import type {
+  ForgotPasswordRequest,
+  ForgotPasswordResponseDto,
+  ResetPasswordRequest,
+} from '#shared/dto/password-reset.dto';
 import type { VerifyEmailDto } from '#shared/dto/verify-email.dto';
 import type { VerifyEmailResponseDto } from '#shared/dto/verify-email-response.dto';
 import type { ApiClient } from './types';
@@ -37,6 +42,28 @@ export function refreshSession(client: ApiClient) {
 
 export function verifyEmail(client: ApiClient, body: VerifyEmailDto) {
   return client<VerifyEmailResponseDto>('/auth/verify-email', {
+    method: 'POST',
+    body,
+  });
+}
+
+/** Public BFF — 200 JSON with `resetRequestToken`. */
+export function requestForgotPassword(
+  client: ApiClient,
+  body: ForgotPasswordRequest,
+) {
+  return client<ForgotPasswordResponseDto>('/auth/forgot-password', {
+    method: 'POST',
+    body,
+  });
+}
+
+/** Public BFF — 204 No Content on success. */
+export function resetPasswordWithCode(
+  client: ApiClient,
+  body: ResetPasswordRequest,
+) {
+  return client<null>('/auth/reset-password', {
     method: 'POST',
     body,
   });
