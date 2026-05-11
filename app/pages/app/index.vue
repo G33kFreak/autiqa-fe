@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AddDriverDialog from '~/components/drivers/AddDriverDialog.vue';
+import AddVehicleDialog from '~/components/fleet/AddVehicleDialog.vue';
 import AlertsModuleCard from '~/components/dashboard/AlertsModuleCard.vue';
 import PageStateLoader from '~/components/shared/PageStateLoader.vue';
 
@@ -9,6 +11,9 @@ const carsStore = useCarsStore();
 const driversStore = useDriversStore();
 
 const overview = computed(() => alertsStore.overview);
+
+const addVehicleDialog = ref<InstanceType<typeof AddVehicleDialog> | null>(null);
+const addDriverDialog = ref<InstanceType<typeof AddDriverDialog> | null>(null);
 
 const dashboardInitialLoading = ref(true);
 const fleetStatsError = ref(false);
@@ -226,8 +231,18 @@ function fleetCarPath(carId: string) {
           <div class="dash__fleet-card-accent" aria-hidden="true" />
           <div class="dash__fleet-card-inner">
             <div class="dash__fleet-card-head">
-              <span class="material-symbols-outlined dash__fleet-card-icon" aria-hidden="true">directions_car</span>
-              <h3 class="dash__fleet-card-title">{{ t('appSections.dashboard.fleetStats.carsTitle') }}</h3>
+              <div class="dash__fleet-card-head-main">
+                <span class="material-symbols-outlined dash__fleet-card-icon" aria-hidden="true">directions_car</span>
+                <h3 class="dash__fleet-card-title">{{ t('appSections.dashboard.fleetStats.carsTitle') }}</h3>
+              </div>
+              <button
+                type="button"
+                class="dash__fleet-card-add"
+                :aria-label="t('appSections.fleet.addVehicleCta')"
+                @click="addVehicleDialog?.showModal()"
+              >
+                <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              </button>
             </div>
             <div class="dash__fleet-card-metrics">
               <div class="dash__fleet-metric">
@@ -247,8 +262,18 @@ function fleetCarPath(carId: string) {
           <div class="dash__fleet-card-accent dash__fleet-card-accent--drivers" aria-hidden="true" />
           <div class="dash__fleet-card-inner">
             <div class="dash__fleet-card-head">
-              <span class="material-symbols-outlined dash__fleet-card-icon" aria-hidden="true">badge</span>
-              <h3 class="dash__fleet-card-title">{{ t('appSections.dashboard.fleetStats.driversTitle') }}</h3>
+              <div class="dash__fleet-card-head-main">
+                <span class="material-symbols-outlined dash__fleet-card-icon" aria-hidden="true">badge</span>
+                <h3 class="dash__fleet-card-title">{{ t('appSections.dashboard.fleetStats.driversTitle') }}</h3>
+              </div>
+              <button
+                type="button"
+                class="dash__fleet-card-add dash__fleet-card-add--drivers"
+                :aria-label="t('appSections.drivers.addDriverCta')"
+                @click="addDriverDialog?.showModal()"
+              >
+                <span class="material-symbols-outlined" aria-hidden="true">add</span>
+              </button>
             </div>
             <div class="dash__fleet-card-metrics">
               <div class="dash__fleet-metric">
@@ -449,6 +474,9 @@ function fleetCarPath(carId: string) {
         </template>
       </AlertsModuleCard>
     </section>
+
+    <AddVehicleDialog ref="addVehicleDialog" :navigate-to-created-detail="true" />
+    <AddDriverDialog ref="addDriverDialog" :navigate-to-created-detail="true" />
   </div>
 </template>
 
@@ -540,7 +568,55 @@ function fleetCarPath(carId: string) {
 .dash__fleet-card-head {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+}
+
+.dash__fleet-card-head-main {
+  display: flex;
+  align-items: center;
   gap: 0.55rem;
+  min-width: 0;
+}
+
+.dash__fleet-card-add {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: none;
+  border-radius: 0.65rem;
+  cursor: pointer;
+  color: var(--color-secondary);
+  background: color-mix(in srgb, var(--color-secondary) 12%, var(--color-surface-container-lowest));
+  transition:
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.dash__fleet-card-add .material-symbols-outlined {
+  font-size: 1.35rem;
+}
+
+.dash__fleet-card-add:hover {
+  background: color-mix(in srgb, var(--color-secondary) 20%, var(--color-surface-container-lowest));
+}
+
+.dash__fleet-card-add:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-secondary) 40%, transparent);
+  outline-offset: 2px;
+}
+
+.dash__fleet-card-add--drivers {
+  color: color-mix(in srgb, var(--color-tertiary, #2ba673) 88%, var(--color-on-surface));
+  background: color-mix(in srgb, var(--color-tertiary, #2ba673) 14%, var(--color-surface-container-lowest));
+}
+
+.dash__fleet-card-add--drivers:hover {
+  background: color-mix(in srgb, var(--color-tertiary, #2ba673) 22%, var(--color-surface-container-lowest));
 }
 
 .dash__fleet-card-icon {

@@ -3,7 +3,16 @@ import type { CreateDriverDto } from '#shared/dto/create-driver.dto';
 import EntityDialogShell from '~/components/shared/EntityDialogShell.vue';
 import { DriversBatchCreateError } from '~/utils/drivers-batch-error';
 
+const props = withDefaults(
+  defineProps<{
+    /** After a successful save, go to the last created driver detail (e.g. from dashboard). */
+    navigateToCreatedDetail?: boolean;
+  }>(),
+  { navigateToCreatedDetail: false },
+);
+
 const { t } = useI18n();
+const localePath = useLocalePath();
 const driversStore = useDriversStore();
 const dialogShell = ref<InstanceType<typeof EntityDialogShell> | null>(null);
 const formError = ref<string | null>(null);
@@ -102,8 +111,12 @@ async function onSubmit() {
   }
 
   try {
-    await driversStore.createDrivers(payloads as CreateDriverDto[]);
+    const created = await driversStore.createDrivers(payloads as CreateDriverDto[]);
     close();
+    if (props.navigateToCreatedDetail && created.length > 0) {
+      const id = created[created.length - 1]!.id;
+      await navigateTo(localePath(`/app/drivers/${id}`));
+    }
   } catch (e) {
     if (e instanceof DriversBatchCreateError) {
       failedRowIndices.value = new Set(e.failedIndices);

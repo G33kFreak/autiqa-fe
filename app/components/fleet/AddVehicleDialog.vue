@@ -5,7 +5,16 @@ import EntityDialogShell from '~/components/shared/EntityDialogShell.vue';
 import SearchableSelect from '~/components/shared/SearchableSelect.vue';
 import { CarsBatchCreateError } from '~/utils/cars-batch-error';
 
+const props = withDefaults(
+  defineProps<{
+    /** After a successful save, go to the last created vehicle detail (e.g. from dashboard). */
+    navigateToCreatedDetail?: boolean;
+  }>(),
+  { navigateToCreatedDetail: false },
+);
+
 const { t } = useI18n();
+const localePath = useLocalePath();
 const carsStore = useCarsStore();
 const driversStore = useDriversStore();
 
@@ -200,8 +209,12 @@ async function onSubmit() {
   }
 
   try {
-    await carsStore.createCars(payloads as CreateCarDto[]);
+    const created = await carsStore.createCars(payloads as CreateCarDto[]);
     close();
+    if (props.navigateToCreatedDetail && created.length > 0) {
+      const id = created[created.length - 1]!.id;
+      await navigateTo(localePath(`/app/fleet/${id}`));
+    }
   } catch (e) {
     if (e instanceof CarsBatchCreateError) {
       failedRowIndices.value = new Set(e.failedIndices);
