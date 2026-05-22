@@ -236,10 +236,6 @@ const heroChartKpi = computed(() => {
           <p class="lh-footer__name">{{ t('brand') }}</p>
           <p class="lh-footer__tag">{{ t('landing.footer.tagline') }}</p>
         </div>
-        <div class="lh-footer__links">
-          <NuxtLink class="lh-footer__a" :to="localePath('/login')">{{ t('landing.footer.signIn') }}</NuxtLink>
-          <NuxtLink class="lh-footer__a" :to="localePath('/register')">{{ t('landing.footer.createAccount') }}</NuxtLink>
-        </div>
         <p class="lh-footer__copy">{{ t('landing.footer.copy') }}</p>
       </div>
     </footer>
@@ -1255,23 +1251,6 @@ const heroChartKpi = computed(() => {
   max-width: 20rem;
   font-size: 0.875rem;
   color: var(--color-on-surface-variant);
-}
-
-.lh-footer__links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem 1.5rem;
-}
-
-.lh-footer__a {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--color-on-surface-variant);
-  text-decoration: none;
-}
-
-.lh-footer__a:hover {
-  color: var(--color-secondary);
 }
 
 .lh-footer__copy {
