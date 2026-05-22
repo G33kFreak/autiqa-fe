@@ -42,28 +42,18 @@
   "landing": {
     "a11y": {
       "skip": "Przejdź do treści",
-      "menu": "Otwórz menu",
-      "subNav": "Sekcje strony",
-      "mainNav": "Linki marketingowe"
+      "menu": "Otwórz menu"
     },
     "nav": {
-      "features": "Funkcje",
-      "platform": "Platforma",
-      "start": "Plany",
       "login": "Zaloguj się",
       "cta": "Zacznij"
     },
     "hero": {
-      "badge": "Organizacje na planach Free i Standard",
       "title1": "Inteligencja floty,",
       "title2": "nie porozrzucane arkusze.",
       "lead": "Autiqa łączy pojazdy, kierowców, przychody, koszty i harmonogramy ubezpieczeń w jednym centrum — tak by przeglądy, raty i sygnały finansowe opowiadały jedną historię.",
       "ctaPrimary": "Załóż konto",
-      "ctaSecondary": "Zobacz możliwości",
-      "trust1": "Aktywacja e-mailem",
-      "trust2": "Dostępy wg ról",
-      "trust3": "Odzyskiwanie hasła krok po kroku",
-      "trustLabel": "Dlaczego zespoły wybierają Autiqę"
+      "ctaSecondary": "Zobacz możliwości"
     },
     "visual": {
       "chartLabel": "Skumulowany trend P/L",

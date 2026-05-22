@@ -42,28 +42,18 @@
   "landing": {
     "a11y": {
       "skip": "Skip to content",
-      "menu": "Open menu",
-      "subNav": "Page sections",
-      "mainNav": "Marketing links"
+      "menu": "Open menu"
     },
     "nav": {
-      "features": "Features",
-      "platform": "Platform",
-      "start": "Plans",
       "login": "Sign in",
       "cta": "Get started"
     },
     "hero": {
-      "badge": "Organizations on Free & Standard plans",
       "title1": "Fleet intelligence,",
       "title2": "not scattered sheets.",
       "lead": "Autiqa brings vehicles, drivers, income, expenses, and insurance timelines into one control center—so inspections, installments, and financial signals stay in the same story.",
       "ctaPrimary": "Create account",
-      "ctaSecondary": "See capabilities",
-      "trust1": "Email activation",
-      "trust2": "Role-based access",
-      "trust3": "Guided password recovery",
-      "trustLabel": "Why teams trust Autiqa"
+      "ctaSecondary": "See capabilities"
     },
     "visual": {
       "chartLabel": "Cumulative P/L trend",

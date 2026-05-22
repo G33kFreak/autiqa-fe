@@ -28,19 +28,11 @@ const heroChartKpi = computed(() => {
           <summary class="lh-mnav__btn" :aria-label="t('landing.a11y.menu')">
             <span class="material-symbols-outlined" aria-hidden="true">menu</span>
           </summary>
-          <nav class="lh-mnav__panel" :aria-label="t('landing.a11y.subNav')">
-            <a class="lh-link lh-link--active" href="#lh-capabilities">{{ t('landing.nav.features') }}</a>
-            <a class="lh-link" href="#lh-platform">{{ t('landing.nav.platform') }}</a>
-            <NuxtLink class="lh-link" :to="localePath('/register')">{{ t('landing.nav.start') }}</NuxtLink>
-            <NuxtLink class="lh-link lh-link--emphasis" :to="localePath('/login')">{{ t('landing.nav.login') }}</NuxtLink>
+          <nav class="lh-mnav__panel" :aria-label="t('landing.a11y.menu')">
+            <NuxtLink class="lh-link" :to="localePath('/login')">{{ t('landing.nav.login') }}</NuxtLink>
+            <NuxtLink class="lh-btn lh-btn--primary" :to="localePath('/register')">{{ t('landing.nav.cta') }}</NuxtLink>
           </nav>
         </details>
-
-        <nav class="lh-nav__links" :aria-label="t('landing.a11y.mainNav')">
-          <a class="lh-link lh-link--active" href="#lh-capabilities">{{ t('landing.nav.features') }}</a>
-          <a class="lh-link" href="#lh-platform">{{ t('landing.nav.platform') }}</a>
-          <NuxtLink class="lh-link" :to="localePath('/register')">{{ t('landing.nav.start') }}</NuxtLink>
-        </nav>
 
         <div class="lh-nav__cta">
           <NuxtLink class="lh-ghost" :to="localePath('/login')">{{ t('landing.nav.login') }}</NuxtLink>
@@ -53,10 +45,6 @@ const heroChartKpi = computed(() => {
       <section class="lh-hero">
         <div class="lh-hero__grid">
           <div class="lh-hero__copy">
-            <div class="lh-pill">
-              <span class="material-symbols-outlined lh-pill__icon" aria-hidden="true">domain</span>
-              <span class="lh-pill__text">{{ t('landing.hero.badge') }}</span>
-            </div>
             <h1 class="lh-hero__title">
               {{ t('landing.hero.title1') }}<br >
               <span class="lh-gradient-text">{{ t('landing.hero.title2') }}</span>
@@ -67,22 +55,8 @@ const heroChartKpi = computed(() => {
                 {{ t('landing.hero.ctaPrimary') }}
                 <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
               </NuxtLink>
-              <a class="lh-btn lh-btn--secondary lh-btn--lg" href="#lh-capabilities">{{ t('landing.hero.ctaSecondary') }}</a>
+              <a class="lh-btn lh-btn--secondary lh-btn--lg" href="#lh-platform">{{ t('landing.hero.ctaSecondary') }}</a>
             </div>
-            <ul class="lh-trust" :aria-label="t('landing.hero.trustLabel')">
-              <li class="lh-trust__item">
-                <span class="material-symbols-outlined lh-trust__icon" aria-hidden="true">mark_email_read</span>
-                {{ t('landing.hero.trust1') }}
-              </li>
-              <li class="lh-trust__item">
-                <span class="material-symbols-outlined lh-trust__icon" aria-hidden="true">admin_panel_settings</span>
-                {{ t('landing.hero.trust2') }}
-              </li>
-              <li class="lh-trust__item">
-                <span class="material-symbols-outlined lh-trust__icon" aria-hidden="true">lock_reset</span>
-                {{ t('landing.hero.trust3') }}
-              </li>
-            </ul>
           </div>
 
           <div class="lh-hero__visual" aria-hidden="true">
@@ -330,18 +304,6 @@ const heroChartKpi = computed(() => {
   color: var(--color-secondary-container);
 }
 
-.lh-nav__links {
-  display: none;
-  align-items: center;
-  gap: 2rem;
-}
-
-@media (min-width: 768px) {
-  .lh-nav__links {
-    display: flex;
-  }
-}
-
 .lh-link {
   font-size: 0.875rem;
   font-weight: 600;
@@ -352,15 +314,6 @@ const heroChartKpi = computed(() => {
 }
 
 .lh-link:hover {
-  color: var(--color-secondary);
-}
-
-.lh-link--active {
-  color: var(--color-secondary);
-  text-decoration: none;
-}
-
-.lh-link--emphasis {
   color: var(--color-secondary);
 }
 
@@ -512,31 +465,6 @@ const heroChartKpi = computed(() => {
   min-width: 0;
 }
 
-.lh-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  margin-bottom: 2rem;
-  background: var(--color-surface-container-low);
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 20%, transparent);
-}
-
-.lh-pill__icon {
-  font-size: 1.125rem;
-  color: var(--color-secondary);
-}
-
-.lh-pill__text {
-  margin: 0;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-}
-
 .lh-hero__title {
   margin: 0 0 1.25rem;
   font-family: var(--font-display);
@@ -565,33 +493,6 @@ const heroChartKpi = computed(() => {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-}
-
-.lh-trust {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem 1.75rem;
-  margin: 3rem 0 0;
-  padding: 0;
-  list-style: none;
-  font-size: 0.8125rem;
-  color: var(--color-on-surface-variant);
-}
-
-.lh-trust__item {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.lh-trust__icon {
-  font-size: 1.125rem;
-  color: var(--color-secondary);
-  font-variation-settings:
-    'FILL' 1,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 24;
 }
 
 .lh-hero__visual {
@@ -853,7 +754,7 @@ const heroChartKpi = computed(() => {
 .lh-sub--center {
   text-align: center;
   max-width: 36rem;
-  margin: -0.5rem auto 2.5rem;
+  margin: 1.25rem auto 2.5rem;
 }
 
 .lh-compare {
