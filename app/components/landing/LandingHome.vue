@@ -14,6 +14,45 @@ const heroChartKpi = computed(() => {
   }
   return t('landing.visual.chartKpi');
 });
+
+const FLEET_MIN = 3;
+const FLEET_MAX = 41;
+const FREE_INCLUDED = 3;
+const PRICE_PER_VEHICLE_PLN = 12;
+const ENTERPRISE_THRESHOLD = 40;
+
+const fleetCount = ref(FLEET_MIN);
+
+const isEnterprise = computed(() => fleetCount.value > ENTERPRISE_THRESHOLD);
+const isFreeTier = computed(() => fleetCount.value <= FREE_INCLUDED);
+const billableVehicles = computed(() =>
+  isFreeTier.value || isEnterprise.value ? 0 : fleetCount.value - FREE_INCLUDED,
+);
+const monthlyPln = computed(() => billableVehicles.value * PRICE_PER_VEHICLE_PLN);
+
+const plnFormatter = computed(
+  () =>
+    new Intl.NumberFormat(locale.value === 'pl' ? 'pl-PL' : 'en-GB', {
+      style: 'currency',
+      currency: 'PLN',
+      maximumFractionDigits: 0,
+    }),
+);
+
+const monthlyFormatted = computed(() => plnFormatter.value.format(monthlyPln.value));
+
+const sliderFillPct = computed(() => {
+  const span = FLEET_MAX - FLEET_MIN;
+  if (span <= 0) return 0;
+  return ((fleetCount.value - FLEET_MIN) / span) * 100;
+});
+
+const SALES_EMAIL = 'sales@autiqa.pl';
+
+const salesMailto = computed(() => {
+  const subject = encodeURIComponent(t('landing.calculator.contactSubject'));
+  return `mailto:${SALES_EMAIL}?subject=${subject}`;
+});
 </script>
 
 <template>
@@ -225,6 +264,115 @@ const heroChartKpi = computed(() => {
                 <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
               </NuxtLink>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="lh-pricing" class="lh-section lh-section--pricing">
+        <div class="lh-wrap lh-calc">
+          <div class="lh-calc__intro">
+            <h2 class="lh-h2 lh-h2--bar">{{ t('landing.calculator.title') }}</h2>
+            <p class="lh-sub">{{ t('landing.calculator.lead') }}</p>
+            <ul class="lh-calc__perks" :aria-label="t('landing.calculator.perksAria')">
+              <li class="lh-calc__perk">
+                <span class="material-symbols-outlined" aria-hidden="true">verified</span>
+                {{ t('landing.calculator.perk1') }}
+              </li>
+              <li class="lh-calc__perk">
+                <span class="material-symbols-outlined" aria-hidden="true">trending_flat</span>
+                {{ t('landing.calculator.perk2') }}
+              </li>
+              <li class="lh-calc__perk">
+                <span class="material-symbols-outlined" aria-hidden="true">support_agent</span>
+                {{ t('landing.calculator.perk3') }}
+              </li>
+            </ul>
+          </div>
+
+          <div class="lh-calc__panel">
+            <div class="lh-calc__slider-head">
+              <label class="lh-calc__slider-label" for="lh-fleet-slider">
+                <span class="lh-calc__slider-label-text">{{ t('landing.calculator.sliderLabel') }}</span>
+              </label>
+              <p class="lh-calc__count" aria-live="polite">
+                <span class="lh-calc__count-n">{{ fleetCount }}</span>
+              </p>
+            </div>
+
+            <div class="lh-calc__range-wrap">
+              <div class="lh-calc__range-track" aria-hidden="true">
+                <span class="lh-calc__range-fill" :style="{ width: `${sliderFillPct}%` }" />
+              </div>
+              <input
+                id="lh-fleet-slider"
+                v-model.number="fleetCount"
+                class="lh-calc__range"
+                type="range"
+                :min="FLEET_MIN"
+                :max="FLEET_MAX"
+                step="1"
+                :aria-valuetext="t('landing.calculator.sliderAria', { count: fleetCount })"
+              >
+            </div>
+
+            <div class="lh-calc__scale" aria-hidden="true">
+              <span>{{ FLEET_MIN }}</span>
+              <span>{{ FLEET_MAX }}+</span>
+            </div>
+
+            <div class="lh-calc__result">
+              <template v-if="isEnterprise">
+                <p class="lh-calc__result-k">{{ t('landing.calculator.enterpriseKicker') }}</p>
+                <p class="lh-calc__result-title">
+                  {{ t('landing.calculator.enterpriseTitleBefore') }}
+                  <span class="lh-calc__result-accent">{{ t('landing.calculator.enterpriseTitleAccent') }}</span>{{ t('landing.calculator.enterpriseTitleAfter') }}
+                </p>
+                <p class="lh-calc__result-note">{{ t('landing.calculator.enterpriseBody') }}</p>
+              </template>
+              <template v-else-if="isFreeTier">
+                <p class="lh-calc__result-k">{{ t('landing.calculator.estimateLabel') }}</p>
+                <p class="lh-calc__result-price">
+                  <span class="lh-calc__result-amount">{{ t('landing.calculator.freePrice') }}</span>
+                  <span class="lh-calc__result-netto">{{ t('landing.calculator.netto') }}</span>
+                </p>
+                <p class="lh-calc__result-note">{{ t('landing.calculator.freeNote') }}</p>
+              </template>
+              <template v-else>
+                <p class="lh-calc__result-k">{{ t('landing.calculator.estimateLabel') }}</p>
+                <p class="lh-calc__result-price">
+                  <span class="lh-calc__result-amount">{{ monthlyFormatted }}</span>
+                  <span class="lh-calc__result-netto">{{ t('landing.calculator.netto') }}</span>
+                </p>
+                <p class="lh-calc__result-note">
+                  {{
+                    t('landing.calculator.paidNote', {
+                      billable: billableVehicles,
+                      rate: PRICE_PER_VEHICLE_PLN,
+                      netto: t('landing.calculator.netto'),
+                    })
+                  }}
+                </p>
+              </template>
+            </div>
+
+            <div class="lh-calc__actions">
+              <NuxtLink
+                v-if="!isEnterprise"
+                class="lh-btn lh-btn--primary lh-btn--lg lh-calc__cta"
+                :to="localePath('/register')"
+              >
+                {{ t('landing.calculator.ctaStart') }}
+                <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+              </NuxtLink>
+              <a
+                v-else
+                class="lh-btn lh-btn--primary lh-btn--lg lh-calc__cta"
+                :href="salesMailto"
+              >
+                {{ t('landing.calculator.ctaContact') }}
+                <span class="material-symbols-outlined" aria-hidden="true">mail</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -714,6 +862,283 @@ const heroChartKpi = computed(() => {
 
 .lh-section--bento {
   background: var(--color-surface-container-low);
+}
+
+.lh-section--pricing {
+  background: var(--color-surface);
+}
+
+.lh-calc {
+  display: grid;
+  gap: 2.5rem;
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .lh-calc {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 3.5rem;
+  }
+}
+
+.lh-calc__intro .lh-sub {
+  margin-top: 1rem;
+  max-width: 28rem;
+}
+
+.lh-calc__perks {
+  margin: 1.75rem 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lh-calc__perk {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--color-on-surface-variant);
+}
+
+.lh-calc__perk .material-symbols-outlined {
+  flex-shrink: 0;
+  font-size: 1.25rem;
+  color: var(--color-secondary);
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400,
+    'GRAD' 0,
+    'opsz' 24;
+}
+
+.lh-calc__panel {
+  padding: 2rem;
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--color-secondary-fixed) 38%, var(--color-surface-container-lowest));
+  border: 1px solid color-mix(in srgb, var(--color-secondary) 24%, var(--color-outline-variant) 16%);
+}
+
+.lh-calc__slider-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.lh-calc__slider-label {
+  display: block;
+  margin: 0;
+  min-width: 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.lh-calc__slider-label-text {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-on-surface);
+  padding-bottom: 0.4rem;
+  border-bottom: 3px solid var(--color-secondary);
+}
+
+.lh-calc__count {
+  flex-shrink: 0;
+  margin: 0;
+  text-align: right;
+}
+
+.lh-calc__count-n {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--color-secondary);
+}
+
+.lh-calc__range-wrap {
+  position: relative;
+  padding: 0.5rem 0 1.5rem;
+}
+
+.lh-calc__range-track {
+  position: relative;
+  height: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-surface-variant);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.lh-calc__range-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: inherit;
+  background: var(--color-secondary);
+}
+
+.lh-calc__range {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0.125rem;
+  width: 100%;
+  height: 1.25rem;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.lh-calc__range:focus-visible {
+  outline: none;
+}
+
+.lh-calc__range:focus-visible::-webkit-slider-thumb {
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--color-secondary) 30%, transparent),
+    0 2px 8px rgba(25, 28, 30, 0.12);
+}
+
+.lh-calc__range::-webkit-slider-runnable-track {
+  height: 0.5rem;
+  background: transparent;
+}
+
+.lh-calc__range::-webkit-slider-thumb {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-top: -0.375rem;
+  border-radius: 999px;
+  border: 2px solid var(--color-surface-container-lowest);
+  background: var(--color-secondary);
+  box-shadow: 0 2px 8px rgba(25, 28, 30, 0.15);
+  transition: transform 0.15s ease;
+}
+
+.lh-calc__range:active::-webkit-slider-thumb {
+  transform: scale(1.08);
+}
+
+.lh-calc__range::-moz-range-track {
+  height: 0.5rem;
+  background: transparent;
+  border: none;
+}
+
+.lh-calc__range::-moz-range-thumb {
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  border: 2px solid var(--color-surface-container-lowest);
+  background: var(--color-secondary);
+  box-shadow: 0 2px 8px rgba(25, 28, 30, 0.15);
+}
+
+.lh-calc__scale {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-on-surface-variant);
+}
+
+.lh-calc__result {
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background: var(--color-surface-container-lowest);
+  margin-bottom: 1.5rem;
+}
+
+.lh-calc__result-k {
+  margin: 0 0 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-on-surface-variant);
+}
+
+.lh-calc__result-price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.lh-calc__result-amount {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--color-secondary);
+}
+
+.lh-calc__result-netto {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--color-on-surface-variant);
+}
+
+.lh-calc__result-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.lh-calc__result-accent {
+  color: var(--color-secondary);
+}
+
+.lh-calc__result-note {
+  margin: 0.75rem 0 0;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-on-surface-variant);
+}
+
+.lh-calc__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lh-calc__cta {
+  width: 100%;
+}
+
+.lh-calc__cta.lh-btn--primary {
+  background: var(--color-secondary);
+  box-shadow: none;
+}
+
+.lh-calc__cta.lh-btn--primary:hover {
+  background: var(--color-secondary);
+  opacity: 0.9;
+  box-shadow: none;
 }
 
 .lh-wrap {
