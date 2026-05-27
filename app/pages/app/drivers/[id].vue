@@ -184,13 +184,23 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="driver-details-page app-page">
+  <section class="driver-details-page app-page app-page--wide">
     <div v-if="detailsLoading && !detailsResolved" class="driver-details-page__loading">
       <DriverDetailsSkeleton />
     </div>
 
     <template v-else-if="driver">
+      <AppBreadcrumbs
+        :items="[
+          { label: t('nav.drivers'), to: '/app/drivers' },
+          { label: fullName },
+        ]"
+      />
       <DriverProfileHeader
+        :edit-label="t('appSections.fleet.vehicleDetails.editVehicle')"
+        :save-label="t('appSections.fleet.vehicleDetails.save')"
+        :saving-label="t('common.loading')"
+        :cancel-label="t('appSections.fleet.vehicleDetails.cancel')"
         :full-name="fullName"
         :assignment-action-label="assignmentActionLabel"
         :is-editing="isEditing"
@@ -276,7 +286,7 @@ onMounted(async () => {
 .driver-details-page {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--app-section-gap, 2rem);
 }
 
 .driver-details-page__loading {

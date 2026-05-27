@@ -2,6 +2,7 @@
 const { t } = useI18n();
 const authStore = useAuthStore();
 const { toggleSidebar } = useAppSidebar();
+const { title: routeTitle } = useAppRouteTitle();
 
 const displayName = computed(() => authStore.user?.name?.trim() || t('layout.userFallback'));
 const displayEmail = computed(() => authStore.user?.email?.trim() || '');
@@ -28,6 +29,10 @@ const initials = computed(() => {
       >
         <span class="material-symbols-outlined" aria-hidden="true">menu</span>
       </button>
+      <p class="app-header__context">
+        <span class="app-header__context-label">{{ t('layout.appTagline') }}</span>
+        <span class="app-header__context-title">{{ routeTitle }}</span>
+      </p>
     </div>
 
     <div class="app-header__right">
@@ -67,6 +72,41 @@ const initials = computed(() => {
 .app-header__left {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
+.app-header__context {
+  display: none;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin: 0;
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .app-header__context {
+    display: flex;
+  }
+}
+
+.app-header__context-label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-on-surface-variant) 75%, transparent);
+}
+
+.app-header__context-title {
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--color-on-surface);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .app-header__menu {

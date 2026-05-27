@@ -32,20 +32,20 @@ function openDriverDetails(driverId: string) {
 
 <template>
   <section class="drivers-page__list-shell">
-    <div class="drivers-page__summary-bar">
+    <AppSection>
+      <template #actions>
+        <button
+          type="button"
+          class="app-btn app-btn--primary app-btn--compact"
+          @click="emit('addDriver')"
+        >
+          <span class="material-symbols-outlined app-btn__icon" aria-hidden="true">add</span>
+          {{ t('appSections.drivers.addDriverCta') }}
+        </button>
+      </template>
       <p class="drivers-page__summary">
         {{ t('appSections.drivers.driverCount', { count: props.drivers.length }) }}
       </p>
-      <button
-        type="button"
-        class="app-btn app-btn--primary app-btn--compact drivers-page__summary-add"
-        @click="emit('addDriver')"
-      >
-        <span class="material-symbols-outlined app-btn__icon" aria-hidden="true">add</span>
-        {{ t('appSections.drivers.addDriverCta') }}
-      </button>
-    </div>
-
     <div class="app-table-shell drivers-page__table-wrap">
       <table class="app-table drivers-page__table">
         <thead>
@@ -93,6 +93,7 @@ function openDriverDetails(driverId: string) {
         </tbody>
       </table>
     </div>
+    </AppSection>
   </section>
 </template>
 
@@ -109,14 +110,6 @@ function openDriverDetails(driverId: string) {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-.drivers-page__summary-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
 }
 
 .drivers-page__table {

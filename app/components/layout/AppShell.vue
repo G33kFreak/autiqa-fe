@@ -111,7 +111,11 @@ function onBackdropClick() {
 
 .app-shell__content {
   flex: 1;
-  padding: 1.25rem 1rem 2rem;
+  padding: 1.25rem 1rem 2.5rem;
+  background:
+    radial-gradient(ellipse 80% 50% at 100% -10%, var(--app-canvas-glow), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 0% 100%, color-mix(in srgb, var(--color-success) 4%, transparent), transparent 50%),
+    var(--color-surface);
 }
 
 .app-shell__page {

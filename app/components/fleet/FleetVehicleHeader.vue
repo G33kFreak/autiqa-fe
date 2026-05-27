@@ -188,7 +188,7 @@ function setUppercaseField(
       <template v-if="!isEditing">
         <button
           type="button"
-          class="fleet-vehicle-page__action fleet-vehicle-page__action--primary"
+          class="app-btn app-btn--primary fleet-vehicle-page__action"
           @click="startEditing"
         >
           <span
@@ -199,7 +199,7 @@ function setUppercaseField(
         </button>
         <button
           type="button"
-          class="fleet-vehicle-page__action fleet-vehicle-page__action--secondary"
+          class="app-btn app-btn--secondary fleet-vehicle-page__action"
           @click="emit('addExpense')"
         >
           <span
@@ -210,7 +210,7 @@ function setUppercaseField(
         </button>
         <button
           type="button"
-          class="fleet-vehicle-page__action fleet-vehicle-page__action--secondary"
+          class="app-btn app-btn--secondary fleet-vehicle-page__action"
           @click="emit('addIncome')"
         >
           <span
@@ -223,7 +223,7 @@ function setUppercaseField(
       <template v-else>
         <button
           type="button"
-          class="fleet-vehicle-page__action fleet-vehicle-page__action--primary"
+          class="app-btn app-btn--primary fleet-vehicle-page__action"
           :disabled="props.isSaving || !canSave"
           @click="saveEditing"
         >
@@ -231,7 +231,7 @@ function setUppercaseField(
         </button>
         <button
           type="button"
-          class="fleet-vehicle-page__action fleet-vehicle-page__action--secondary"
+          class="app-btn app-btn--secondary fleet-vehicle-page__action"
           :disabled="props.isSaving"
           @click="cancelEditing"
         >
@@ -399,44 +399,6 @@ function setUppercaseField(
 
 .fleet-vehicle-page__actions--editing {
   margin-top: 1.25rem;
-}
-
-.fleet-vehicle-page__action {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  border: 0;
-  border-radius: 0.75rem;
-  padding: 0.625rem 1.15rem;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background-color 0.18s ease,
-    filter 0.18s ease;
-}
-
-.fleet-vehicle-page__action:disabled {
-  opacity: 0.75;
-  cursor: not-allowed;
-}
-
-.fleet-vehicle-page__action--primary {
-  background: var(--color-secondary);
-  color: var(--color-on-secondary);
-}
-
-.fleet-vehicle-page__action--secondary {
-  background: var(--color-surface-container-highest);
-  color: var(--color-on-surface);
-}
-
-.fleet-vehicle-page__action--primary:hover:not(:disabled) {
-  filter: brightness(1.06);
-}
-
-.fleet-vehicle-page__action--secondary:hover:not(:disabled) {
-  background: var(--color-surface-variant);
 }
 
 .fleet-vehicle-page__action-icon {

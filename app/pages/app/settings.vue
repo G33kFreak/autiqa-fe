@@ -14,17 +14,23 @@ useSeoMeta({
 
 <template>
   <div class="settings-page app-page">
-    <h1 class="app-page__title">{{ t('appSections.settings.title') }}</h1>
-    <p class="app-page__lead">{{ t('appSections.settings.lead') }}</p>
-    <button type="button" class="app-btn app-btn--primary settings-page__sign-out" @click="onSignOut">
-      {{ t('appSections.settings.signOut') }}
-    </button>
+    <AppPageHeader
+      :title="t('appSections.settings.title')"
+      :lead="t('appSections.settings.lead')"
+    />
+
+    <div class="app-settings-grid">
+      <article class="app-settings-card">
+        <h2 class="app-settings-card__title">
+          {{ authStore.user?.name?.trim() || t('layout.userFallback') }}
+        </h2>
+        <p class="app-settings-card__copy">
+          {{ authStore.user?.email }}
+        </p>
+        <button type="button" class="app-btn app-btn--primary" @click="onSignOut">
+          {{ t('appSections.settings.signOut') }}
+        </button>
+      </article>
+    </div>
   </div>
 </template>
-
-<style scoped>
-.settings-page__sign-out {
-  margin-top: 0.5rem;
-  width: fit-content;
-}
-</style>

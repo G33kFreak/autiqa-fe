@@ -49,10 +49,11 @@ function openAddVehicle() {
 
 <template>
   <div class="fleet-page app-page">
-    <template v-if="!showEmpty && !showListError">
-      <h1 class="app-page__title">{{ t('appSections.fleet.title') }}</h1>
-      <p class="app-page__lead">{{ t('appSections.fleet.lead') }}</p>
-    </template>
+    <AppPageHeader
+      v-if="!showEmpty && !showListError"
+      :title="t('appSections.fleet.title')"
+      :lead="t('appSections.fleet.lead')"
+    />
 
     <PageStateLoader
       v-if="showInitialLoading"

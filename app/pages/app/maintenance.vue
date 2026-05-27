@@ -9,7 +9,15 @@ useSeoMeta({
 
 <template>
   <div class="app-page">
-    <h1 class="app-page__title">{{ t('appSections.maintenance.title') }}</h1>
-    <p class="app-page__lead">{{ t('appSections.maintenance.lead') }}</p>
+    <AppPageHeader
+      :title="t('appSections.maintenance.title')"
+      :lead="t('appSections.maintenance.lead')"
+    />
+    <AppComingSoon
+      icon="build_circle"
+      :badge="t('appSections.dashboard.alerts.hero.kicker')"
+      :title="t('appSections.maintenance.title')"
+      :lead="t('appSections.maintenance.lead')"
+    />
   </div>
 </template>

@@ -48,20 +48,20 @@ function openCarDetails(carId: string) {
 
 <template>
   <section class="fleet-page__list-shell">
-    <div class="fleet-page__summary-bar">
+    <AppSection>
+      <template #actions>
+        <button
+          type="button"
+          class="app-btn app-btn--primary app-btn--compact"
+          @click="emit('addVehicle')"
+        >
+          <span class="material-symbols-outlined app-btn__icon" aria-hidden="true">add</span>
+          {{ t('appSections.fleet.addVehicleCta') }}
+        </button>
+      </template>
       <p class="fleet-page__summary">
         {{ t('appSections.fleet.fleetCount', { count: props.cars.length }) }}
       </p>
-      <button
-        type="button"
-        class="app-btn app-btn--primary app-btn--compact fleet-page__summary-add"
-        @click="emit('addVehicle')"
-      >
-        <span class="material-symbols-outlined app-btn__icon" aria-hidden="true">add</span>
-        {{ t('appSections.fleet.addVehicleCta') }}
-      </button>
-    </div>
-
     <div class="app-table-shell fleet-page__table-wrap">
       <table class="app-table fleet-page__table">
         <thead>
@@ -139,6 +139,7 @@ function openCarDetails(carId: string) {
         </tbody>
       </table>
     </div>
+    </AppSection>
   </section>
 </template>
 
@@ -155,14 +156,6 @@ function openCarDetails(carId: string) {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-}
-
-.fleet-page__summary-bar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
 }
 
 .fleet-page__table {

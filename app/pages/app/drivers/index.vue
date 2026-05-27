@@ -63,17 +63,21 @@ watch(searchInput, (value) => {
 <template>
   <div class="drivers-page app-page">
     <template v-if="!showEmpty && !showListError">
-      <h1 class="app-page__title">{{ t('appSections.drivers.title') }}</h1>
-      <p class="app-page__lead">{{ t('appSections.drivers.lead') }}</p>
-      <label class="drivers-page__search">
-        <span class="material-symbols-outlined drivers-page__search-icon" aria-hidden="true">search</span>
-        <input
-          v-model="searchInput"
-          class="ti-input drivers-page__search-input"
-          type="text"
-          :placeholder="t('appSections.drivers.searchPlaceholder')"
-        >
-      </label>
+      <AppPageHeader
+        :title="t('appSections.drivers.title')"
+        :lead="t('appSections.drivers.lead')"
+      />
+      <div class="app-toolbar">
+        <label class="app-search">
+          <span class="material-symbols-outlined app-search__icon" aria-hidden="true">search</span>
+          <input
+            v-model="searchInput"
+            class="ti-input app-search__input"
+            type="search"
+            :placeholder="t('appSections.drivers.searchPlaceholder')"
+          >
+        </label>
+      </div>
     </template>
 
     <PageStateLoader
@@ -109,27 +113,6 @@ watch(searchInput, (value) => {
 </template>
 
 <style scoped>
-.drivers-page__search {
-  margin-bottom: 0.9rem;
-  width: min(26rem, 100%);
-  position: relative;
-  display: block;
-}
-
-.drivers-page__search-icon {
-  position: absolute;
-  left: 0.7rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-outline);
-  font-size: 1.05rem;
-  pointer-events: none;
-}
-
-.drivers-page__search-input {
-  padding-left: 2.2rem;
-}
-
 .drivers-page__load-error {
   margin: 0;
   padding: 0.85rem 1rem;

@@ -34,7 +34,6 @@ function formatCurrency(value: number): string {
   <aside class="financial-bento" aria-label="financial-bento">
     <div class="financial-bento__shell">
       <div class="financial-bento__primary">
-        <div class="financial-bento__accent" aria-hidden="true" />
         <p class="financial-bento__eyebrow">
           {{ t('appSections.fleet.vehicleDetails.bentoNetProfit') }}
         </p>
@@ -98,7 +97,7 @@ function formatCurrency(value: number): string {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 1.15rem 1.15rem 1.15rem 1.35rem;
+  padding: 1.15rem;
   border-radius: 0.75rem;
   background: var(--color-surface-container-lowest);
   box-shadow: 0 8px 24px color-mix(in srgb, var(--color-on-surface) 2%, transparent);
@@ -108,16 +107,6 @@ function formatCurrency(value: number): string {
 
 .financial-bento__primary:hover {
   background: var(--color-surface-bright);
-}
-
-.financial-bento__accent {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 0.25rem;
-  background: var(--color-secondary);
-  border-radius: 0.125rem 0 0 0.125rem;
 }
 
 .financial-bento__eyebrow {

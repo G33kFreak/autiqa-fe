@@ -949,7 +949,7 @@ async function saveComplianceDate() {
 </script>
 
 <template>
-  <section class="fleet-vehicle-page app-page">
+  <section class="fleet-vehicle-page app-page app-page--wide">
     <template v-if="detailsLoading && !detailsResolved">
       <div class="fleet-vehicle-page__hero fleet-vehicle-page__hero--split">
         <div class="fleet-skeleton fleet-skeleton--header" />
@@ -967,6 +967,12 @@ async function saveComplianceDate() {
       </div>
     </template>
     <template v-else>
+      <AppBreadcrumbs
+        :items="[
+          { label: t('nav.fleet'), to: '/app/fleet' },
+          { label: carName.trim() || t('appSections.fleet.vehicleDetails.unnamedVehicle') },
+        ]"
+      />
       <div class="fleet-vehicle-page__hero fleet-vehicle-page__hero--split">
         <FleetVehicleHeader
           id="fleet-vehicle-hero"
@@ -1634,7 +1640,7 @@ async function saveComplianceDate() {
 .fleet-vehicle-page {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--app-section-gap, 2rem);
 }
 
 .fleet-vehicle-page__hero {

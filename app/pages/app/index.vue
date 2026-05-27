@@ -219,81 +219,54 @@ function fleetCarPath(carId: string) {
     :text="t('appSections.dashboard.loading')"
     min-height="min(70vh, 28rem)"
   />
-  <div v-else class="dash app-page">
-    <h1 class="app-page__title">{{ t('appSections.dashboard.title') }}</h1>
+  <div v-else class="dash app-page app-stagger">
+    <AppPageHeader
+      :kicker="t('layout.appTagline')"
+      :title="t('appSections.dashboard.title')"
+      :lead="t('appSections.dashboard.lead')"
+    />
 
-    <section class="dash__fleet" :aria-label="t('appSections.dashboard.fleetStats.title')">
+    <AppSection :title="t('appSections.dashboard.fleetStats.title')">
       <p v-if="fleetStatsError" class="dash__fleet-error" role="alert">
         {{ t('appSections.dashboard.fleetStats.loadError') }}
       </p>
-      <div v-if="fleetStats.totalCars !== null" class="dash__fleet-cards">
-        <article class="dash__fleet-card dash__fleet-card--vehicles">
-          <div class="dash__fleet-card-inner">
-            <div class="dash__fleet-card-head">
-              <div class="dash__fleet-card-head-main">
-                <span class="material-symbols-outlined dash__fleet-card-icon" aria-hidden="true">directions_car</span>
-                <h3 class="dash__fleet-card-title">{{ t('appSections.dashboard.fleetStats.carsTitle') }}</h3>
-              </div>
-              <button
-                type="button"
-                class="dash__fleet-card-add"
-                :aria-label="t('appSections.fleet.addVehicleCta')"
-                @click="addVehicleDialog?.showModal()"
-              >
-                <span class="material-symbols-outlined" aria-hidden="true">add</span>
-              </button>
-            </div>
-            <div class="dash__fleet-card-metrics">
-              <div class="dash__fleet-metric">
-                <p class="dash__fleet-metric-label">{{ t('appSections.dashboard.fleetStats.assigned') }}</p>
-                <p class="dash__fleet-metric-value">{{ fleetStats.carsWithDriver }}</p>
-              </div>
-              <div class="dash__fleet-metric-divider" aria-hidden="true" />
-              <div class="dash__fleet-metric">
-                <p class="dash__fleet-metric-label">{{ t('appSections.dashboard.fleetStats.total') }}</p>
-                <p class="dash__fleet-metric-value dash__fleet-metric-value--muted">{{ fleetStats.totalCars }}</p>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article class="dash__fleet-card dash__fleet-card--drivers">
-          <div class="dash__fleet-card-inner">
-            <div class="dash__fleet-card-head">
-              <div class="dash__fleet-card-head-main">
-                <span class="material-symbols-outlined dash__fleet-card-icon" aria-hidden="true">badge</span>
-                <h3 class="dash__fleet-card-title">{{ t('appSections.dashboard.fleetStats.driversTitle') }}</h3>
-              </div>
-              <button
-                type="button"
-                class="dash__fleet-card-add dash__fleet-card-add--drivers"
-                :aria-label="t('appSections.drivers.addDriverCta')"
-                @click="addDriverDialog?.showModal()"
-              >
-                <span class="material-symbols-outlined" aria-hidden="true">add</span>
-              </button>
-            </div>
-            <div class="dash__fleet-card-metrics">
-              <div class="dash__fleet-metric">
-                <p class="dash__fleet-metric-label">{{ t('appSections.dashboard.fleetStats.assigned') }}</p>
-                <p class="dash__fleet-metric-value">{{ fleetStats.driversAssigned }}</p>
-              </div>
-              <div class="dash__fleet-metric-divider" aria-hidden="true" />
-              <div class="dash__fleet-metric">
-                <p class="dash__fleet-metric-label">{{ t('appSections.dashboard.fleetStats.total') }}</p>
-                <p class="dash__fleet-metric-value dash__fleet-metric-value--muted">{{ fleetStats.totalDrivers }}</p>
-              </div>
-            </div>
-          </div>
-        </article>
+      <div v-if="fleetStats.totalCars !== null" class="app-stat-grid">
+        <AppStatCard
+          :title="t('appSections.dashboard.fleetStats.carsTitle')"
+          icon="directions_car"
+          tone="electric"
+          :assigned-label="t('appSections.dashboard.fleetStats.assigned')"
+          :assigned-value="fleetStats.carsWithDriver"
+          :total-label="t('appSections.dashboard.fleetStats.total')"
+          :total-value="fleetStats.totalCars"
+          :add-aria-label="t('appSections.fleet.addVehicleCta')"
+          @add="addVehicleDialog?.showModal()"
+        />
+        <AppStatCard
+          :title="t('appSections.dashboard.fleetStats.driversTitle')"
+          icon="badge"
+          tone="success"
+          :assigned-label="t('appSections.dashboard.fleetStats.assigned')"
+          :assigned-value="fleetStats.driversAssigned"
+          :total-label="t('appSections.dashboard.fleetStats.total')"
+          :total-value="fleetStats.totalDrivers"
+          :add-aria-label="t('appSections.drivers.addDriverCta')"
+          @add="addDriverDialog?.showModal()"
+        />
       </div>
-    </section>
+    </AppSection>
 
     <p v-if="alertsStore.error" class="dash__alerts-state dash__alerts-state--error" role="alert">
       {{ t('appSections.dashboard.alerts.loadError') }}
     </p>
 
-    <section v-if="overview" class="dash__alerts" aria-live="polite">
+    <AppSection
+      v-if="overview"
+      :title="t('appSections.dashboard.alerts.hero.title')"
+      :description="t('appSections.dashboard.alerts.hero.lead')"
+      id="dash-alerts-heading"
+    >
+    <div class="app-alert-grid" aria-live="polite">
       <AlertsModuleCard
         :title="t('appSections.dashboard.alerts.dues.title')"
         :subtitle="t('appSections.dashboard.alerts.dues.subtitle')"
@@ -346,13 +319,11 @@ function fleetCarPath(carId: string) {
           </ul>
         </template>
         <template v-else>
-          <div class="dash__success-empty">
-            <span class="dash__success-icon material-symbols-outlined" aria-hidden="true">
-              verified
-            </span>
-            <p class="dash__success-title">{{ t('appSections.dashboard.alerts.dues.emptyTitle') }}</p>
-            <p class="dash__success-copy">{{ t('appSections.dashboard.alerts.dues.emptyCopy') }}</p>
-          </div>
+          <DashboardAlertEmptyState
+            icon="verified"
+            :title="t('appSections.dashboard.alerts.dues.emptyTitle')"
+            :copy="t('appSections.dashboard.alerts.dues.emptyCopy')"
+          />
         </template>
       </AlertsModuleCard>
 
@@ -403,13 +374,11 @@ function fleetCarPath(carId: string) {
           </ul>
         </template>
         <template v-else>
-          <div class="dash__success-empty">
-            <span class="dash__success-icon material-symbols-outlined" aria-hidden="true">
-              task_alt
-            </span>
-            <p class="dash__success-title">{{ t('appSections.dashboard.alerts.expiry.emptyTitle') }}</p>
-            <p class="dash__success-copy">{{ t('appSections.dashboard.alerts.expiry.emptyCopy') }}</p>
-          </div>
+          <DashboardAlertEmptyState
+            icon="shield"
+            :title="t('appSections.dashboard.alerts.expiry.emptyTitle')"
+            :copy="t('appSections.dashboard.alerts.expiry.emptyCopy')"
+          />
         </template>
       </AlertsModuleCard>
 
@@ -462,16 +431,15 @@ function fleetCarPath(carId: string) {
           </ul>
         </template>
         <template v-else>
-          <div class="dash__success-empty">
-            <span class="dash__success-icon material-symbols-outlined" aria-hidden="true">
-              check_circle
-            </span>
-            <p class="dash__success-title">{{ t('appSections.dashboard.alerts.inspection.emptyTitle') }}</p>
-            <p class="dash__success-copy">{{ t('appSections.dashboard.alerts.inspection.emptyCopy') }}</p>
-          </div>
+          <DashboardAlertEmptyState
+            icon="build"
+            :title="t('appSections.dashboard.alerts.inspection.emptyTitle')"
+            :copy="t('appSections.dashboard.alerts.inspection.emptyCopy')"
+          />
         </template>
       </AlertsModuleCard>
-    </section>
+    </div>
+    </AppSection>
 
     <AddVehicleDialog ref="addVehicleDialog" :navigate-to-created-detail="true" />
     <AddDriverDialog ref="addDriverDialog" :navigate-to-created-detail="true" />
@@ -479,255 +447,10 @@ function fleetCarPath(carId: string) {
 </template>
 
 <style scoped>
-.dash {
-  display: grid;
-  gap: 1.5rem;
-}
-
-.dash__fleet {
-  display: grid;
-  gap: 1rem;
-}
-
 .dash__fleet-error {
   margin: 0;
   font-size: 0.875rem;
   color: var(--color-error);
-}
-
-.dash__fleet-cards {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
-@media (min-width: 720px) {
-  .dash__fleet-cards {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.15rem;
-  }
-}
-
-.dash__fleet-card {
-  position: relative;
-  border-radius: var(--app-radius-card, 1rem);
-  overflow: hidden;
-  min-width: 0;
-  background: var(--color-surface-container-low);
-  box-shadow: var(--shadow-ambient);
-  transition:
-    transform var(--app-duration-ui, 220ms) var(--app-ease-out, ease),
-    box-shadow var(--app-duration-ui, 220ms) var(--app-ease-out, ease);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .dash__fleet-card:hover {
-    transform: translateY(-2px);
-    box-shadow:
-      var(--shadow-ambient),
-      0 10px 28px color-mix(in srgb, var(--color-secondary) 10%, transparent);
-  }
-}
-
-.dash__fleet-card--vehicles {
-  background: linear-gradient(
-    155deg,
-    color-mix(in srgb, var(--color-secondary) 11%, var(--color-surface-container-low)) 0%,
-    var(--color-surface-container-low) 52%,
-    var(--color-surface-container-low) 100%
-  );
-}
-
-.dash__fleet-card--drivers {
-  background: linear-gradient(
-    155deg,
-    color-mix(in srgb, var(--color-success) 10%, var(--color-surface-container-low)) 0%,
-    var(--color-surface-container-low) 52%,
-    var(--color-surface-container-low) 100%
-  );
-}
-
-.dash__fleet-card-inner {
-  position: relative;
-  padding: 1.15rem;
-  display: grid;
-  gap: 1.1rem;
-}
-
-.dash__fleet-card-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.65rem;
-}
-
-.dash__fleet-card-head-main {
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-  min-width: 0;
-}
-
-.dash__fleet-card-add {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  padding: 0;
-  border: none;
-  border-radius: 0.65rem;
-  cursor: pointer;
-  color: var(--color-secondary);
-  background: color-mix(in srgb, var(--color-secondary) 12%, var(--color-surface-container-lowest));
-  transition:
-    background-color var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
-    transform var(--app-duration-fast, 160ms) var(--app-ease-out, ease);
-}
-
-.dash__fleet-card-add:active {
-  transform: scale(0.94);
-}
-
-.dash__fleet-card-add .material-symbols-outlined {
-  font-size: 1.35rem;
-}
-
-.dash__fleet-card-add:hover {
-  background: color-mix(in srgb, var(--color-secondary) 20%, var(--color-surface-container-lowest));
-}
-
-.dash__fleet-card-add:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-secondary) 40%, transparent);
-  outline-offset: 2px;
-}
-
-.dash__fleet-card-add--drivers {
-  color: var(--color-success);
-  background: color-mix(in srgb, var(--color-success) 14%, var(--color-surface-container-lowest));
-}
-
-.dash__fleet-card-add--drivers:hover {
-  background: color-mix(in srgb, var(--color-success) 22%, var(--color-surface-container-lowest));
-}
-
-.dash__fleet-card-icon {
-  font-size: 1.35rem;
-  color: color-mix(in srgb, var(--color-secondary) 82%, var(--color-on-surface));
-}
-
-.dash__fleet-card--drivers .dash__fleet-card-icon {
-  color: var(--color-success);
-}
-
-.dash__fleet-card-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--color-on-surface);
-}
-
-.dash__fleet-card-metrics {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: stretch;
-  gap: 0.65rem 0.85rem;
-  padding: 0.85rem 0.75rem;
-  border-radius: 0.85rem;
-  background: var(--color-surface-container-lowest);
-}
-
-.dash__fleet-metric {
-  display: grid;
-  gap: 0.25rem;
-  text-align: center;
-  min-width: 0;
-}
-
-.dash__fleet-metric-label {
-  margin: 0;
-  font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-}
-
-.dash__fleet-metric-value {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: clamp(1.75rem, 4vw, 2.25rem);
-  font-weight: 700;
-  line-height: 1.05;
-  color: var(--color-secondary);
-}
-
-.dash__fleet-card--drivers .dash__fleet-metric-value:not(.dash__fleet-metric-value--muted) {
-  color: var(--color-success);
-}
-
-.dash__fleet-metric-value--muted {
-  color: var(--color-on-surface);
-  opacity: 0.88;
-}
-
-.dash__fleet-metric-divider {
-  width: 2px;
-  align-self: stretch;
-  min-height: 2.75rem;
-  margin: auto 0;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-surface-container-high) 85%, transparent);
-}
-
-.dash__alerts {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  align-items: start;
-}
-
-@media (min-width: 960px) {
-  .dash__alerts {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-.dash__success-empty {
-  border-radius: 0.9rem;
-  padding: 1.2rem;
-  min-height: 12.5rem;
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  text-align: center;
-  background: var(--color-surface-container-lowest);
-}
-
-.dash__success-icon {
-  font-size: 1.8rem;
-  margin-bottom: 0.55rem;
-  padding: 0.45rem;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--color-success) 12%, transparent);
-  color: var(--color-success);
-}
-
-.dash__success-title {
-  margin: 0;
-  font-size: 0.9rem;
-  font-weight: 800;
-  color: var(--color-on-surface);
-}
-
-.dash__success-copy {
-  margin: 0.32rem 0 0;
-  font-size: 0.82rem;
-  line-height: 1.42;
-  color: var(--color-on-surface-variant);
 }
 
 .dash__alerts-list {

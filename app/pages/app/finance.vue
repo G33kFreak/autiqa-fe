@@ -278,9 +278,11 @@ const showRecentIncomesEmpty = computed(
 </script>
 
 <template>
-  <div class="finance-page app-page" :class="{ 'finance-page--loading': financesStore.loading }">
-    <h1 class="app-page__title">{{ t('appSections.finance.title') }}</h1>
-    <p class="app-page__lead">{{ t('appSections.finance.lead') }}</p>
+  <div class="finance-page app-page app-page--wide" :class="{ 'finance-page--loading': financesStore.loading }">
+    <AppPageHeader
+      :title="t('appSections.finance.title')"
+      :lead="t('appSections.finance.lead')"
+    />
 
     <FinanceFilters
       :period="period"
@@ -291,29 +293,31 @@ const showRecentIncomesEmpty = computed(
       @update:date-to="dateTo = $event"
     />
 
-    <section class="finance-page__kpis">
-      <FinanceKpiCard :label="t('appSections.finance.kpis.totalSpend')" :value="money(totalSpend)" tone="warn" />
-      <FinanceKpiCard :label="t('appSections.finance.kpis.avgDaily')" :value="money(avgDailySpend)" />
-      <FinanceKpiCard :label="t('appSections.finance.kpis.totalRevenue')" :value="money(totalRevenue)" tone="good" />
-      <FinanceKpiCard :label="t('appSections.finance.kpis.avgRevenueDaily')" :value="money(avgDailyRevenue)" tone="good" />
-    </section>
+    <AppSection id="finance-kpis">
+      <div class="app-kpi-row app-kpi-row--4">
+        <FinanceKpiCard :label="t('appSections.finance.kpis.totalSpend')" :value="money(totalSpend)" tone="warn" />
+        <FinanceKpiCard :label="t('appSections.finance.kpis.avgDaily')" :value="money(avgDailySpend)" />
+        <FinanceKpiCard :label="t('appSections.finance.kpis.totalRevenue')" :value="money(totalRevenue)" tone="good" />
+        <FinanceKpiCard :label="t('appSections.finance.kpis.avgRevenueDaily')" :value="money(avgDailyRevenue)" tone="good" />
+      </div>
+      <div class="app-kpi-row app-kpi-row--2">
+        <FinanceKpiCard
+          :label="t('appSections.finance.kpis.profitLoss')"
+          :value="money(totalProfitLoss)"
+          :tone="totalProfitLoss >= 0 ? 'good' : 'warn'"
+        />
+        <FinanceKpiCard
+          :label="t('appSections.finance.kpis.avgProfitLossDaily')"
+          :value="money(avgDailyProfitLoss)"
+          :tone="avgDailyProfitLoss >= 0 ? 'good' : 'warn'"
+        />
+      </div>
+    </AppSection>
 
-    <section class="finance-page__kpis-secondary">
-      <FinanceKpiCard
-        :label="t('appSections.finance.kpis.profitLoss')"
-        :value="money(totalProfitLoss)"
-        :tone="totalProfitLoss >= 0 ? 'good' : 'warn'"
-      />
-      <FinanceKpiCard
-        :label="t('appSections.finance.kpis.avgProfitLossDaily')"
-        :value="money(avgDailyProfitLoss)"
-        :tone="avgDailyProfitLoss >= 0 ? 'good' : 'warn'"
-      />
-    </section>
-
-    <section class="finance-page__grid">
-      <article class="finance-page__card finance-page__card--wide">
-        <h2 class="finance-page__card-title">{{ t('appSections.finance.charts.spendTrend') }}</h2>
+    <AppSection id="finance-charts">
+    <div class="app-panel-grid">
+      <article class="app-panel app-panel--raised app-panel-grid__wide">
+        <h3 class="app-panel__title">{{ t('appSections.finance.charts.spendTrend') }}</h3>
         <ListEmptyState
           v-if="showSpendTrendEmpty"
           icon="show_chart"
@@ -329,8 +333,8 @@ const showRecentIncomesEmpty = computed(
         />
       </article>
 
-      <article class="finance-page__card">
-        <h2 class="finance-page__card-title">{{ t('appSections.finance.charts.categoryMix') }}</h2>
+      <article class="app-panel app-panel--raised">
+        <h3 class="app-panel__title">{{ t('appSections.finance.charts.categoryMix') }}</h3>
         <ListEmptyState
           v-if="showCategoryMixEmpty"
           icon="pie_chart"
@@ -340,8 +344,8 @@ const showRecentIncomesEmpty = computed(
         <FinanceCategoryDonutChart v-else :rows="categoryDonutRows" />
       </article>
 
-      <article class="finance-page__card">
-        <h2 class="finance-page__card-title">{{ t('appSections.finance.charts.typeBreakdown') }}</h2>
+      <article class="app-panel app-panel--raised">
+        <h3 class="app-panel__title">{{ t('appSections.finance.charts.typeBreakdown') }}</h3>
         <FinanceCumulativeProfitChart
           :labels="cumulativeProfit.labels"
           :actual-values="cumulativeProfit.actualValues"
@@ -349,8 +353,8 @@ const showRecentIncomesEmpty = computed(
         />
       </article>
 
-      <article class="finance-page__card">
-        <h2 class="finance-page__card-title">{{ t('appSections.finance.charts.intensity') }}</h2>
+      <article class="app-panel app-panel--raised">
+        <h3 class="app-panel__title">{{ t('appSections.finance.charts.intensity') }}</h3>
         <ListEmptyState
           v-if="showTopCarsExpensesEmpty"
           icon="directions_car"
@@ -365,8 +369,8 @@ const showRecentIncomesEmpty = computed(
         />
       </article>
 
-      <article class="finance-page__card">
-        <h2 class="finance-page__card-title">{{ t('appSections.finance.charts.recurring') }}</h2>
+      <article class="app-panel app-panel--raised">
+        <h3 class="app-panel__title">{{ t('appSections.finance.charts.recurring') }}</h3>
         <ListEmptyState
           v-if="showTopCarsRevenueEmpty"
           icon="payments"
@@ -380,11 +384,13 @@ const showRecentIncomesEmpty = computed(
           color="#0f8a46"
         />
       </article>
-    </section>
+    </div>
+    </AppSection>
 
-    <div class="finance-page__bottom">
-      <section class="finance-page__table-card">
-        <h2 class="finance-page__card-title">{{ t('appSections.finance.recent.title') }}</h2>
+    <AppSection :title="t('appSections.finance.recent.title')" id="finance-recent">
+    <div class="app-panel-grid">
+      <section class="app-panel app-panel--raised">
+        <h3 class="app-panel__title">{{ t('appSections.finance.recent.title') }}</h3>
         <ListEmptyState
           v-if="showRecentExpensesEmpty"
           icon="receipt_long"
@@ -407,8 +413,8 @@ const showRecentIncomesEmpty = computed(
         </div>
       </section>
 
-      <section class="finance-page__table-card">
-        <h2 class="finance-page__card-title">{{ t('appSections.finance.recentEarnings.title') }}</h2>
+      <section class="app-panel app-panel--raised">
+        <h3 class="app-panel__title">{{ t('appSections.finance.recentEarnings.title') }}</h3>
         <ListEmptyState
           v-if="showRecentIncomesEmpty"
           icon="account_balance_wallet"
@@ -431,77 +437,13 @@ const showRecentIncomesEmpty = computed(
         </div>
       </section>
     </div>
+    </AppSection>
   </div>
 </template>
 
 <style scoped>
-.finance-page {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 .finance-page--loading {
   opacity: 0.85;
-}
-
-.finance-page__kpis {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-.finance-page__kpis-secondary {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-.finance-page__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-.finance-page__card {
-  background: var(--color-surface-container-low);
-  border-radius: var(--app-radius-card, 1rem);
-  padding: 1rem;
-  transition:
-    transform var(--app-duration-ui, 220ms) var(--app-ease-out, ease),
-    box-shadow var(--app-duration-ui, 220ms) var(--app-ease-out, ease);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .finance-page__card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-ambient);
-  }
-}
-
-.finance-page__card--wide {
-  grid-column: 1 / -1;
-}
-
-.finance-page__card-title {
-  margin: 0 0 0.5rem;
-  font-size: 0.76rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-}
-
-.finance-page__bottom {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-.finance-page__table-card {
-  background: var(--color-surface-container-low);
-  border-radius: var(--app-radius-card, 1rem);
-  padding: 1rem;
-  box-shadow: var(--shadow-ambient);
 }
 
 .finance-page__table {
@@ -545,31 +487,7 @@ const showRecentIncomesEmpty = computed(
   color: var(--color-success) !important;
 }
 
-@media (max-width: 75rem) {
-  .finance-page__kpis {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .finance-page__bottom {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 62rem) {
-  .finance-page__grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 @media (max-width: 48rem) {
-  .finance-page__kpis {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .finance-page__kpis-secondary {
-    grid-template-columns: 1fr;
-  }
-
   .finance-page__table-head,
   .finance-page__table-row {
     grid-template-columns: 1fr 1fr;
