@@ -756,6 +756,7 @@
           "emptyValue": "—"
         },
         "actions": {
+          "editDriver": "Edytuj kierowcę",
           "assignVehicle": "Przypisz pojazd",
           "assignOtherVehicle": "Przypisz inny pojazd"
         },

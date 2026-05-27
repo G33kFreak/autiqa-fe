@@ -197,7 +197,7 @@ onMounted(async () => {
         ]"
       />
       <DriverProfileHeader
-        :edit-label="t('appSections.fleet.vehicleDetails.editVehicle')"
+        :edit-label="t('appSections.drivers.details.actions.editDriver')"
         :save-label="t('appSections.fleet.vehicleDetails.save')"
         :saving-label="t('common.loading')"
         :cancel-label="t('appSections.fleet.vehicleDetails.cancel')"

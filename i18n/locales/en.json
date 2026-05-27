@@ -756,6 +756,7 @@
           "emptyValue": "—"
         },
         "actions": {
+          "editDriver": "Edit driver",
           "assignVehicle": "Assign vehicle",
           "assignOtherVehicle": "Assign other vehicle"
         },
