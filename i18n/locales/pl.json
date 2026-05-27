@@ -3,6 +3,7 @@
   "common": {
     "loading": "Ładowanie",
     "clear": "Wyczyść",
+    "close": "Zamknij",
     "loadError": "Nie udało się wczytać strony. Odśwież lub spróbuj ponownie."
   },
   "meta": {
@@ -384,6 +385,7 @@
       "addVehicleVinPlaceholder": "V0ZAB12CDE3456789",
       "addVehicleDriver": "Przypisany kierowca",
       "addVehicleDriverUnassigned": "Brak przypisania",
+      "addVehicleDriverSearchNoResults": "Nie znaleziono kierowców",
       "addVehicleInspectionExpiry": "Przegląd techniczny (ważny do)",
       "addVehicleSubmit": "Zapisz pojazd",
       "addVehicleSubmitAll": "Zapisz wszystkie pojazdy",

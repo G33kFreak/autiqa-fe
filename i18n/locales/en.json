@@ -3,6 +3,7 @@
   "common": {
     "loading": "Loading",
     "clear": "Clear",
+    "close": "Close",
     "loadError": "Couldn’t load this page. Please refresh or try again."
   },
   "meta": {
@@ -384,6 +385,7 @@
       "addVehicleVinPlaceholder": "V0ZAB12CDE3456789",
       "addVehicleDriver": "Assigned driver",
       "addVehicleDriverUnassigned": "No driver assigned",
+      "addVehicleDriverSearchNoResults": "No drivers found",
       "addVehicleInspectionExpiry": "Technical inspection (valid until)",
       "addVehicleSubmit": "Save vehicle",
       "addVehicleSubmitAll": "Save all vehicles",
