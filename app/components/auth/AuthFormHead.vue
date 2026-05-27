@@ -18,17 +18,17 @@ const brandTo = computed(() => props.brandHref ?? localePath('/'));
 </script>
 
 <template>
-  <header class="auth__panel-head">
-    <div v-if="showMobileBrand" class="auth__brand auth__brand--mobile">
+  <header class="auth-head">
+    <div v-if="showMobileBrand" class="auth-head__brand">
       <NuxtLink
-        class="auth__brand-link"
+        class="auth-split__brand-link"
         :to="brandTo"
         :aria-label="$t('brand')"
       >
         <AutiqaLogo size="md" />
       </NuxtLink>
     </div>
-    <h2 :id="titleId" class="auth__title">{{ title }}</h2>
-    <p class="auth__subtitle">{{ subtitle }}</p>
+    <h2 :id="titleId" class="auth-head__title">{{ title }}</h2>
+    <p class="auth-head__subtitle">{{ subtitle }}</p>
   </header>
 </template>

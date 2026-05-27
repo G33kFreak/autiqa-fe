@@ -9,14 +9,14 @@ defineProps<{
 <template>
   <button
     type="submit"
-    class="auth__submit"
+    class="app-btn app-btn--primary auth-submit"
     :disabled="pending"
     :aria-busy="pending"
   >
-    <span v-if="pending" class="auth__submit-spinner" aria-hidden="true">
-      <svg class="auth__submit-spinner-svg" viewBox="0 0 24 24">
+    <span v-if="pending" class="auth-submit__spinner" aria-hidden="true">
+      <svg class="auth-submit__spinner-svg" viewBox="0 0 24 24">
         <circle
-          class="auth__submit-spinner-track"
+          class="auth-submit__spinner-track"
           cx="12"
           cy="12"
           r="10"
@@ -25,7 +25,7 @@ defineProps<{
           stroke-width="2.5"
         />
         <circle
-          class="auth__submit-spinner-arc"
+          class="auth-submit__spinner-arc"
           cx="12"
           cy="12"
           r="10"

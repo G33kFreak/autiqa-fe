@@ -7,7 +7,7 @@ defineProps<{
 <template>
   <button
     type="button"
-    class="auth__ghost-btn"
+    class="auth-ghost-btn"
     :disabled="disabled"
   >
     <slot />

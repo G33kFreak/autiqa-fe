@@ -25,6 +25,7 @@ const {
         :headline="t('login.asideHeadline')"
         :lede="t('login.asideLede')"
         :pluses="pluses"
+        :plus-icons="['map', 'monitoring', 'groups', 'payments']"
       />
     </template>
 
@@ -36,7 +37,7 @@ const {
         show-mobile-brand
       />
 
-      <form class="auth__form" :aria-busy="pending" @submit.prevent="submit">
+      <form class="auth-form" :aria-busy="pending" @submit.prevent="submit">
         <AuthBanner
           v-if="passwordResetBanner"
           variant="success"
@@ -61,7 +62,7 @@ const {
         <AuthField :label="t('login.passwordLabel')" input-id="login-password">
           <template #label-row>
             <NuxtLink
-              class="auth__link auth__link--small"
+              class="auth-link auth-link--small"
               :to="localePath('/forgot-password')"
             >
               {{ t('login.forgotPassword') }}
@@ -89,7 +90,7 @@ const {
 
       <AuthFootnote>
         {{ t('login.footerLead') }}
-        <NuxtLink class="auth__link" :to="localePath('/register')">
+        <NuxtLink class="auth-link" :to="localePath('/register')">
           {{ t('login.requestAccess') }}
         </NuxtLink>
       </AuthFootnote>

@@ -1,7 +1,9 @@
 <template>
-  <section class="auth__panel" :aria-labelledby="titleId">
-    <div class="auth__panel-inner">
-      <slot />
+  <section class="auth-split__panel" :aria-labelledby="titleId">
+    <div class="auth-split__panel-inner">
+      <div class="auth-split__sheet">
+        <slot />
+      </div>
     </div>
   </section>
 </template>

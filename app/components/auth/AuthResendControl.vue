@@ -14,10 +14,10 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="auth__resend-row">
+  <div class="auth-resend-row">
     <button
       type="button"
-      class="auth__resend"
+      class="auth-resend"
       :disabled="disabled || cooldown > 0 || pending"
       @click="emit('resend')"
     >
@@ -25,7 +25,7 @@ const emit = defineEmits<{
     </button>
     <span
       v-if="cooldown > 0"
-      class="auth__resend-wait"
+      class="auth-resend-wait"
       aria-live="polite"
     >
       {{ waitLabel }}

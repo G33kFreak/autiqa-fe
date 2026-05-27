@@ -1,5 +1,5 @@
 <template>
-  <p class="auth__footnote">
+  <p class="auth-footnote">
     <slot />
   </p>
 </template>

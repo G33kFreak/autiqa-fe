@@ -23,6 +23,7 @@ const {
         :headline="t('register.asideHeadline')"
         :lede="t('register.asideLede')"
         :pluses="pluses"
+        :plus-icons="['workspace_premium', 'verified', 'account_balance']"
       />
     </template>
 
@@ -34,7 +35,7 @@ const {
         show-mobile-brand
       />
 
-      <form class="auth__form" :aria-busy="pending" @submit.prevent="submit">
+      <form class="auth-form" :aria-busy="pending" @submit.prevent="submit">
         <AuthBanner v-if="formError" variant="error" :message="formError" />
 
         <AuthField :label="t('register.nameLabel')" input-id="register-name">
@@ -110,7 +111,7 @@ const {
 
       <AuthFootnote>
         {{ t('register.footerLead') }}
-        <NuxtLink class="auth__link" :to="localePath('/login')">
+        <NuxtLink class="auth-link" :to="localePath('/login')">
           {{ t('register.footerLogin') }}
         </NuxtLink>
       </AuthFootnote>

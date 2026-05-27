@@ -9,8 +9,8 @@ const role = computed(() => (props.variant === 'error' ? 'alert' : 'status'));
 
 <template>
   <p
-    class="auth__banner"
-    :class="`auth__banner--${variant}`"
+    class="auth-banner"
+    :class="`auth-banner--${variant}`"
     :role="role"
   >
     {{ message }}

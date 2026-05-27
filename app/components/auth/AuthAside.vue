@@ -1,22 +1,35 @@
 <script setup lang="ts">
 const localePath = useLocalePath();
 
-const props = defineProps<{
-  headlineId: string;
-  kicker?: string;
-  headline: string;
-  lede: string;
-  pluses: string[];
-  brandHref?: string;
-}>();
+const props = withDefaults(
+  defineProps<{
+    headlineId: string;
+    kicker?: string;
+    headline: string;
+    lede: string;
+    pluses: string[];
+    /** Material symbol per plus line (defaults to check_circle). */
+    plusIcons?: string[];
+    brandHref?: string;
+  }>(),
+  {
+    plusIcons: () => [],
+  },
+);
+
+const icons = computed(() => {
+  const defaults = ['route', 'insights', 'verified_user'];
+  return props.pluses.map((_, i) => props.plusIcons[i] ?? defaults[i % defaults.length]);
+});
 </script>
 
 <template>
-  <section class="auth__aside" :aria-labelledby="props.headlineId">
-    <div class="auth__aside-inner">
-      <header class="auth__brand">
+  <aside class="auth-split__aside" :aria-labelledby="props.headlineId">
+    <div class="auth-split__aside-texture" aria-hidden="true" />
+    <div class="auth-split__aside-inner">
+      <header class="auth-split__brand">
         <NuxtLink
-          class="auth__brand-link"
+          class="auth-split__brand-link"
           :to="brandHref ?? localePath('/')"
           :aria-label="$t('brand')"
         >
@@ -24,29 +37,25 @@ const props = defineProps<{
         </NuxtLink>
       </header>
 
-      <p v-if="kicker" class="auth__kicker">{{ kicker }}</p>
+      <p v-if="kicker" class="auth-split__kicker">{{ kicker }}</p>
 
-      <h1 :id="props.headlineId" class="auth__headline">
+      <h1 :id="props.headlineId" class="auth-split__headline">
         {{ headline }}
       </h1>
-      <p class="auth__lede">{{ lede }}</p>
+      <p class="auth-split__lede">{{ lede }}</p>
 
-      <ul class="auth__pluses">
-        <li v-for="(item, i) in pluses" :key="i" class="auth__plus">
-          <span class="auth__plus-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M20 6L9 17l-5-5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
+      <ul class="auth-split__features">
+        <li
+          v-for="(item, i) in pluses"
+          :key="i"
+          class="auth-split__feature"
+        >
+          <span class="auth-split__feature-icon" aria-hidden="true">
+            <span class="material-symbols-outlined">{{ icons[i] }}</span>
           </span>
-          <span class="auth__plus-text">{{ item }}</span>
+          <span class="auth-split__feature-text">{{ item }}</span>
         </li>
       </ul>
     </div>
-  </section>
+  </aside>
 </template>
