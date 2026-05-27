@@ -187,6 +187,13 @@
     "requestAccess": "Register!"
   },
   "register": {
+    "asideHeadline": "Start with three vehicles on the house.",
+    "asideLede": "Prove the workflow on your real fleet before you scale. Polish-first billing and compliance timelines included from day one.",
+    "pluses": {
+      "freeTier": "First 3 vehicles stay free with full platform access while you evaluate.",
+      "compliance": "Insurance installments and inspection windows in one alert hub, not scattered rows.",
+      "pln": "12 PLN per extra vehicle, PLN billing, vocabulary tuned for Polish operators."
+    },
     "formTitle": "Create your account",
     "formSubtitle": "Fill in the form to get started with Autiqa.",
     "nameLabel": "Full name",

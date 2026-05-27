@@ -1,391 +1,119 @@
 <script setup lang="ts">
-import { FetchError } from 'ofetch';
-import { StatusCodes } from 'http-status-codes';
-
 const { t } = useI18n();
 const localePath = useLocalePath();
-const route = useRoute();
-const authStore = useAuthStore();
 
-const name = ref('');
-const email = ref('');
-const password = ref('');
-const passwordConfirm = ref('');
-const pending = ref(false);
-const formError = ref('');
-
-useSeoMeta({
-  title: computed(() => t('meta.register.title')),
-  description: computed(() => t('meta.register.description')),
-});
-
-function validate(): boolean {
-  formError.value = '';
-  const n = name.value.trim();
-  const e = email.value.trim();
-  const p = password.value;
-  const c = passwordConfirm.value;
-
-  if (!n) {
-    formError.value = t('register.errors.nameRequired');
-    return false;
-  }
-  if (!e) {
-    formError.value = t('register.errors.emailRequired');
-    return false;
-  }
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)) {
-    formError.value = t('register.errors.emailInvalid');
-    return false;
-  }
-  if (p.length < 8) {
-    formError.value = t('register.errors.passwordShort');
-    return false;
-  }
-  if (p !== c) {
-    formError.value = t('register.errors.passwordMismatch');
-    return false;
-  }
-  return true;
-}
-
-async function submit() {
-  if (!validate()) return;
-
-  pending.value = true;
-  try {
-    await authStore.register({
-      name: name.value.trim(),
-      email: email.value.trim(),
-      password: password.value,
-    });
-
-    const q = route.query.redirect;
-    const afterRegister =
-      typeof q === 'string' && q.startsWith('/') && !q.startsWith('//')
-        ? q
-        : localePath('/app');
-    await navigateTo(afterRegister, { replace: true });
-  } catch (e: unknown) {
-    const status = e instanceof FetchError ? (e.status ?? e.statusCode) : 0;
-    if (status === StatusCodes.CONFLICT) {
-      formError.value = t('register.errors.conflict');
-    } else if (status === StatusCodes.BAD_REQUEST) {
-      formError.value = t('register.errors.badRequest');
-    } else {
-      formError.value = t('register.errors.generic');
-    }
-  } finally {
-    pending.value = false;
-  }
-}
+const {
+  name,
+  email,
+  password,
+  passwordConfirm,
+  pending,
+  formError,
+  pluses,
+  submit,
+} = useRegisterPage();
 </script>
 
 <template>
-  <div class="register">
-    <div class="register__bg" aria-hidden="true" />
+  <AuthSplitLayout>
+    <template #aside>
+      <AuthAside
+        headline-id="register-aside-title"
+        :kicker="t('layout.appTagline')"
+        :headline="t('register.asideHeadline')"
+        :lede="t('register.asideLede')"
+        :pluses="pluses"
+      />
+    </template>
 
-    <main class="register__main">
-      <div class="register__card">
-        <header class="register__head">
-          <div class="register__brand">
-            <span class="register__logo">{{ t('brand') }}</span>
-            <span class="register__logo-accent" aria-hidden="true" />
-          </div>
-          <h1 class="register__title">{{ t('register.formTitle') }}</h1>
-          <p class="register__subtitle">{{ t('register.formSubtitle') }}</p>
-        </header>
+    <AuthPanel title-id="register-form-title">
+      <AuthFormHead
+        title-id="register-form-title"
+        :title="t('register.formTitle')"
+        :subtitle="t('register.formSubtitle')"
+        show-mobile-brand
+      />
 
-        <form
-          class="register__form"
-          :aria-busy="pending"
-          @submit.prevent="submit"
-        >
-          <p v-if="formError" class="register__error" role="alert">
-            {{ formError }}
-          </p>
+      <form class="auth__form" :aria-busy="pending" @submit.prevent="submit">
+        <AuthBanner v-if="formError" variant="error" :message="formError" />
 
-          <div class="register__field">
-            <label class="register__label" for="register-name">{{
-              t('register.nameLabel')
-            }}</label>
-            <input
-              id="register-name"
-              v-model="name"
-              class="ti-input"
-              type="text"
-              name="name"
-              autocomplete="name"
-              required
-              :disabled="pending"
-              :placeholder="t('register.namePlaceholder')"
-            >
-          </div>
-
-          <div class="register__field">
-            <label class="register__label" for="register-email">{{
-              t('register.emailLabel')
-            }}</label>
-            <input
-              id="register-email"
-              v-model="email"
-              class="ti-input"
-              type="email"
-              name="email"
-              autocomplete="email"
-              required
-              :disabled="pending"
-              :placeholder="t('register.emailPlaceholder')"
-            >
-          </div>
-
-          <div class="register__field">
-            <label class="register__label" for="register-password">{{
-              t('register.passwordLabel')
-            }}</label>
-            <input
-              id="register-password"
-              v-model="password"
-              class="ti-input"
-              type="password"
-              name="password"
-              autocomplete="new-password"
-              required
-              minlength="8"
-              :disabled="pending"
-              :placeholder="t('register.passwordPlaceholder')"
-            >
-            <p class="register__hint">{{ t('register.passwordHint') }}</p>
-          </div>
-
-          <div class="register__field">
-            <label class="register__label" for="register-password-confirm">{{
-              t('register.passwordRepeatLabel')
-            }}</label>
-            <input
-              id="register-password-confirm"
-              v-model="passwordConfirm"
-              class="ti-input"
-              type="password"
-              name="passwordConfirm"
-              autocomplete="new-password"
-              required
-              :disabled="pending"
-              :placeholder="t('register.passwordRepeatPlaceholder')"
-            >
-          </div>
-
-          <button
-            type="submit"
-            class="register__submit"
+        <AuthField :label="t('register.nameLabel')" input-id="register-name">
+          <input
+            id="register-name"
+            v-model="name"
+            class="ti-input"
+            type="text"
+            name="name"
+            autocomplete="name"
+            required
             :disabled="pending"
-            :aria-busy="pending"
+            :placeholder="t('register.namePlaceholder')"
           >
-            {{ pending ? t('register.submitting') : t('register.submit') }}
-          </button>
-        </form>
+        </AuthField>
 
-        <p class="register__footer">
-          {{ t('register.footerLead') }}
-          <NuxtLink class="register__link" :to="localePath('/login')">
-            {{ t('register.footerLogin') }}
-          </NuxtLink>
-        </p>
-      </div>
-    </main>
-  </div>
+        <AuthField :label="t('register.emailLabel')" input-id="register-email">
+          <input
+            id="register-email"
+            v-model="email"
+            class="ti-input"
+            type="email"
+            name="email"
+            autocomplete="email"
+            required
+            :disabled="pending"
+            :placeholder="t('register.emailPlaceholder')"
+          >
+        </AuthField>
+
+        <AuthField
+          :label="t('register.passwordLabel')"
+          input-id="register-password"
+          :hint="t('register.passwordHint')"
+        >
+          <input
+            id="register-password"
+            v-model="password"
+            class="ti-input"
+            type="password"
+            name="password"
+            autocomplete="new-password"
+            required
+            minlength="8"
+            :disabled="pending"
+            :placeholder="t('register.passwordPlaceholder')"
+          >
+        </AuthField>
+
+        <AuthField
+          :label="t('register.passwordRepeatLabel')"
+          input-id="register-password-confirm"
+        >
+          <input
+            id="register-password-confirm"
+            v-model="passwordConfirm"
+            class="ti-input"
+            type="password"
+            name="passwordConfirm"
+            autocomplete="new-password"
+            required
+            :disabled="pending"
+            :placeholder="t('register.passwordRepeatPlaceholder')"
+          >
+        </AuthField>
+
+        <AuthSubmit
+          :pending="pending"
+          :label="t('register.submit')"
+          :pending-label="t('register.submitting')"
+        />
+      </form>
+
+      <AuthFootnote>
+        {{ t('register.footerLead') }}
+        <NuxtLink class="auth__link" :to="localePath('/login')">
+          {{ t('register.footerLogin') }}
+        </NuxtLink>
+      </AuthFootnote>
+    </AuthPanel>
+  </AuthSplitLayout>
 </template>
-
-<style scoped>
-.register {
-  position: relative;
-  min-height: 100dvh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  background: var(--color-surface);
-  color: var(--color-on-surface);
-  overflow-x: hidden;
-}
-
-.register__bg {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background:
-    radial-gradient(
-      ellipse 90% 70% at 100% 0%,
-      rgba(2, 102, 255, 0.08),
-      transparent 55%
-    ),
-    radial-gradient(
-      ellipse 70% 60% at 0% 100%,
-      rgba(0, 80, 204, 0.06),
-      transparent 50%
-    ),
-    radial-gradient(
-      ellipse 55% 45% at 50% 40%,
-      rgba(179, 197, 255, 0.12),
-      transparent 58%
-    ),
-    linear-gradient(168deg, #f3f6fb 0%, #eef2f8 42%, #f7f9fb 100%);
-}
-
-.register__main {
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  max-width: 26rem;
-}
-
-.register__card {
-  padding: 2rem 1.75rem;
-  border-radius: 1rem;
-  background: var(--color-surface-container-low);
-  box-shadow:
-    0 12px 32px rgba(25, 28, 30, 0.06),
-    0 0 0 1px color-mix(in srgb, var(--color-outline-variant) 12%, transparent);
-}
-
-.register__head {
-  margin-bottom: 1.75rem;
-  text-align: center;
-}
-
-.register__brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 1.25rem;
-}
-
-.register__logo {
-  font-family: var(--font-display);
-  font-size: 1.125rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--color-on-surface);
-}
-
-.register__logo-accent {
-  width: 4px;
-  height: 1.25rem;
-  border-radius: 2px;
-  background: linear-gradient(
-    180deg,
-    var(--color-secondary),
-    var(--color-secondary-container)
-  );
-}
-
-.register__title {
-  margin: 0 0 0.5rem;
-  font-family: var(--font-display);
-  font-size: 1.375rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
-  color: var(--color-on-surface);
-}
-
-.register__subtitle {
-  margin: 0;
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--color-on-surface-variant);
-}
-
-.register__form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.register__error {
-  margin: 0;
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  line-height: 1.4;
-  color: var(--color-on-error-container);
-  background: var(--color-error-container);
-  padding: 0.75rem 1rem;
-  border-radius: 0.375rem;
-}
-
-.register__field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.register__label {
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-}
-
-.register__hint {
-  margin: 0;
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  line-height: 1.4;
-  color: var(--color-on-surface-variant);
-}
-
-.register__submit {
-  margin-top: 0.25rem;
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: none;
-  border-radius: 0.75rem;
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--color-on-secondary);
-  cursor: pointer;
-  background: linear-gradient(
-    135deg,
-    var(--color-secondary),
-    var(--color-secondary-container)
-  );
-  transition: opacity 0.2s ease;
-}
-
-.register__submit:hover {
-  opacity: 0.92;
-}
-
-.register__submit:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-secondary) 35%, transparent);
-  outline-offset: 2px;
-}
-
-.register__submit:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-.register__footer {
-  margin: 1.75rem 0 0;
-  text-align: center;
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  color: var(--color-on-surface-variant);
-}
-
-.register__link {
-  font-weight: 500;
-  color: var(--color-secondary);
-  text-decoration: none;
-}
-
-.register__link:hover {
-  color: var(--color-secondary-container);
-}
-</style>

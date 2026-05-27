@@ -187,6 +187,13 @@
     "requestAccess": "Zarejestruj się!"
   },
   "register": {
+    "asideHeadline": "Zacznij od trzech pojazdów bez opłat.",
+    "asideLede": "Sprawdź workflow na prawdziwej flocie, zanim rozbudujesz skład. Od pierwszego dnia: rozliczenia w PLN i terminy formalne w jednym miejscu.",
+    "pluses": {
+      "freeTier": "Pierwsze 3 pojazdy bez opłat, z pełnym dostępem do platformy na czas testów.",
+      "compliance": "Raty polis i terminy przeglądów w jednym hubie alertów, nie w rozproszonych wierszach.",
+      "pln": "12 PLN za każdy kolejny pojazd, faktury w PLN i słownictwo dopasowane do polskich operatorów."
+    },
     "formTitle": "Utwórz konto",
     "formSubtitle": "Wypełnij formularz, aby rozpocząć pracę z panelem Autiqa.",
     "nameLabel": "Imię i nazwisko",
