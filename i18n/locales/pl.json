@@ -42,16 +42,33 @@
   "landing": {
     "a11y": {
       "skip": "Przejdź do treści",
-      "menu": "Otwórz menu"
+      "menu": "Otwórz menu",
+      "language": "Język",
+      "mainNav": "Nawigacja główna",
+      "footerNav": "Nawigacja w stopce"
     },
     "nav": {
       "login": "Zaloguj się",
-      "cta": "Zacznij"
+      "cta": "Zacznij",
+      "platform": "Platforma",
+      "capabilities": "Możliwości",
+      "pricing": "Cennik"
+    },
+    "labels": {
+      "compare": "Dlaczego zmiana",
+      "deep": "Głębia",
+      "bento": "Przestrzeń",
+      "pricing": "Cennik"
     },
     "hero": {
+      "kicker": "Centrum kontroli floty",
       "title1": "Inteligencja floty,",
       "title2": "nie porozrzucane arkusze.",
-      "lead": "Autiqa łączy pojazdy, kierowców, przychody, koszty i harmonogramy ubezpieczeń w jednym centrum — tak by przeglądy, raty i sygnały finansowe opowiadały jedną historię.",
+      "proofAria": "Dlaczego operatorzy przechodzą",
+      "proof1": "Pierwsze 3 pojazdy bez opłat",
+      "proof2": "Alerty ubezpieczeń i przeglądów w jednym miejscu",
+      "proof3": "12 zł za kolejny pojazd, rozliczenia w PLN",
+      "lead": "Autiqa łączy pojazdy, kierowców, przychody, koszty i harmonogramy ubezpieczeń w jednym centrum, tak by przeglądy, raty i sygnały finansowe opowiadały jedną historię.",
       "ctaPrimary": "Załóż konto",
       "ctaSecondary": "Zobacz możliwości"
     },
@@ -134,7 +151,10 @@
     },
     "footer": {
       "tagline": "Inteligencja operacyjna dla taxi, wynajmu i flot mieszanych — bez ślepych plam.",
-      "copy": "© 2026 Autiqa. Wszelkie prawa zastrzeżone."
+      "copy": "© 2026 Autiqa. Wszelkie prawa zastrzeżone.",
+      "product": "Produkt",
+      "account": "Konto",
+      "register": "Załóż konto"
     }
   },
   "login": {

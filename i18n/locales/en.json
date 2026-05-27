@@ -42,16 +42,33 @@
   "landing": {
     "a11y": {
       "skip": "Skip to content",
-      "menu": "Open menu"
+      "menu": "Open menu",
+      "language": "Language",
+      "mainNav": "Main navigation",
+      "footerNav": "Footer navigation"
     },
     "nav": {
       "login": "Sign in",
-      "cta": "Get started"
+      "cta": "Get started",
+      "platform": "Platform",
+      "capabilities": "Capabilities",
+      "pricing": "Pricing"
+    },
+    "labels": {
+      "compare": "Why switch",
+      "deep": "Depth",
+      "bento": "Workspace",
+      "pricing": "Pricing"
     },
     "hero": {
+      "kicker": "Fleet control center",
       "title1": "Fleet intelligence,",
       "title2": "not scattered sheets.",
-      "lead": "Autiqa brings vehicles, drivers, income, expenses, and insurance timelines into one control center—so inspections, installments, and financial signals stay in the same story.",
+      "proofAria": "Why operators switch",
+      "proof1": "Free for your first 3 vehicles",
+      "proof2": "Insurance and inspection alerts in one hub",
+      "proof3": "12 PLN per extra vehicle, PLN billing",
+      "lead": "Autiqa brings vehicles, drivers, income, expenses, and insurance timelines into one control center, so inspections, installments, and financial signals stay in the same story.",
       "ctaPrimary": "Create account",
       "ctaSecondary": "See capabilities"
     },
@@ -134,7 +151,10 @@
     },
     "footer": {
       "tagline": "Tactical intelligence for taxi, rental, and mixed fleets that cannot afford blind spots.",
-      "copy": "© 2026 Autiqa. All rights reserved."
+      "copy": "© 2026 Autiqa. All rights reserved.",
+      "product": "Product",
+      "account": "Account",
+      "register": "Create account"
     }
   },
   "login": {

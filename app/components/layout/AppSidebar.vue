@@ -41,12 +41,7 @@ function onNavClick() {
     :aria-label="t('layout.sidebar.mainNavigationAria')"
   >
     <div class="app-sidebar__brand">
-      <div v-show="!narrowNav" class="app-sidebar__logo" aria-hidden="true">
-        <span class="material-symbols-outlined app-sidebar__logo-icon">insights</span>
-      </div>
-      <div v-show="!narrowNav" class="app-sidebar__brand-text">
-        <p class="app-sidebar__brand-name">{{ t('brand') }}</p>
-      </div>
+      <AutiqaLogo v-show="!narrowNav" size="sm" />
       <button
         type="button"
         class="app-sidebar__collapse"

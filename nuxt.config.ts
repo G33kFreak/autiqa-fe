@@ -25,6 +25,8 @@ export default defineNuxtConfig({
     public: {
       /** API origin for browser `$fetch` and Nitro proxy (no trailing slash). */
       apiBase: 'http://localhost:3001',
+      /** Canonical site origin for SEO (no trailing slash). */
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://autiqa.pl',
     },
   },
 
@@ -46,6 +48,7 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       ],
       link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/autiqa-mark.svg' },
         {
           rel: 'stylesheet',
           href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0',
