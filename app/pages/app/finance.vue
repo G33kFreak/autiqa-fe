@@ -397,19 +397,29 @@ const showRecentIncomesEmpty = computed(
           :title="t('appSections.finance.recent.emptyTitle')"
           :description="t('appSections.finance.recent.emptyDescription')"
         />
-        <div v-else class="finance-page__table">
-          <div class="finance-page__table-head">
-            <span>{{ t('appSections.finance.recent.date') }}</span>
-            <span>{{ t('appSections.finance.recent.type') }}</span>
-            <span>{{ t('appSections.finance.recent.titleCol') }}</span>
-            <span>{{ t('appSections.finance.recent.amount') }}</span>
-          </div>
-          <div v-for="row in recentExpenses" :key="row.id" class="finance-page__table-row">
-            <span>{{ row.occurredAt.slice(0, 10) }}</span>
-            <span>{{ t(`appSections.finance.types.${row.type}`) }}</span>
-            <span>{{ row.title }}</span>
-            <strong>{{ money(Number(row.amount), row.currency) }}</strong>
-          </div>
+        <div v-else class="app-table-shell finance-page__table-wrap">
+          <table class="app-table finance-page__table">
+            <thead>
+              <tr>
+                <th scope="col">{{ t('appSections.finance.recent.date') }}</th>
+                <th scope="col">{{ t('appSections.finance.recent.type') }}</th>
+                <th scope="col">{{ t('appSections.finance.recent.titleCol') }}</th>
+                <th scope="col" class="finance-page__col-amount">{{ t('appSections.finance.recent.amount') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in recentExpenses" :key="row.id">
+                <td>{{ row.occurredAt.slice(0, 10) }}</td>
+                <td>{{ t(`appSections.finance.types.${row.type}`) }}</td>
+                <td>{{ row.title }}</td>
+                <td class="finance-page__col-amount">
+                  <span class="finance-page__amount finance-page__amount--expense">
+                    {{ money(Number(row.amount), row.currency) }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
 
@@ -421,19 +431,29 @@ const showRecentIncomesEmpty = computed(
           :title="t('appSections.finance.recentEarnings.emptyTitle')"
           :description="t('appSections.finance.recentEarnings.emptyDescription')"
         />
-        <div v-else class="finance-page__table">
-          <div class="finance-page__table-head">
-            <span>{{ t('appSections.finance.recentEarnings.date') }}</span>
-            <span>{{ t('appSections.finance.recentEarnings.type') }}</span>
-            <span>{{ t('appSections.finance.recentEarnings.titleCol') }}</span>
-            <span>{{ t('appSections.finance.recentEarnings.amount') }}</span>
-          </div>
-          <div v-for="row in recentIncomes" :key="row.id" class="finance-page__table-row">
-            <span>{{ row.occurredAt.slice(0, 10) }}</span>
-            <span>{{ t('appSections.finance.recentEarnings.kind') }}</span>
-            <span>{{ row.title ?? '—' }}</span>
-            <strong class="finance-page__table-row-earning">{{ money(incomeAmount(row), row.currency) }}</strong>
-          </div>
+        <div v-else class="app-table-shell finance-page__table-wrap">
+          <table class="app-table finance-page__table">
+            <thead>
+              <tr>
+                <th scope="col">{{ t('appSections.finance.recentEarnings.date') }}</th>
+                <th scope="col">{{ t('appSections.finance.recentEarnings.type') }}</th>
+                <th scope="col">{{ t('appSections.finance.recentEarnings.titleCol') }}</th>
+                <th scope="col" class="finance-page__col-amount">{{ t('appSections.finance.recentEarnings.amount') }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in recentIncomes" :key="row.id">
+                <td>{{ row.occurredAt.slice(0, 10) }}</td>
+                <td>{{ t('appSections.finance.recentEarnings.kind') }}</td>
+                <td>{{ row.title ?? '—' }}</td>
+                <td class="finance-page__col-amount">
+                  <span class="finance-page__amount finance-page__amount--income">
+                    {{ money(incomeAmount(row), row.currency) }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </section>
     </div>
@@ -446,51 +466,54 @@ const showRecentIncomesEmpty = computed(
   opacity: 0.85;
 }
 
+.finance-page__table-wrap {
+  margin-top: 0.15rem;
+}
+
 .finance-page__table {
-  display: grid;
-  gap: 0.4rem;
+  table-layout: fixed;
 }
 
-.finance-page__table-head,
-.finance-page__table-row {
-  display: grid;
-  grid-template-columns: 8rem 8rem 1fr 8rem;
-  gap: 0.65rem;
-  align-items: center;
+.finance-page__table th:nth-child(1),
+.finance-page__table td:nth-child(1) {
+  width: 7.25rem;
 }
 
-.finance-page__table-head {
-  font-size: 0.68rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
+.finance-page__table th:nth-child(2),
+.finance-page__table td:nth-child(2) {
+  width: 8.5rem;
+}
+
+.finance-page__table th:nth-child(4),
+.finance-page__table td:nth-child(4) {
+  width: 7.5rem;
+}
+
+.finance-page__col-amount {
+  text-align: right;
+}
+
+.finance-page__table tbody td {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  vertical-align: top;
+}
+
+.finance-page__table tbody td:nth-child(3) {
+  overflow-wrap: anywhere;
+}
+
+.finance-page__amount {
+  display: inline-block;
   font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
-.finance-page__table-head span:last-child {
-  text-align: right;
-}
-
-.finance-page__table-row {
-  background: var(--color-surface-container-lowest);
-  border-radius: 0.65rem;
-  padding: 0.5rem 0.6rem;
-  font-size: 0.8rem;
-}
-
-.finance-page__table-row strong {
-  text-align: right;
+.finance-page__amount--expense {
   color: var(--color-error);
 }
 
-.finance-page__table-row-earning {
-  color: var(--color-success) !important;
-}
-
-@media (max-width: 48rem) {
-  .finance-page__table-head,
-  .finance-page__table-row {
-    grid-template-columns: 1fr 1fr;
-  }
+.finance-page__amount--income {
+  color: var(--color-success);
 }
 </style>
