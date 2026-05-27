@@ -82,18 +82,17 @@ defineExpose({ showModal, close });
   >
     <div class="entity-dialog-shell__shell">
       <header class="entity-dialog-shell__header">
-        <div>
+        <div class="entity-dialog-shell__intro">
           <h2 :id="titleId" class="entity-dialog-shell__title">{{ title }}</h2>
           <p v-if="lead" class="entity-dialog-shell__lead">{{ lead }}</p>
         </div>
         <button
           type="button"
-          class="entity-dialog-shell__icon-btn"
+          class="entity-dialog-shell__close"
+          :aria-label="$t('common.close')"
           @click="close"
         >
-          <span class="material-symbols-outlined" aria-hidden="true"
-            >close</span
-          >
+          <span class="material-symbols-outlined" aria-hidden="true">close</span>
         </button>
       </header>
 
@@ -114,101 +113,113 @@ defineExpose({ showModal, close });
 <style scoped>
 .entity-dialog-shell {
   border: none;
-  border-radius: 0.75rem;
   padding: 0;
   background: transparent;
+  max-width: calc(100vw - 1rem);
 }
 
 .entity-dialog-shell::backdrop {
-  background: color-mix(in srgb, var(--color-inverse-surface) 42%, transparent);
-  backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--color-inverse-surface) 48%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .entity-dialog-shell__shell {
-  border-radius: 0.75rem;
-  background: var(--color-surface);
-  box-shadow: 0 24px 48px rgb(25 28 30 / 0.15);
+  border-radius: 1rem;
+  background: var(--color-surface-container-low);
+  box-shadow:
+    0 24px 48px color-mix(in srgb, var(--color-inverse-surface) 14%, transparent),
+    0 0 0 1px color-mix(in srgb, var(--color-outline-variant) 12%, transparent);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .entity-dialog-shell[open] .entity-dialog-shell__shell {
+    animation: entity-dialog-enter 240ms var(--app-ease-out, cubic-bezier(0.23, 1, 0.32, 1)) both;
+  }
+}
+
+@keyframes entity-dialog-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .entity-dialog-shell__header {
-  padding: 1.35rem 1.75rem 1.15rem;
-  background: var(--color-surface-container-low);
+  padding: 1.35rem 1.5rem 1.15rem;
+  background: var(--color-surface-container-lowest);
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  position: relative;
-}
-
-.entity-dialog-shell__header::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1px;
-  background: var(--color-surface-container-highest);
+  gap: 1rem;
 }
 
 .entity-dialog-shell__title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.45rem;
+  font-size: clamp(1.25rem, 2.5vw, 1.5rem);
   font-weight: 800;
+  letter-spacing: -0.03em;
   color: var(--color-on-surface);
+  line-height: 1.1;
 }
 
 .entity-dialog-shell__lead {
-  margin: 0.2rem 0 0;
+  margin: 0.45rem 0 0;
+  max-width: 36rem;
   font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.5;
   color: var(--color-on-surface-variant);
 }
 
-.entity-dialog-shell__icon-btn {
+.entity-dialog-shell__close {
+  flex-shrink: 0;
   border: none;
-  border-radius: 0.75rem;
-  width: 2rem;
-  height: 2rem;
+  border-radius: 0.65rem;
+  width: 2.25rem;
+  height: 2.25rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
+  background: var(--color-surface-container-low);
   color: var(--color-on-surface-variant);
   cursor: pointer;
   transition:
-    background-color 0.18s ease,
-    color 0.18s ease;
+    background-color var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
+    color var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
+    transform var(--app-duration-fast, 160ms) var(--app-ease-out, ease);
 }
 
-.entity-dialog-shell__icon-btn:hover {
-  background: var(--color-surface-container-high);
-  color: var(--color-on-surface);
+.entity-dialog-shell__close:active {
+  transform: scale(0.94);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .entity-dialog-shell__close:hover {
+    background: var(--color-surface-container-high);
+    color: var(--color-on-surface);
+  }
 }
 
 .entity-dialog-shell__body {
-  padding: 1.35rem 1.75rem;
+  padding: 1.25rem 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   overflow-y: auto;
+  background: var(--color-surface-container-low);
 }
 
 .entity-dialog-shell__footer {
-  padding: 1rem 1.75rem 1.2rem;
-  background: var(--color-surface-container-low);
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.55rem;
-  position: relative;
-}
-
-.entity-dialog-shell__footer::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  height: 1px;
-  background: var(--color-surface-container-highest);
+  padding: 1rem 1.5rem 1.25rem;
+  background: var(--color-surface-container-lowest);
 }
 </style>

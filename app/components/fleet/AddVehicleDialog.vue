@@ -237,41 +237,23 @@ defineExpose({ showModal, close });
     @close="onDialogClose"
   >
     <template #body>
-      <form id="add-vehicle-form" class="add-vehicle-dialog__form" @submit.prevent="onSubmit">
-        <div class="add-vehicle-dialog__list">
-            <section
-              v-for="(row, index) in rows"
-              :id="`add-vehicle-card-${row.id}`"
-              :key="row.id"
-              class="add-vehicle-dialog__card add-vehicle-dialog__card--active"
-              :class="{
-                'add-vehicle-dialog__card--error': failedRowIndices.has(index),
-              }"
-            >
-              <div class="add-vehicle-dialog__card-head">
-                <div class="add-vehicle-dialog__card-title-wrap">
-                  <span class="material-symbols-outlined" aria-hidden="true">directions_car</span>
-                  <h3 class="add-vehicle-dialog__card-title">
-                    {{ t('appSections.fleet.addVehicleIndex', { n: index + 1 }) }}
-                  </h3>
-                </div>
-                <button
-                  v-if="rows.length > 1"
-                  type="button"
-                  class="add-vehicle-dialog__remove"
-                  :aria-label="t('appSections.fleet.addVehicleRemoveRow')"
-                  @click="removeRow(row.id)"
-                >
-                  <span class="material-symbols-outlined" aria-hidden="true"
-                    >close</span
-                  >
-                </button>
-              </div>
-
-              <div class="add-vehicle-dialog__row add-vehicle-dialog__row--model-plate">
-                <div class="add-vehicle-dialog__field">
+      <form id="add-vehicle-form" class="app-dialog-form" @submit.prevent="onSubmit">
+        <div class="app-dialog-stack">
+          <AppDialogFormCard
+            v-for="(row, index) in rows"
+            :id="`add-vehicle-card-${row.id}`"
+            :key="row.id"
+            icon="directions_car"
+            :title="t('appSections.fleet.addVehicleIndex', { n: index + 1 })"
+            :has-error="failedRowIndices.has(index)"
+            :show-remove="rows.length > 1"
+            :remove-label="t('appSections.fleet.addVehicleRemoveRow')"
+            @remove="removeRow(row.id)"
+          >
+              <div class="app-dialog-grid app-dialog-grid--2-uneven">
+                <div class="app-dialog-field">
                   <label
-                    class="add-vehicle-dialog__label"
+                    class="app-dialog-field__label"
                     :for="`add-vehicle-model-${row.id}`"
                   >{{ `${t('appSections.fleet.addVehicleModel')} *` }}</label>
                   <input
@@ -285,9 +267,9 @@ defineExpose({ showModal, close });
                     required
                   >
                 </div>
-                <div class="add-vehicle-dialog__field">
+                <div class="app-dialog-field">
                   <label
-                    class="add-vehicle-dialog__label"
+                    class="app-dialog-field__label"
                     :for="`add-vehicle-plate-${row.id}`"
                   >{{ t('appSections.fleet.addVehiclePlate') }}</label>
                   <input
@@ -297,16 +279,16 @@ defineExpose({ showModal, close });
                     name="plateNumber"
                     autocomplete="off"
                     autocapitalize="characters"
-                    class="ti-input add-vehicle-dialog__input-uppercase"
+                    class="ti-input app-dialog-input--uppercase"
                     :placeholder="t('appSections.fleet.addVehiclePlatePlaceholder')"
                     @input="setUppercaseField(row, 'plateNumber', $event)"
                   >
                 </div>
               </div>
 
-              <div class="add-vehicle-dialog__field">
+              <div class="app-dialog-field">
                 <label
-                  class="add-vehicle-dialog__label"
+                  class="app-dialog-field__label"
                   :for="`add-vehicle-vin-${row.id}`"
                 >{{ t('appSections.fleet.addVehicleVin') }}</label>
                 <input
@@ -316,16 +298,16 @@ defineExpose({ showModal, close });
                   name="vin"
                   autocomplete="off"
                   autocapitalize="characters"
-                  class="ti-input add-vehicle-dialog__input-uppercase"
+                  class="ti-input app-dialog-input--uppercase"
                   :placeholder="t('appSections.fleet.addVehicleVinPlaceholder')"
                   @input="setUppercaseField(row, 'vin', $event)"
                 >
               </div>
 
-              <div class="add-vehicle-dialog__row add-vehicle-dialog__row--driver-inspection">
-                <div class="add-vehicle-dialog__field">
+              <div class="app-dialog-grid app-dialog-grid--2 app-dialog-grid--align-end">
+                <div class="app-dialog-field">
                   <label
-                    class="add-vehicle-dialog__label"
+                    class="app-dialog-field__label"
                     :for="`add-vehicle-driver-${row.id}`"
                   >{{ t('appSections.fleet.addVehicleDriver') }}</label>
                   <SearchableSelect
@@ -352,9 +334,9 @@ defineExpose({ showModal, close });
                     "
                   />
                 </div>
-                <div class="add-vehicle-dialog__field">
+                <div class="app-dialog-field">
                   <label
-                    class="add-vehicle-dialog__label"
+                    class="app-dialog-field__label"
                     :for="`add-vehicle-inspection-${row.id}`"
                   >{{ t('appSections.fleet.addVehicleInspectionExpiry') }}</label>
                   <FleetDateInput
@@ -364,270 +346,29 @@ defineExpose({ showModal, close });
                   />
                 </div>
               </div>
-            </section>
+          </AppDialogFormCard>
 
-            <button
-              type="button"
-              class="add-vehicle-dialog__add-another"
-              @click="addAnother"
-            >
-              <span class="material-symbols-outlined" aria-hidden="true">add_circle</span>
-              {{ t('appSections.fleet.addVehicleAddAnother') }}
-            </button>
+          <button type="button" class="app-dialog-add-another" @click="addAnother">
+            <span class="material-symbols-outlined" aria-hidden="true">add_circle</span>
+            {{ t('appSections.fleet.addVehicleAddAnother') }}
+          </button>
         </div>
       </form>
     </template>
     <template #footer>
-      <div class="add-vehicle-dialog__footer">
-        <p v-if="formError" class="add-vehicle-dialog__error" role="alert">
-          {{ formError }}
-        </p>
-        <button
-          type="button"
-          class="add-vehicle-dialog__btn add-vehicle-dialog__btn--ghost"
-          @click="close"
-        >
-          {{ t('appSections.fleet.addVehicleCancel') }}
-        </button>
-        <button
-          form="add-vehicle-form"
-          type="submit"
-          class="add-vehicle-dialog__btn add-vehicle-dialog__btn--primary"
-          :disabled="carsStore.creating"
-        >
-          {{
-            rows.length > 1
-              ? t('appSections.fleet.addVehicleSubmitAll')
-              : t('appSections.fleet.addVehicleSubmit')
-          }}
-        </button>
-      </div>
+      <AppDialogFooter
+        :error="formError"
+        :cancel-label="t('appSections.fleet.addVehicleCancel')"
+        :submit-label="
+          rows.length > 1
+            ? t('appSections.fleet.addVehicleSubmitAll')
+            : t('appSections.fleet.addVehicleSubmit')
+        "
+        :submit-disabled="carsStore.creating"
+        form-id="add-vehicle-form"
+        @cancel="close"
+      />
     </template>
   </EntityDialogShell>
 </template>
 
-<style scoped>
-.add-vehicle-dialog__form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.add-vehicle-dialog__footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.55rem;
-}
-
-.add-vehicle-dialog__list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.add-vehicle-dialog__card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1.2rem;
-  border-radius: 0.75rem;
-  background: var(--color-surface-container-lowest);
-  box-shadow: var(--shadow-ambient);
-  position: relative;
-}
-
-.add-vehicle-dialog__card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  border-radius: 0.75rem 0 0 0.75rem;
-  background: var(--color-secondary);
-}
-
-.add-vehicle-dialog__card--error {
-  background: color-mix(in srgb, var(--color-error) 8%, var(--color-surface-container-lowest));
-}
-
-.add-vehicle-dialog__card-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 0.85rem;
-}
-
-.add-vehicle-dialog__card-title-wrap {
-  min-width: 0;
-  flex: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  color: var(--color-secondary);
-}
-
-.add-vehicle-dialog__card-title {
-  margin: 0;
-  color: var(--color-on-surface);
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.add-vehicle-dialog__remove {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
-  padding: 0;
-  border: none;
-  border-radius: 0.75rem;
-  color: var(--color-on-surface-variant);
-  background: transparent;
-  cursor: pointer;
-  transition: background-color 0.18s ease, color 0.18s ease;
-}
-
-.add-vehicle-dialog__remove:hover {
-  color: var(--color-on-surface);
-  background: color-mix(in srgb, var(--color-error) 12%, transparent);
-}
-
-.add-vehicle-dialog__remove .material-symbols-outlined { font-size: 1rem; }
-
-.add-vehicle-dialog__remove:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-secondary) 35%, transparent);
-  outline-offset: 2px;
-}
-
-.add-vehicle-dialog__field {
-  min-width: 0;
-}
-
-.add-vehicle-dialog__row--model-plate {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(6.75rem, 9.25rem);
-  gap: 1rem;
-  align-items: stretch;
-}
-
-.add-vehicle-dialog__row--driver-inspection {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 1rem;
-  align-items: stretch;
-}
-
-/* Equal column height: long labels wrap; controls share one baseline row */
-.add-vehicle-dialog__row .add-vehicle-dialog__field {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-.add-vehicle-dialog__row .add-vehicle-dialog__label {
-  flex-shrink: 0;
-  align-self: stretch;
-}
-
-.add-vehicle-dialog__row .add-vehicle-dialog__field > .ti-input,
-.add-vehicle-dialog__row .add-vehicle-dialog__field > select {
-  margin-top: auto;
-  width: 100%;
-}
-
-@media (max-width: 28rem) {
-  .add-vehicle-dialog__row--model-plate,
-  .add-vehicle-dialog__row--driver-inspection {
-    grid-template-columns: 1fr;
-    gap: 0.75rem 0;
-  }
-}
-
-.add-vehicle-dialog__input-uppercase {
-  text-transform: uppercase;
-}
-
-.add-vehicle-dialog__label {
-  display: block;
-  margin-bottom: 0.35rem;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-}
-
-.add-vehicle-dialog__add-another {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  padding: 0.8rem;
-  border: 2px dashed color-mix(in srgb, var(--color-outline-variant) 50%, transparent);
-  border-radius: 0.75rem;
-  background: transparent;
-  color: var(--color-on-surface-variant);
-  font-size: 0.8125rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
-}
-
-.add-vehicle-dialog__add-another:hover {
-  color: var(--color-secondary);
-  border-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
-  background: color-mix(in srgb, var(--color-secondary) 6%, transparent);
-}
-
-.add-vehicle-dialog__error {
-  margin: 0;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: var(--color-error);
-  margin-right: auto;
-  align-self: center;
-}
-
-.add-vehicle-dialog__btn {
-  padding: 0.65rem 0.95rem;
-  border: none;
-  border-radius: 0.75rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition:
-    opacity 0.18s ease,
-    background-color 0.18s ease,
-    filter 0.18s ease;
-}
-
-.add-vehicle-dialog__btn:disabled {
-  cursor: not-allowed;
-  opacity: 0.55;
-}
-
-.add-vehicle-dialog__btn--ghost {
-  color: var(--color-on-surface);
-  background: transparent;
-}
-
-.add-vehicle-dialog__btn--ghost:hover:not(:disabled) {
-  background: var(--color-surface-container-high);
-}
-
-.add-vehicle-dialog__btn--primary {
-  color: var(--color-on-secondary);
-  background: var(--color-secondary);
-}
-
-.add-vehicle-dialog__btn--primary:hover:not(:disabled) {
-  filter: brightness(1.06);
-}
-</style>

@@ -300,22 +300,12 @@ defineExpose({ showModal, showModalForEdit, close });
     @close="resetDialogState"
   >
     <template #body>
-      <form id="add-income-form" class="income-dialog__form" @submit.prevent="onSubmit">
-        <section class="income-dialog__card income-dialog__card--active">
-          <div class="income-dialog__accent" aria-hidden="true" />
-          <div class="income-dialog__card-head">
-            <div class="income-dialog__card-title-wrap">
-              <span class="material-symbols-outlined" aria-hidden="true">payments</span>
-              <h3 class="income-dialog__card-title">
-                {{ incomeDialogTitle }}
-              </h3>
-            </div>
-          </div>
-
-          <div class="income-dialog__field income-dialog__field--full income-dialog__related-block">
-            <div class="income-dialog__grid income-dialog__grid--selectors">
-              <div class="income-dialog__field">
-                <span class="income-dialog__field-label">
+      <form id="add-income-form" class="app-dialog-form" @submit.prevent="onSubmit">
+        <AppDialogSection icon="payments" :title="incomeDialogTitle">
+          <div class="app-dialog-field app-dialog-field--full">
+            <div class="app-dialog-grid app-dialog-grid--2">
+              <div class="app-dialog-field">
+                <span class="app-dialog-field__label app-dialog-field__label--inline">
                   {{ `${t('appSections.fleet.vehicleDetails.incomeDialog.linkedCar')} *` }}
                 </span>
                 <SearchableSelect
@@ -343,8 +333,8 @@ defineExpose({ showModal, showModalForEdit, close });
                 />
               </div>
 
-              <div class="income-dialog__field">
-                <span class="income-dialog__field-label">
+              <div class="app-dialog-field">
+                <span class="app-dialog-field__label app-dialog-field__label--inline">
                   {{ `${t('appSections.fleet.vehicleDetails.incomeDialog.linkedDriver')} *` }}
                 </span>
                 <SearchableSelect
@@ -374,13 +364,13 @@ defineExpose({ showModal, showModalForEdit, close });
             </div>
           </div>
 
-          <div class="income-dialog__grid">
-            <label class="income-dialog__field">
+          <div class="app-dialog-grid app-dialog-grid--2">
+            <label class="app-dialog-field">
               <span>{{ `${t('appSections.fleet.vehicleDetails.incomeDialog.amount')} *` }}</span>
               <input
                 id="income-amount"
                 v-model="form.amount"
-                class="ti-input income-dialog__input"
+                class="ti-input"
                 type="text"
                 inputmode="decimal"
                 placeholder="1499.99"
@@ -388,7 +378,7 @@ defineExpose({ showModal, showModalForEdit, close });
               >
             </label>
 
-            <div class="income-dialog__field">
+            <div class="app-dialog-field">
               <span>{{ `${t('appSections.fleet.vehicleDetails.incomeDialog.occurredAt')} *` }}</span>
               <FleetDateInput
                 v-model="form.occurredAt"
@@ -397,203 +387,46 @@ defineExpose({ showModal, showModalForEdit, close });
               />
             </div>
 
-            <label class="income-dialog__field income-dialog__field--full">
+            <label class="app-dialog-field app-dialog-field--full">
               <span>{{ t('appSections.fleet.vehicleDetails.incomeDialog.titleField') }}</span>
               <input
                 id="income-title"
                 v-model="form.title"
-                class="ti-input income-dialog__input"
+                class="ti-input"
                 type="text"
                 :placeholder="t('appSections.fleet.vehicleDetails.incomeDialog.titlePlaceholder')"
               >
             </label>
 
-            <label class="income-dialog__field income-dialog__field--full">
+            <label class="app-dialog-field app-dialog-field--full">
               <span>{{ t('appSections.fleet.vehicleDetails.incomeDialog.notes') }}</span>
               <textarea
                 id="income-notes"
                 v-model="form.notes"
-                class="ti-input income-dialog__input income-dialog__textarea"
+                class="ti-input app-dialog-textarea"
                 rows="3"
                 :placeholder="t('appSections.fleet.vehicleDetails.incomeDialog.notesPlaceholder')"
               />
             </label>
           </div>
-        </section>
+        </AppDialogSection>
       </form>
     </template>
     <template #footer>
-      <div class="income-dialog__footer">
-        <p v-if="formError" class="income-dialog__error" role="alert">{{ formError }}</p>
-        <button type="button" class="income-dialog__btn income-dialog__btn--ghost" @click="close">
-          {{ t('appSections.fleet.addVehicleCancel') }}
-        </button>
-        <button
-          form="add-income-form"
-          type="submit"
-          class="income-dialog__btn income-dialog__btn--primary"
-          :disabled="incomesStore.creating || incomesStore.updating"
-        >
-          {{
-            incomesStore.creating || incomesStore.updating
-              ? t('common.loading')
-              : editingIncomeId
-                ? t('appSections.fleet.vehicleDetails.save')
-                : t('appSections.fleet.vehicleDetails.incomeDialog.submit')
-          }}
-        </button>
-      </div>
+      <AppDialogFooter
+        :error="formError"
+        :cancel-label="t('appSections.fleet.addVehicleCancel')"
+        :submit-label="
+          incomesStore.creating || incomesStore.updating
+            ? t('common.loading')
+            : editingIncomeId
+              ? t('appSections.fleet.vehicleDetails.save')
+              : t('appSections.fleet.vehicleDetails.incomeDialog.submit')
+        "
+        :submit-disabled="incomesStore.creating || incomesStore.updating"
+        form-id="add-income-form"
+        @cancel="close"
+      />
     </template>
   </EntityDialogShell>
 </template>
-
-<style scoped>
-.income-dialog__form {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.income-dialog__card {
-  border-radius: 0.75rem;
-  background: var(--color-surface-container-lowest);
-  box-shadow: var(--shadow-ambient);
-  position: relative;
-  padding: 1.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.income-dialog__accent {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: var(--color-secondary);
-  border-radius: 0.75rem 0 0 0.75rem;
-}
-
-.income-dialog__card-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.income-dialog__card-title-wrap {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  color: var(--color-secondary);
-}
-
-.income-dialog__card-title {
-  margin: 0;
-  color: var(--color-on-surface);
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.income-dialog__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 1rem;
-  row-gap: 0.95rem;
-}
-
-.income-dialog__grid--selectors {
-  align-items: start;
-  row-gap: 0.6rem;
-}
-
-.income-dialog__field {
-  min-width: 0;
-}
-
-.income-dialog__field--full {
-  grid-column: 1 / -1;
-}
-
-.income-dialog__field > span,
-.income-dialog__field-label {
-  display: block;
-  margin-bottom: 0.35rem;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-}
-
-.income-dialog__input {
-  width: 100%;
-}
-
-.income-dialog__textarea {
-  resize: vertical;
-  min-height: 5rem;
-}
-
-.income-dialog__related-block {
-  padding-bottom: 0.25rem;
-}
-
-.income-dialog__footer {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 0.55rem;
-}
-
-.income-dialog__error {
-  margin: 0;
-  margin-right: auto;
-  align-self: center;
-  font-size: 0.8125rem;
-  color: var(--color-error);
-}
-
-.income-dialog__btn {
-  border: none;
-  border-radius: 0.75rem;
-  padding: 0.65rem 0.95rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: opacity 0.18s ease, background-color 0.18s ease, filter 0.18s ease;
-}
-
-.income-dialog__btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.income-dialog__btn--ghost {
-  color: var(--color-on-surface);
-  background: transparent;
-}
-
-.income-dialog__btn--ghost:hover:not(:disabled) {
-  background: var(--color-surface-container-high);
-}
-
-.income-dialog__btn--primary {
-  color: var(--color-on-secondary);
-  background: var(--color-secondary);
-}
-
-.income-dialog__btn--primary:hover:not(:disabled) {
-  filter: brightness(1.06);
-}
-
-@media (max-width: 34rem) {
-  .income-dialog__grid {
-    grid-template-columns: 1fr;
-  }
-}
-</style>

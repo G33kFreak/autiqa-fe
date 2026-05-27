@@ -1,6 +1,7 @@
 @import './inputs.css';
 @import './auth.css';
 @import './app.css';
+@import './app-dialog.css';
 
 :root {
   /* Light theme — Tactical Intelligence (surface hierarchy) */

@@ -392,40 +392,34 @@ defineExpose({ showModal, close });
     @close="resetDialogState"
   >
     <template #body>
-      <form id="fleet-insurance-policy-form" class="ins-policy" @submit.prevent="onSubmit">
-        <section class="ins-policy__card">
-          <div class="ins-policy__accent" aria-hidden="true" />
-          <div class="ins-policy__card-head">
-            <span class="material-symbols-outlined ins-policy__card-icon" aria-hidden="true"
-              >description</span
-            >
-            <h3 class="ins-policy__card-title">
-              {{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.sectionPolicy') }}
-            </h3>
-          </div>
-          <div class="ins-policy__grid">
-            <label class="ins-policy__field">
+      <form id="fleet-insurance-policy-form" class="app-dialog-form" @submit.prevent="onSubmit">
+        <AppDialogSection
+          icon="description"
+          :title="t('appSections.fleet.vehicleDetails.insurancePolicyDialog.sectionPolicy')"
+        >
+          <div class="app-dialog-grid app-dialog-grid--2">
+            <label class="app-dialog-field">
               <span>{{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.insurerName') }}</span>
               <input
                 v-model="insurerName"
-                class="ti-input ins-policy__input"
+                class="ti-input"
                 type="text"
                 maxlength="500"
                 autocomplete="organization"
                 :placeholder="t('appSections.fleet.vehicleDetails.insurancePolicyDialog.insurerPlaceholder')"
               >
             </label>
-            <label class="ins-policy__field">
+            <label class="app-dialog-field">
               <span>{{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.policyNumber') }}</span>
               <input
                 v-model="policyNumber"
-                class="ti-input ins-policy__input"
+                class="ti-input"
                 type="text"
                 maxlength="200"
                 :placeholder="t('appSections.fleet.vehicleDetails.insurancePolicyDialog.policyNumberPlaceholder')"
               >
             </label>
-            <label class="ins-policy__field">
+            <label class="app-dialog-field">
               <span>{{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.coverageStart') }}</span>
               <FleetDateInput
                 v-model="coverageStartDate"
@@ -433,7 +427,7 @@ defineExpose({ showModal, close });
                 :title="t('appSections.fleet.vehicleDetails.insurancePolicyDialog.coverageStart')"
               />
             </label>
-            <label class="ins-policy__field">
+            <label class="app-dialog-field">
               <span>{{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.coverageEnd') }}</span>
               <FleetDateInput
                 v-model="coverageEndDate"
@@ -442,27 +436,19 @@ defineExpose({ showModal, close });
               />
             </label>
           </div>
-        </section>
+        </AppDialogSection>
 
-        <section class="ins-policy__card ins-policy__card--muted">
-          <div class="ins-policy__accent" aria-hidden="true" />
-          <div class="ins-policy__card-head">
-            <div class="ins-policy__card-head-left">
-              <span class="material-symbols-outlined ins-policy__card-icon" aria-hidden="true"
-                >payments</span
-              >
-              <h3 class="ins-policy__card-title">
-                {{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.sectionPremium') }}
-              </h3>
-            </div>
-          </div>
-
-          <div class="ins-policy__grid ins-policy__grid--premium">
+        <AppDialogSection
+          icon="payments"
+          muted
+          :title="t('appSections.fleet.vehicleDetails.insurancePolicyDialog.sectionPremium')"
+        >
+          <div class="app-dialog-grid app-dialog-grid--2 ins-policy__grid--premium">
             <!-- <label class="ins-policy__field">
               <span>{{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.currency') }}</span>
               <input
                 v-model="currency"
-                class="ti-input ins-policy__input"
+                class="ti-input"
                 type="text"
                 maxlength="3"
                 spellcheck="false"
@@ -470,7 +456,7 @@ defineExpose({ showModal, close });
               >
             </label> -->
 
-            <div class="ins-policy__plan-panel ins-policy__field--full">
+            <div class="ins-policy__plan-panel app-dialog-field--full">
               <fieldset class="ins-policy__plan-fieldset">
                 <legend class="ins-policy__plan-legend">
                   {{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.paymentPlanLabel') }}
@@ -513,17 +499,17 @@ defineExpose({ showModal, close });
               </fieldset>
 
               <div v-if="paymentPlanMode === 'one_time'" class="ins-policy__one-time">
-                <label class="ins-policy__field ins-policy__field--full">
+                <label class="app-dialog-field app-dialog-field--full">
                   <span>{{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.oneTimeAmount') }}</span>
                   <input
                     v-model="oneTimeAmount"
-                    class="ti-input ins-policy__input ins-policy__input--amount"
+                    class="ti-input app-dialog-input--amount"
                     type="text"
                     inputmode="decimal"
                     placeholder="5000.00"
                   >
                 </label>
-                <label class="ins-policy__field ins-policy__field--full">
+                <label class="app-dialog-field app-dialog-field--full">
                   <span>{{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.oneTimeDueDate') }}</span>
                   <FleetDateInput
                     v-model="oneTimeDueDate"
@@ -550,7 +536,7 @@ defineExpose({ showModal, close });
                     }}</span>
                     <input
                       v-model="row.amount"
-                      class="ti-input ins-policy__input"
+                      class="ti-input"
                       type="text"
                       inputmode="decimal"
                       :placeholder="t('appSections.fleet.vehicleDetails.insurancePolicyDialog.amount')"
@@ -572,11 +558,11 @@ defineExpose({ showModal, close });
                 </button>
               </div>
               <div v-else class="ins-policy__one-time">
-                <label class="ins-policy__field ins-policy__field--full">
+                <label class="app-dialog-field app-dialog-field--full">
                   <span>{{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.alreadyPaidAmount') }}</span>
                   <input
                     v-model="alreadyPaidAmount"
-                    class="ti-input ins-policy__input ins-policy__input--amount"
+                    class="ti-input app-dialog-input--amount"
                     type="text"
                     inputmode="decimal"
                     placeholder="5000.00"
@@ -585,163 +571,41 @@ defineExpose({ showModal, close });
               </div>
             </div>
           </div>
-        </section>
+        </AppDialogSection>
 
-        <section class="ins-policy__card">
-          <div class="ins-policy__accent" aria-hidden="true" />
-          <div class="ins-policy__card-head">
-            <span class="material-symbols-outlined ins-policy__card-icon" aria-hidden="true">notes</span>
-            <h3 class="ins-policy__card-title">
-              {{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.sectionNotes') }}
-            </h3>
-          </div>
-          <label class="ins-policy__field ins-policy__field--full">
+        <AppDialogSection
+          icon="notes"
+          :title="t('appSections.fleet.vehicleDetails.insurancePolicyDialog.sectionNotes')"
+        >
+          <label class="app-dialog-field app-dialog-field--full">
             <span>{{ t('appSections.fleet.vehicleDetails.insurancePolicyDialog.notes') }}</span>
             <textarea
               v-model="notes"
-              class="ti-input ins-policy__textarea"
+              class="ti-input app-dialog-textarea"
               rows="3"
               maxlength="5000"
               :placeholder="t('appSections.fleet.vehicleDetails.insurancePolicyDialog.notesPlaceholder')"
             />
           </label>
-        </section>
+        </AppDialogSection>
       </form>
     </template>
     <template #footer>
-      <div class="ins-policy__footer">
-        <p v-if="formError" class="ins-policy__error" role="alert">{{ formError }}</p>
-        <button type="button" class="ins-policy__btn ins-policy__btn--ghost" @click="close">
-          {{ t('appSections.fleet.vehicleDetails.cancel') }}
-        </button>
-        <button
-          form="fleet-insurance-policy-form"
-          type="submit"
-          class="ins-policy__btn ins-policy__btn--primary"
-          :disabled="submitting"
-        >
-          {{
-            submitting
-              ? t('common.loading')
-              : submitLabel
-          }}
-        </button>
-      </div>
+      <AppDialogFooter
+        :error="formError"
+        :cancel-label="t('appSections.fleet.vehicleDetails.cancel')"
+        :submit-label="submitting ? t('common.loading') : submitLabel"
+        :submit-disabled="submitting"
+        form-id="fleet-insurance-policy-form"
+        @cancel="close"
+      />
     </template>
   </EntityDialogShell>
 </template>
 
 <style scoped>
-.ins-policy {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.ins-policy__card {
-  border-radius: 0.75rem;
-  background: var(--color-surface-container-lowest);
-  box-shadow: 0 8px 24px color-mix(in srgb, var(--color-on-surface) 2%, transparent);
-  position: relative;
-  padding: 1.15rem 1.2rem 1.2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-}
-
-.ins-policy__card--muted {
-  background: color-mix(
-    in srgb,
-    var(--color-secondary-fixed) 8%,
-    var(--color-surface-container-lowest)
-  );
-}
-
-.ins-policy__accent {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background: var(--color-secondary);
-  border-radius: 0.75rem 0 0 0.75rem;
-}
-
-.ins-policy__card-head {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.ins-policy__card-head-left {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 0;
-}
-
-.ins-policy__card-icon {
-  font-size: 1.25rem;
-  color: var(--color-secondary);
-  font-variation-settings:
-    'FILL' 0,
-    'wght' 500,
-    'GRAD' 0,
-    'opsz' 24;
-}
-
-.ins-policy__card-title {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--color-on-surface);
-}
-
-.ins-policy__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.85rem;
-}
-
 .ins-policy__grid--premium {
   align-items: start;
-}
-
-.ins-policy__field {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.ins-policy__field > span {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-}
-
-.ins-policy__field--full {
-  grid-column: 1 / -1;
-}
-
-.ins-policy__input {
-  width: 100%;
-}
-
-.ins-policy__input--amount {
-  font-family: var(--font-display);
-  font-size: 1.125rem;
-  font-weight: 700;
-}
-
-.ins-policy__textarea {
-  width: 100%;
-  resize: vertical;
-  min-height: 4.5rem;
 }
 
 .ins-policy__plan-panel {
@@ -855,55 +719,6 @@ defineExpose({ showModal, close });
   background: color-mix(in srgb, var(--color-secondary) 10%, transparent);
 }
 
-.ins-policy__footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 0.55rem;
-  width: 100%;
-}
-
-.ins-policy__error {
-  margin: 0;
-  margin-right: auto;
-  flex: 1 1 12rem;
-  font-size: 0.8125rem;
-  color: var(--color-error);
-}
-
-.ins-policy__btn {
-  border: none;
-  border-radius: 0.75rem;
-  padding: 0.56rem 1rem;
-  font-size: 0.8125rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.ins-policy__btn:disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.ins-policy__btn--ghost {
-  color: var(--color-secondary);
-  background: transparent;
-}
-
-.ins-policy__btn--ghost:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--color-secondary-fixed) 35%, transparent);
-}
-
-.ins-policy__btn--primary {
-  color: var(--color-on-secondary);
-  background: linear-gradient(135deg, var(--color-secondary), var(--color-secondary-container));
-}
-
-.ins-policy__btn--primary:hover:not(:disabled) {
-  filter: brightness(1.06);
-}
-
 .ins-policy__sr-only {
   position: absolute;
   width: 1px;
@@ -917,10 +732,6 @@ defineExpose({ showModal, close });
 }
 
 @media (max-width: 640px) {
-  .ins-policy__grid {
-    grid-template-columns: 1fr;
-  }
-
   .ins-policy__schedule-row {
     grid-template-columns: 1fr;
   }
