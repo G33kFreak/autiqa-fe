@@ -1166,29 +1166,29 @@ async function saveComplianceDate() {
         @close="resetAssignDialogState"
       >
         <template #body>
-          <div class="fleet-assign-dialog__body">
-            <label class="fleet-assign-dialog__search">
+          <div class="app-dialog-picker">
+            <label class="app-dialog-picker__search">
               <span
-                class="material-symbols-outlined fleet-assign-dialog__search-icon"
+                class="material-symbols-outlined app-dialog-picker__search-icon"
                 aria-hidden="true"
                 >search</span
               >
               <input
                 :value="assignSearchInput"
-                class="ti-input fleet-assign-dialog__search-input"
+                class="ti-input app-dialog-picker__search-input"
                 type="text"
                 :placeholder="t('appSections.drivers.searchPlaceholder')"
                 @input="onAssignSearchInput"
               >
             </label>
 
-            <div class="fleet-assign-dialog__list">
-              <p v-if="assignSearching" class="fleet-assign-dialog__state">
+            <div class="app-dialog-picker__list">
+              <p v-if="assignSearching" class="app-dialog-picker__state">
                 {{ t('common.loading') }}
               </p>
               <p
                 v-else-if="assignSuggestions.length === 0"
-                class="fleet-assign-dialog__state"
+                class="app-dialog-picker__state"
               >
                 {{ t('appSections.fleet.addVehicleDriverSearchNoResults') }}
               </p>
@@ -1197,14 +1197,14 @@ async function saveComplianceDate() {
                 v-else
                 :key="driver.id"
                 type="button"
-                class="fleet-assign-dialog__item"
+                class="app-dialog-picker__item"
                 :disabled="carsStore.updating"
                 @click="assignDriver(driver)"
               >
-                <span class="fleet-assign-dialog__item-name">
+                <span class="app-dialog-picker__item-name">
                   {{ `${driver.firstName} ${driver.lastName}`.trim() }}
                 </span>
-                <span class="fleet-assign-dialog__item-meta">
+                <span class="app-dialog-picker__item-meta">
                   {{
                     driver.email ||
                     driver.phoneNumber ||
@@ -1228,11 +1228,11 @@ async function saveComplianceDate() {
       >
         <template #body>
           <div
-            class="fleet-expense-dialog__field fleet-expense-dialog__field--full"
+            class="app-dialog-field app-dialog-field--full"
             role="group"
             :aria-labelledby="complianceDateFieldLabelId"
           >
-            <span :id="complianceDateFieldLabelId">{{ complianceDateLabel }}</span>
+            <span :id="complianceDateFieldLabelId" class="app-dialog-field__label app-dialog-field__label--inline">{{ complianceDateLabel }}</span>
             <FleetDateInput
               v-model="complianceDateValue"
               inline
@@ -1241,35 +1241,20 @@ async function saveComplianceDate() {
           </div>
         </template>
         <template #footer>
-          <div class="fleet-expense-dialog__footer">
-            <p
-              v-if="complianceDateError"
-              class="fleet-expense-dialog__error"
-              role="alert"
-            >
-              {{ complianceDateError }}
-            </p>
-            <button
-              type="button"
-              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--ghost"
-              :disabled="carsStore.updating"
-              @click="closeComplianceDateDialog"
-            >
-              {{ t('appSections.fleet.vehicleDetails.cancel') }}
-            </button>
-            <button
-              type="button"
-              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--primary"
-              :disabled="carsStore.updating"
-              @click="saveComplianceDate"
-            >
-              {{
-                carsStore.updating
-                  ? t('common.loading')
-                  : t('appSections.fleet.vehicleDetails.save')
-              }}
-            </button>
-          </div>
+          <AppDialogFooter
+            :error="complianceDateError"
+            :cancel-label="t('appSections.fleet.vehicleDetails.cancel')"
+            :submit-label="
+              carsStore.updating
+                ? t('common.loading')
+                : t('appSections.fleet.vehicleDetails.save')
+            "
+            :cancel-disabled="carsStore.updating"
+            :submit-disabled="carsStore.updating"
+            submit-type="button"
+            @cancel="closeComplianceDateDialog"
+            @submit="saveComplianceDate"
+          />
         </template>
       </EntityDialogShell>
       <AddExpenseDialog
@@ -1303,17 +1288,17 @@ async function saveComplianceDate() {
           />
           <div
             v-if="incomeDialogTotalPages > 1"
-            class="fleet-income-dialog-pager"
+            class="app-dialog-pager"
           >
             <button
               type="button"
-              class="fleet-income-dialog-pager__btn"
+              class="app-btn app-btn--secondary app-btn--compact"
               :disabled="incomeDialogPage <= 1"
               @click="goToPrevIncomeDialogPage"
             >
               {{ t('appSections.fleet.vehicleDetails.incomeDialogPrev') }}
             </button>
-            <span class="fleet-income-dialog-pager__status">
+            <span class="app-dialog-pager__status">
               {{
                 t('appSections.fleet.vehicleDetails.incomeDialogPageStatus', {
                   current: incomeDialogPage,
@@ -1323,7 +1308,7 @@ async function saveComplianceDate() {
             </span>
             <button
               type="button"
-              class="fleet-income-dialog-pager__btn"
+              class="app-btn app-btn--secondary app-btn--compact"
               :disabled="incomeDialogPage >= incomeDialogTotalPages"
               @click="goToNextIncomeDialogPage"
             >
@@ -1341,12 +1326,12 @@ async function saveComplianceDate() {
         @close="closeDeleteIncomeDialog"
       >
         <template #body>
-          <div class="fleet-delete-expense">
-            <p class="fleet-delete-expense__body">
+          <div class="app-dialog-confirm">
+            <p class="app-dialog-confirm__lede">
               {{ t('appSections.fleet.vehicleDetails.deleteIncomeConfirm') }}
             </p>
-            <dl v-if="selectedIncome" class="fleet-delete-expense__details">
-              <div class="fleet-delete-expense__row">
+            <dl v-if="selectedIncome" class="app-dialog-confirm__details">
+              <div class="app-dialog-confirm__row">
                 <dt>
                   {{
                     t(
@@ -1361,7 +1346,7 @@ async function saveComplianceDate() {
                   }}
                 </dd>
               </div>
-              <div class="fleet-delete-expense__row">
+              <div class="app-dialog-confirm__row">
                 <dt>
                   {{ t('appSections.fleet.vehicleDetails.incomeDialog.amount') }}
                 </dt>
@@ -1374,7 +1359,7 @@ async function saveComplianceDate() {
                   }}
                 </dd>
               </div>
-              <div class="fleet-delete-expense__row">
+              <div class="app-dialog-confirm__row">
                 <dt>
                   {{
                     t(
@@ -1384,9 +1369,7 @@ async function saveComplianceDate() {
                 </dt>
                 <dd>{{ formatIncomeOccurredAt(selectedIncome.occurredAt) }}</dd>
               </div>
-              <div
-                class="fleet-delete-expense__row fleet-delete-expense__row--full"
-              >
+              <div class="app-dialog-confirm__row app-dialog-confirm__row--full">
                 <dt>
                   {{ t('appSections.fleet.vehicleDetails.incomeDialog.notes') }}
                 </dt>
@@ -1396,35 +1379,21 @@ async function saveComplianceDate() {
           </div>
         </template>
         <template #footer>
-          <div class="fleet-expense-dialog__footer">
-            <p
-              v-if="deleteIncomeError"
-              class="fleet-expense-dialog__error"
-              role="alert"
-            >
-              {{ deleteIncomeError }}
-            </p>
-            <button
-              type="button"
-              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--ghost"
-              :disabled="incomesStore.deleting"
-              @click="deleteIncomeDialog?.close()"
-            >
-              {{ t('appSections.fleet.vehicleDetails.cancel') }}
-            </button>
-            <button
-              type="button"
-              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--danger"
-              :disabled="incomesStore.deleting"
-              @click="handleConfirmDeleteIncome"
-            >
-              {{
-                incomesStore.deleting
-                  ? t('common.loading')
-                  : t('appSections.fleet.vehicleDetails.deleteExpense')
-              }}
-            </button>
-          </div>
+          <AppDialogFooter
+            :error="deleteIncomeError"
+            :cancel-label="t('appSections.fleet.vehicleDetails.cancel')"
+            :submit-label="
+              incomesStore.deleting
+                ? t('common.loading')
+                : t('appSections.fleet.vehicleDetails.deleteExpense')
+            "
+            :cancel-disabled="incomesStore.deleting"
+            :submit-disabled="incomesStore.deleting"
+            submit-type="button"
+            submit-variant="danger"
+            @cancel="deleteIncomeDialog?.close()"
+            @submit="handleConfirmDeleteIncome"
+          />
         </template>
       </EntityDialogShell>
       <EntityDialogShell
@@ -1438,10 +1407,10 @@ async function saveComplianceDate() {
         <template #body>
           <form
             id="fleet-edit-expense-form"
-            class="fleet-expense-dialog__form"
+            class="auth-form app-dialog-grid app-dialog-grid--2"
             @submit.prevent="handleSaveExpenseEdit"
           >
-            <label class="fleet-expense-dialog__field">
+            <label class="app-dialog-field">
               <span>{{
                 `${t('appSections.fleet.vehicleDetails.expenseDialog.titleField')} *`
               }}</span>
@@ -1457,7 +1426,7 @@ async function saveComplianceDate() {
                 required
               >
             </label>
-            <label class="fleet-expense-dialog__field">
+            <label class="app-dialog-field">
               <span>{{
                 `${t('appSections.fleet.vehicleDetails.expenseDialog.amount')} *`
               }}</span>
@@ -1470,7 +1439,7 @@ async function saveComplianceDate() {
                 required
               >
             </label>
-            <div class="fleet-expense-dialog__field">
+            <div class="app-dialog-field">
               <span>{{
                 `${t('appSections.fleet.vehicleDetails.expenseDialog.occurredAt')} *`
               }}</span>
@@ -1482,15 +1451,13 @@ async function saveComplianceDate() {
                 "
               />
             </div>
-            <label
-              class="fleet-expense-dialog__field fleet-expense-dialog__field--full"
-            >
+            <label class="app-dialog-field app-dialog-field--full">
               <span>{{
                 t('appSections.fleet.vehicleDetails.expenseDialog.notes')
               }}</span>
               <textarea
                 v-model="editExpenseNotes"
-                class="ti-input fleet-expense-dialog__textarea"
+                class="ti-input app-dialog-textarea"
                 rows="3"
                 :placeholder="
                   t(
@@ -1502,35 +1469,19 @@ async function saveComplianceDate() {
           </form>
         </template>
         <template #footer>
-          <div class="fleet-expense-dialog__footer">
-            <p
-              v-if="maintenanceFormError"
-              class="fleet-expense-dialog__error"
-              role="alert"
-            >
-              {{ maintenanceFormError }}
-            </p>
-            <button
-              type="button"
-              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--ghost"
-              :disabled="expensesStore.updating"
-              @click="editExpenseDialog?.close()"
-            >
-              {{ t('appSections.fleet.vehicleDetails.cancel') }}
-            </button>
-            <button
-              form="fleet-edit-expense-form"
-              type="submit"
-              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--primary"
-              :disabled="expensesStore.updating"
-            >
-              {{
-                expensesStore.updating
-                  ? t('common.loading')
-                  : t('appSections.fleet.vehicleDetails.save')
-              }}
-            </button>
-          </div>
+          <AppDialogFooter
+            :error="maintenanceFormError"
+            :cancel-label="t('appSections.fleet.vehicleDetails.cancel')"
+            :submit-label="
+              expensesStore.updating
+                ? t('common.loading')
+                : t('appSections.fleet.vehicleDetails.save')
+            "
+            :cancel-disabled="expensesStore.updating"
+            :submit-disabled="expensesStore.updating"
+            form-id="fleet-edit-expense-form"
+            @cancel="editExpenseDialog?.close()"
+          />
         </template>
       </EntityDialogShell>
       <EntityDialogShell
@@ -1542,12 +1493,12 @@ async function saveComplianceDate() {
         @close="closeDeleteExpenseDialog"
       >
         <template #body>
-          <div class="fleet-delete-expense">
-            <p class="fleet-delete-expense__body">
+          <div class="app-dialog-confirm">
+            <p class="app-dialog-confirm__lede">
               {{ t('appSections.fleet.vehicleDetails.deleteExpenseConfirm') }}
             </p>
-            <dl v-if="selectedExpense" class="fleet-delete-expense__details">
-              <div class="fleet-delete-expense__row">
+            <dl v-if="selectedExpense" class="app-dialog-confirm__details">
+              <div class="app-dialog-confirm__row">
                 <dt>
                   {{
                     t(
@@ -1557,7 +1508,7 @@ async function saveComplianceDate() {
                 </dt>
                 <dd>{{ selectedExpense.title }}</dd>
               </div>
-              <div class="fleet-delete-expense__row">
+              <div class="app-dialog-confirm__row">
                 <dt>
                   {{
                     t('appSections.fleet.vehicleDetails.expenseDialog.amount')
@@ -1565,7 +1516,7 @@ async function saveComplianceDate() {
                 </dt>
                 <dd>{{ formatExpenseAmount(selectedExpense.amount) }}</dd>
               </div>
-              <div class="fleet-delete-expense__row">
+              <div class="app-dialog-confirm__row">
                 <dt>
                   {{
                     t(
@@ -1575,7 +1526,7 @@ async function saveComplianceDate() {
                 </dt>
                 <dd>{{ formatExpenseDate(selectedExpense.occurredAt) }}</dd>
               </div>
-              <div class="fleet-delete-expense__row">
+              <div class="app-dialog-confirm__row">
                 <dt>
                   {{ t('appSections.fleet.vehicleDetails.expenseDialog.type') }}
                 </dt>
@@ -1588,7 +1539,7 @@ async function saveComplianceDate() {
                 </dd>
               </div>
               <div
-                class="fleet-delete-expense__row fleet-delete-expense__row--full"
+                class="app-dialog-confirm__row app-dialog-confirm__row--full"
               >
                 <dt>
                   {{
@@ -1601,35 +1552,21 @@ async function saveComplianceDate() {
           </div>
         </template>
         <template #footer>
-          <div class="fleet-expense-dialog__footer">
-            <p
-              v-if="deleteExpenseError"
-              class="fleet-expense-dialog__error"
-              role="alert"
-            >
-              {{ deleteExpenseError }}
-            </p>
-            <button
-              type="button"
-              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--ghost"
-              :disabled="expensesStore.deleting"
-              @click="deleteExpenseDialog?.close()"
-            >
-              {{ t('appSections.fleet.vehicleDetails.cancel') }}
-            </button>
-            <button
-              type="button"
-              class="fleet-expense-dialog__btn fleet-expense-dialog__btn--danger"
-              :disabled="expensesStore.deleting"
-              @click="handleConfirmDeleteExpense"
-            >
-              {{
-                expensesStore.deleting
-                  ? t('common.loading')
-                  : t('appSections.fleet.vehicleDetails.deleteExpense')
-              }}
-            </button>
-          </div>
+          <AppDialogFooter
+            :error="deleteExpenseError"
+            :cancel-label="t('appSections.fleet.vehicleDetails.cancel')"
+            :submit-label="
+              expensesStore.deleting
+                ? t('common.loading')
+                : t('appSections.fleet.vehicleDetails.deleteExpense')
+            "
+            :cancel-disabled="expensesStore.deleting"
+            :submit-disabled="expensesStore.deleting"
+            submit-type="button"
+            submit-variant="danger"
+            @cancel="deleteExpenseDialog?.close()"
+            @submit="handleConfirmDeleteExpense"
+          />
         </template>
       </EntityDialogShell>
     </template>
@@ -1716,37 +1653,6 @@ async function saveComplianceDate() {
 .fleet-vehicle-page__income-view-all:hover {
   background: var(--color-surface-container-high);
   color: var(--color-on-secondary-container);
-}
-
-.fleet-income-dialog-pager {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  padding-top: 0.25rem;
-}
-
-.fleet-income-dialog-pager__status {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--color-on-surface-variant);
-}
-
-.fleet-income-dialog-pager__btn {
-  border: none;
-  border-radius: 0.65rem;
-  padding: 0.45rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--color-on-surface);
-  background: var(--color-surface-container-high);
-  cursor: pointer;
-}
-
-.fleet-income-dialog-pager__btn:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
 }
 
 .fleet-vehicle-page__grid-aside {
@@ -1922,76 +1828,6 @@ async function saveComplianceDate() {
   }
 }
 
-.fleet-assign-dialog__body {
-  padding: 0.1rem 0;
-}
-
-.fleet-assign-dialog__search {
-  position: relative;
-  display: block;
-}
-
-.fleet-assign-dialog__search-icon {
-  position: absolute;
-  left: 0.7rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--color-outline);
-  font-size: 1rem;
-  pointer-events: none;
-}
-
-.fleet-assign-dialog__search-input {
-  padding-left: 2.2rem;
-}
-
-.fleet-assign-dialog__list {
-  margin-top: 0.7rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  max-height: 16rem;
-  overflow-y: auto;
-}
-
-.fleet-assign-dialog__state {
-  margin: 0;
-  color: var(--color-on-surface-variant);
-  font-size: 0.8125rem;
-}
-
-.fleet-assign-dialog__item {
-  border: none;
-  border-radius: 0.65rem;
-  padding: 0.55rem 0.65rem;
-  background: var(--color-surface-container-low);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.2rem;
-  cursor: pointer;
-}
-
-.fleet-assign-dialog__item:hover:not(:disabled) {
-  background: var(--color-surface-container);
-}
-
-.fleet-assign-dialog__item:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
-}
-
-.fleet-assign-dialog__item-name {
-  font-size: 0.875rem;
-  font-weight: 700;
-  color: var(--color-on-surface);
-}
-
-.fleet-assign-dialog__item-meta {
-  font-size: 0.75rem;
-  color: var(--color-on-surface-variant);
-}
-
 .fleet-load-more-btn {
   align-self: center;
   border: none;
@@ -2007,126 +1843,5 @@ async function saveComplianceDate() {
 .fleet-load-more-btn:disabled {
   opacity: 0.65;
   cursor: not-allowed;
-}
-
-.fleet-expense-dialog__form {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.85rem;
-}
-
-.fleet-expense-dialog__field {
-  min-width: 0;
-}
-
-.fleet-expense-dialog__field > span {
-  display: block;
-  margin-bottom: 0.35rem;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-}
-
-.fleet-expense-dialog__field--full {
-  grid-column: 1 / -1;
-}
-
-.fleet-expense-dialog__textarea {
-  resize: vertical;
-  min-height: 5rem;
-}
-
-.fleet-expense-dialog__footer {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 0.55rem;
-}
-
-.fleet-expense-dialog__error {
-  margin: 0;
-  margin-right: auto;
-  align-self: center;
-  font-size: 0.8125rem;
-  color: var(--color-error);
-}
-
-.fleet-expense-dialog__btn {
-  border: none;
-  border-radius: 0.7rem;
-  padding: 0.56rem 0.9rem;
-  font-size: 0.8rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.fleet-expense-dialog__btn--ghost {
-  color: var(--color-on-surface);
-  background: transparent;
-}
-
-.fleet-expense-dialog__btn--ghost:hover:not(:disabled) {
-  background: var(--color-surface-container-high);
-}
-
-.fleet-expense-dialog__btn--primary {
-  color: var(--color-on-secondary);
-  background: var(--color-secondary);
-}
-
-.fleet-expense-dialog__btn--primary:hover:not(:disabled) {
-  filter: brightness(1.06);
-}
-
-.fleet-expense-dialog__btn--danger {
-  color: color-mix(in srgb, var(--color-error) 90%, white);
-  background: color-mix(in srgb, var(--color-error) 14%, transparent);
-}
-
-.fleet-delete-expense__body {
-  margin: 0;
-  font-size: 0.875rem;
-  color: var(--color-on-surface-variant);
-}
-
-.fleet-delete-expense {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.fleet-delete-expense__details {
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.55rem;
-}
-
-.fleet-delete-expense__row {
-  border-radius: 0.7rem;
-  background: var(--color-surface-container-lowest);
-  padding: 0.6rem 0.7rem;
-}
-
-.fleet-delete-expense__row--full {
-  grid-column: 1 / -1;
-}
-
-.fleet-delete-expense__row dt {
-  margin: 0;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-}
-
-.fleet-delete-expense__row dd {
-  margin: 0.3rem 0 0;
-  font-size: 0.84rem;
-  font-weight: 700;
-  color: var(--color-on-surface);
 }
 </style>

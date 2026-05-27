@@ -244,6 +244,10 @@
     max-width: none;
   }
 
+  .auth-split__lede {
+    margin-bottom: 1.5rem;
+  }
+
   .auth-split__features {
     display: none;
   }

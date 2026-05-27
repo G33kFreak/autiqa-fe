@@ -686,6 +686,21 @@
   }
 }
 
+.app-btn--danger {
+  color: var(--color-on-error-container);
+  background: color-mix(in srgb, var(--color-error) 14%, var(--color-surface-container-high));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .app-btn--danger:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--color-error) 22%, var(--color-surface-container-high));
+  }
+}
+
+.app-btn--danger:focus-visible {
+  outline-color: color-mix(in srgb, var(--color-error) 40%, transparent);
+}
+
 .app-btn--compact {
   padding: 0.5rem 0.875rem;
   font-size: 0.75rem;

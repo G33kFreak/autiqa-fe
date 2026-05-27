@@ -7,42 +7,38 @@
   max-width: 100%;
   padding: 0.75rem 1rem;
   border: none;
-  border-radius: 0.5rem;
+  border-radius: var(--app-radius-control, 0.75rem);
   font-family: var(--font-sans);
   font-size: 0.875rem;
   line-height: 1.4;
   color: var(--color-on-surface);
-  background: var(--color-surface-container-lowest);
-  box-shadow:
-    inset 0 1px 2px rgba(25, 28, 30, 0.05),
-    0 0 0 1px color-mix(in srgb, var(--color-outline-variant) 22%, transparent);
+  background: var(--color-surface-container-highest);
   transition:
-    box-shadow var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
-    background var(--app-duration-fast, 160ms) var(--app-ease-out, ease);
+    box-shadow var(--app-duration-fast, 160ms) var(--app-ease-out, cubic-bezier(0.23, 1, 0.32, 1)),
+    background var(--app-duration-fast, 160ms) var(--app-ease-out, cubic-bezier(0.23, 1, 0.32, 1));
 }
 
 .ti-input::placeholder {
   color: color-mix(in srgb, var(--color-on-surface-variant) 48%, transparent);
 }
 
-.ti-input:hover:not(:focus):not(:disabled) {
-  box-shadow:
-    inset 0 1px 2px rgba(25, 28, 30, 0.06),
-    0 0 0 1px color-mix(in srgb, var(--color-outline-variant) 32%, transparent);
+@media (hover: hover) and (pointer: fine) {
+  .ti-input:hover:not(:focus):not(:disabled) {
+    background: color-mix(
+      in srgb,
+      var(--color-surface-container-highest) 88%,
+      var(--color-surface-container-lowest)
+    );
+  }
 }
 
 .ti-input:focus {
   outline: none;
   background: var(--color-surface-container-lowest);
-  box-shadow:
-    inset 0 1px 3px rgba(2, 102, 255, 0.08),
-    0 0 0 2px color-mix(in srgb, var(--color-secondary) 32%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-secondary) 30%, transparent);
 }
 
 .ti-input:disabled {
   cursor: not-allowed;
   opacity: 0.55;
-  box-shadow:
-    inset 0 1px 2px rgba(25, 28, 30, 0.03),
-    0 0 0 1px color-mix(in srgb, var(--color-outline-variant) 12%, transparent);
 }

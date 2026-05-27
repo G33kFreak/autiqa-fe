@@ -8,12 +8,14 @@ withDefaults(
     submitDisabled?: boolean;
     formId?: string;
     submitType?: 'button' | 'submit';
+    submitVariant?: 'primary' | 'danger';
   }>(),
   {
     error: null,
     cancelDisabled: false,
     submitDisabled: false,
     submitType: 'submit',
+    submitVariant: 'primary',
   },
 );
 
@@ -38,7 +40,10 @@ const emit = defineEmits<{
     </button>
     <button
       :type="submitType"
-      class="app-btn app-btn--primary"
+      :class="[
+        'app-btn',
+        submitVariant === 'danger' ? 'app-btn--danger' : 'app-btn--primary',
+      ]"
       :form="formId"
       :disabled="submitDisabled"
       @click="submitType === 'button' ? emit('submit') : undefined"

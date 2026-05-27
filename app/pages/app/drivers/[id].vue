@@ -248,28 +248,29 @@ onMounted(async () => {
         :lead="''"
       >
         <template #body>
-          <div class="driver-assign-dialog__body">
-            <p v-if="assignCarsLoading" class="driver-assign-dialog__state">{{ t('common.loading') }}</p>
-            <p v-else-if="assignCars.length === 0" class="driver-assign-dialog__state">
+          <div class="app-dialog-picker">
+            <p v-if="assignCarsLoading" class="app-dialog-picker__state">{{ t('common.loading') }}</p>
+            <p v-else-if="assignCars.length === 0" class="app-dialog-picker__state">
               {{ t('appSections.drivers.details.assignDialog.noCars') }}
             </p>
-            <button
-              v-for="car in assignCars"
-              v-else
-              :key="car.id"
-              type="button"
-              class="driver-assign-dialog__item"
-              :disabled="carsStore.updating || driver?.carId === car.id"
-              @click="assignCarToDriver(car)"
-            >
-              <span class="driver-assign-dialog__item-name">{{ car.model || t('appSections.drivers.details.assignDialog.unnamedCar') }}</span>
-              <span class="driver-assign-dialog__item-meta">
-                <span class="driver-assign-dialog__chip">
-                  {{ car.plateNumber || t('appSections.drivers.details.assignDialog.noPlate') }}
+            <div v-else class="app-dialog-picker__list">
+              <button
+                v-for="car in assignCars"
+                :key="car.id"
+                type="button"
+                class="app-dialog-picker__item"
+                :disabled="carsStore.updating || driver?.carId === car.id"
+                @click="assignCarToDriver(car)"
+              >
+                <span class="app-dialog-picker__item-name">{{ car.model || t('appSections.drivers.details.assignDialog.unnamedCar') }}</span>
+                <span class="app-dialog-picker__item-meta">
+                  <span class="app-dialog-picker__chip">
+                    {{ car.plateNumber || t('appSections.drivers.details.assignDialog.noPlate') }}
+                  </span>
+                  <span v-if="driver?.carId === car.id">{{ t('appSections.drivers.details.assignDialog.currentlyAssigned') }}</span>
                 </span>
-                <span v-if="driver?.carId === car.id">{{ t('appSections.drivers.details.assignDialog.currentlyAssigned') }}</span>
-              </span>
-            </button>
+              </button>
+            </div>
           </div>
         </template>
       </EntityDialogShell>
@@ -323,63 +324,6 @@ onMounted(async () => {
 .driver-details-page__not-found p {
   margin: 0;
   color: var(--color-on-surface-variant);
-}
-
-.driver-assign-dialog__body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-}
-
-.driver-assign-dialog__state {
-  margin: 0;
-  color: var(--color-on-surface-variant);
-  font-size: 0.8125rem;
-}
-
-.driver-assign-dialog__item {
-  border: none;
-  border-radius: 0.75rem;
-  padding: 0.62rem 0.7rem;
-  background: var(--color-surface-container-low);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.35rem;
-  cursor: pointer;
-  transition: background-color 0.18s ease;
-}
-
-.driver-assign-dialog__item:hover:not(:disabled) {
-  background: var(--color-surface-container);
-}
-
-.driver-assign-dialog__item:disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.driver-assign-dialog__item-name {
-  color: var(--color-on-surface);
-  font-size: 0.875rem;
-  font-weight: 700;
-}
-
-.driver-assign-dialog__item-meta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  color: var(--color-on-surface-variant);
-  font-size: 0.75rem;
-}
-
-.driver-assign-dialog__chip {
-  border-radius: 8px;
-  padding: 0.2rem 0.5rem;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  background: var(--color-surface-container-high);
-  color: var(--color-on-surface);
 }
 
 @media (max-width: 900px) {
