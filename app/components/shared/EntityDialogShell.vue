@@ -3,6 +3,8 @@ const props = withDefaults(
   defineProps<{
     title: string;
     titleId: string;
+    /** Softer title for confirmation prompts (not display headline weight). */
+    titleVariant?: 'headline' | 'prompt';
     lead?: string;
     width?: string;
     maxHeight?: string;
@@ -10,6 +12,7 @@ const props = withDefaults(
     bodyMaxHeight?: string;
   }>(),
   {
+    titleVariant: 'headline',
     lead: '',
     width: 'min(52rem, calc(100vw - 2rem))',
     maxHeight: 'min(92dvh, 58rem)',
@@ -83,7 +86,15 @@ defineExpose({ showModal, close });
     <div class="entity-dialog-shell__shell">
       <header class="entity-dialog-shell__header">
         <div class="entity-dialog-shell__intro">
-          <h2 :id="titleId" class="entity-dialog-shell__title">{{ title }}</h2>
+          <h2
+            :id="titleId"
+            class="entity-dialog-shell__title"
+            :class="{
+              'entity-dialog-shell__title--prompt': titleVariant === 'prompt',
+            }"
+          >
+            {{ title }}
+          </h2>
           <p v-if="lead" class="entity-dialog-shell__lead">{{ lead }}</p>
         </div>
         <button
@@ -169,6 +180,15 @@ defineExpose({ showModal, close });
   letter-spacing: -0.03em;
   color: var(--color-on-surface);
   line-height: 1.1;
+}
+
+.entity-dialog-shell__title--prompt {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.45;
+  color: var(--color-on-surface);
 }
 
 .entity-dialog-shell__lead {

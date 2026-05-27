@@ -462,13 +462,6 @@ label.app-dialog-field > span:first-child {
   gap: 0.85rem;
 }
 
-.app-dialog-confirm__lede {
-  margin: 0;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  color: var(--color-on-surface-variant);
-}
-
 .app-dialog-confirm__details {
   margin: 0;
   display: grid;

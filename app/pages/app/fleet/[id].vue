@@ -1320,16 +1320,13 @@ async function saveComplianceDate() {
       <EntityDialogShell
         ref="deleteIncomeDialog"
         title-id="fleet-delete-income-dialog-title"
-        :title="t('appSections.fleet.vehicleDetails.deleteIncomeTitle')"
-        :lead="t('appSections.fleet.vehicleDetails.deleteIncomeConfirm')"
+        :title="t('appSections.fleet.vehicleDetails.deleteEntryConfirm')"
+        title-variant="prompt"
         width="min(30rem, calc(100vw - 2rem))"
         @close="closeDeleteIncomeDialog"
       >
         <template #body>
           <div class="app-dialog-confirm">
-            <p class="app-dialog-confirm__lede">
-              {{ t('appSections.fleet.vehicleDetails.deleteIncomeConfirm') }}
-            </p>
             <dl v-if="selectedIncome" class="app-dialog-confirm__details">
               <div class="app-dialog-confirm__row">
                 <dt>
@@ -1487,16 +1484,13 @@ async function saveComplianceDate() {
       <EntityDialogShell
         ref="deleteExpenseDialog"
         title-id="fleet-delete-expense-dialog-title"
-        :title="t('appSections.fleet.vehicleDetails.deleteExpenseTitle')"
-        :lead="t('appSections.fleet.vehicleDetails.deleteExpenseConfirm')"
+        :title="t('appSections.fleet.vehicleDetails.deleteEntryConfirm')"
+        title-variant="prompt"
         width="min(30rem, calc(100vw - 2rem))"
         @close="closeDeleteExpenseDialog"
       >
         <template #body>
           <div class="app-dialog-confirm">
-            <p class="app-dialog-confirm__lede">
-              {{ t('appSections.fleet.vehicleDetails.deleteExpenseConfirm') }}
-            </p>
             <dl v-if="selectedExpense" class="app-dialog-confirm__details">
               <div class="app-dialog-confirm__row">
                 <dt>
