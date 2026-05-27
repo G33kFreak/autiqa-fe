@@ -48,7 +48,7 @@ function openAddVehicle() {
 </script>
 
 <template>
-  <div class="fleet-page">
+  <div class="fleet-page app-page">
     <template v-if="!showEmpty && !showListError">
       <h1 class="app-page__title">{{ t('appSections.fleet.title') }}</h1>
       <p class="app-page__lead">{{ t('appSections.fleet.lead') }}</p>

@@ -54,16 +54,16 @@ function openCarDetails(carId: string) {
       </p>
       <button
         type="button"
-        class="fleet-page__cta fleet-page__cta--primary fleet-page__summary-add"
+        class="app-btn app-btn--primary app-btn--compact fleet-page__summary-add"
         @click="emit('addVehicle')"
       >
-        <span class="material-symbols-outlined fleet-page__cta-icon" aria-hidden="true">add</span>
+        <span class="material-symbols-outlined app-btn__icon" aria-hidden="true">add</span>
         {{ t('appSections.fleet.addVehicleCta') }}
       </button>
     </div>
 
-    <div class="fleet-page__table-wrap">
-      <table class="fleet-page__table">
+    <div class="app-table-shell fleet-page__table-wrap">
+      <table class="app-table fleet-page__table">
         <thead>
           <tr>
             <th>{{ t('appSections.fleet.table.vehicleUnit') }}</th>
@@ -77,7 +77,7 @@ function openCarDetails(carId: string) {
           <tr
             v-for="car in props.cars"
             :key="car.id"
-            class="fleet-page__row-clickable"
+            class="app-table__row-clickable fleet-page__row-clickable"
             role="link"
             tabindex="0"
             @click="openCarDetails(car.id)"
@@ -165,93 +165,8 @@ function openCarDetails(carId: string) {
   gap: 0.75rem;
 }
 
-.fleet-page__cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.5rem;
-  border: none;
-  border-radius: 0.75rem;
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: filter 0.18s ease, background 0.18s ease;
-}
-
-.fleet-page__cta--primary {
-  color: var(--color-on-secondary);
-  background: var(--color-secondary);
-}
-
-.fleet-page__cta--primary:hover:not(:disabled) {
-  filter: brightness(1.06);
-}
-
-.fleet-page__cta:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-secondary) 35%, transparent);
-  outline-offset: 3px;
-}
-
-.fleet-page__cta-icon {
-  font-size: 1.25rem;
-}
-
-.fleet-page__cta--primary .fleet-page__cta-icon {
-  font-variation-settings:
-    'FILL' 1,
-    'wght' 500,
-    'GRAD' 0,
-    'opsz' 24;
-}
-
-.fleet-page__summary-add {
-  padding: 0.625rem 1rem;
-  font-size: 0.8125rem;
-}
-
-.fleet-page__table-wrap {
-  overflow-x: auto;
-  border-radius: 0.875rem;
-  background: var(--color-surface-container-low);
-  box-shadow: var(--shadow-ambient);
-}
-
 .fleet-page__table {
-  width: 100%;
-  border-collapse: collapse;
   min-width: 52rem;
-}
-
-.fleet-page__table thead th {
-  padding: 0.9rem 1rem;
-  text-align: left;
-  font-family: var(--font-sans);
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-  background: var(--color-surface-container);
-}
-
-.fleet-page__table tbody tr {
-  background: var(--color-surface-container-lowest);
-  transition: background 0.18s ease;
-}
-
-.fleet-page__table tbody tr:hover {
-  background: var(--color-surface-container);
-}
-
-.fleet-page__row-clickable {
-  cursor: pointer;
-}
-
-.fleet-page__table tbody td {
-  padding: 1rem;
-  vertical-align: middle;
 }
 
 .fleet-page__vehicle {

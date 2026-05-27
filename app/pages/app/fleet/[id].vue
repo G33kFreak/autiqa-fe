@@ -949,7 +949,7 @@ async function saveComplianceDate() {
 </script>
 
 <template>
-  <section class="fleet-vehicle-page">
+  <section class="fleet-vehicle-page app-page">
     <template v-if="detailsLoading && !detailsResolved">
       <div class="fleet-vehicle-page__hero fleet-vehicle-page__hero--split">
         <div class="fleet-skeleton fleet-skeleton--header" />

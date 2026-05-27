@@ -219,7 +219,7 @@ function fleetCarPath(carId: string) {
     :text="t('appSections.dashboard.loading')"
     min-height="min(70vh, 28rem)"
   />
-  <div v-else class="dash">
+  <div v-else class="dash app-page">
     <h1 class="app-page__title">{{ t('appSections.dashboard.title') }}</h1>
 
     <section class="dash__fleet" :aria-label="t('appSections.dashboard.fleetStats.title')">
@@ -228,7 +228,6 @@ function fleetCarPath(carId: string) {
       </p>
       <div v-if="fleetStats.totalCars !== null" class="dash__fleet-cards">
         <article class="dash__fleet-card dash__fleet-card--vehicles">
-          <div class="dash__fleet-card-accent" aria-hidden="true" />
           <div class="dash__fleet-card-inner">
             <div class="dash__fleet-card-head">
               <div class="dash__fleet-card-head-main">
@@ -259,7 +258,6 @@ function fleetCarPath(carId: string) {
         </article>
 
         <article class="dash__fleet-card dash__fleet-card--drivers">
-          <div class="dash__fleet-card-accent dash__fleet-card-accent--drivers" aria-hidden="true" />
           <div class="dash__fleet-card-inner">
             <div class="dash__fleet-card-head">
               <div class="dash__fleet-card-head-main">
@@ -321,8 +319,8 @@ function fleetCarPath(carId: string) {
                     <p v-if="item.car.plateNumber" class="dash__plate-chip">{{ item.car.plateNumber }}</p>
                   </div>
                   <span
-                    class="dash__alerts-chip"
-                    :class="`dash__alerts-chip--${badge.tone}`"
+                    class="app-chip"
+                    :class="`app-chip--${badge.tone}`"
                   >
                     <span
                       v-if="inspectionChipIcon(badge.tone)"
@@ -383,8 +381,8 @@ function fleetCarPath(carId: string) {
                     <p v-if="item.car.plateNumber" class="dash__plate-chip">{{ item.car.plateNumber }}</p>
                   </div>
                   <span
-                    class="dash__alerts-chip"
-                    :class="`dash__alerts-chip--${badge.tone}`"
+                    class="app-chip"
+                    :class="`app-chip--${badge.tone}`"
                   >
                     <span
                       v-if="inspectionChipIcon(badge.tone)"
@@ -440,8 +438,8 @@ function fleetCarPath(carId: string) {
                     <p v-if="car.plateNumber" class="dash__plate-chip">{{ car.plateNumber }}</p>
                   </div>
                   <span
-                    class="dash__alerts-chip"
-                    :class="`dash__alerts-chip--${badge.tone}`"
+                    class="app-chip"
+                    :class="`app-chip--${badge.tone}`"
                   >
                     <span
                       v-if="inspectionChipIcon(badge.tone)"
@@ -512,17 +510,30 @@ function fleetCarPath(carId: string) {
 
 .dash__fleet-card {
   position: relative;
-  border-radius: 1rem;
+  border-radius: var(--app-radius-card, 1rem);
   overflow: hidden;
   min-width: 0;
   background: var(--color-surface-container-low);
+  box-shadow: var(--shadow-ambient);
+  transition:
+    transform var(--app-duration-ui, 220ms) var(--app-ease-out, ease),
+    box-shadow var(--app-duration-ui, 220ms) var(--app-ease-out, ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .dash__fleet-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      var(--shadow-ambient),
+      0 10px 28px color-mix(in srgb, var(--color-secondary) 10%, transparent);
+  }
 }
 
 .dash__fleet-card--vehicles {
   background: linear-gradient(
     155deg,
-    color-mix(in srgb, var(--color-secondary) 14%, var(--color-surface-container-low)) 0%,
-    var(--color-surface-container-low) 48%,
+    color-mix(in srgb, var(--color-secondary) 11%, var(--color-surface-container-low)) 0%,
+    var(--color-surface-container-low) 52%,
     var(--color-surface-container-low) 100%
   );
 }
@@ -530,37 +541,15 @@ function fleetCarPath(carId: string) {
 .dash__fleet-card--drivers {
   background: linear-gradient(
     155deg,
-    color-mix(in srgb, var(--color-tertiary, #2ba673) 12%, var(--color-surface-container-low)) 0%,
-    var(--color-surface-container-low) 50%,
+    color-mix(in srgb, var(--color-success) 10%, var(--color-surface-container-low)) 0%,
+    var(--color-surface-container-low) 52%,
     var(--color-surface-container-low) 100%
-  );
-}
-
-.dash__fleet-card-accent {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  border-radius: 4px 0 0 4px;
-  background: linear-gradient(
-    180deg,
-    var(--color-secondary) 0%,
-    color-mix(in srgb, var(--color-secondary-container) 70%, var(--color-secondary)) 100%
-  );
-}
-
-.dash__fleet-card-accent--drivers {
-  background: linear-gradient(
-    180deg,
-    color-mix(in srgb, var(--color-tertiary, #2ba673) 88%, var(--color-secondary) 12%) 0%,
-    color-mix(in srgb, var(--color-tertiary, #2ba673) 55%, var(--color-on-surface)) 100%
   );
 }
 
 .dash__fleet-card-inner {
   position: relative;
-  padding: 1.15rem 1.15rem 1.15rem 1.35rem;
+  padding: 1.15rem;
   display: grid;
   gap: 1.1rem;
 }
@@ -593,8 +582,12 @@ function fleetCarPath(carId: string) {
   color: var(--color-secondary);
   background: color-mix(in srgb, var(--color-secondary) 12%, var(--color-surface-container-lowest));
   transition:
-    background-color 0.18s ease,
-    transform 0.18s ease;
+    background-color var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
+    transform var(--app-duration-fast, 160ms) var(--app-ease-out, ease);
+}
+
+.dash__fleet-card-add:active {
+  transform: scale(0.94);
 }
 
 .dash__fleet-card-add .material-symbols-outlined {
@@ -611,12 +604,12 @@ function fleetCarPath(carId: string) {
 }
 
 .dash__fleet-card-add--drivers {
-  color: color-mix(in srgb, var(--color-tertiary, #2ba673) 88%, var(--color-on-surface));
-  background: color-mix(in srgb, var(--color-tertiary, #2ba673) 14%, var(--color-surface-container-lowest));
+  color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 14%, var(--color-surface-container-lowest));
 }
 
 .dash__fleet-card-add--drivers:hover {
-  background: color-mix(in srgb, var(--color-tertiary, #2ba673) 22%, var(--color-surface-container-lowest));
+  background: color-mix(in srgb, var(--color-success) 22%, var(--color-surface-container-lowest));
 }
 
 .dash__fleet-card-icon {
@@ -625,7 +618,7 @@ function fleetCarPath(carId: string) {
 }
 
 .dash__fleet-card--drivers .dash__fleet-card-icon {
-  color: color-mix(in srgb, var(--color-tertiary, #2ba673) 78%, var(--color-on-surface));
+  color: var(--color-success);
 }
 
 .dash__fleet-card-title {
@@ -673,7 +666,7 @@ function fleetCarPath(carId: string) {
 }
 
 .dash__fleet-card--drivers .dash__fleet-metric-value:not(.dash__fleet-metric-value--muted) {
-  color: color-mix(in srgb, var(--color-tertiary, #2ba673) 88%, var(--color-on-surface));
+  color: var(--color-success);
 }
 
 .dash__fleet-metric-value--muted {
@@ -682,12 +675,12 @@ function fleetCarPath(carId: string) {
 }
 
 .dash__fleet-metric-divider {
-  width: 1px;
+  width: 2px;
   align-self: stretch;
   min-height: 2.75rem;
   margin: auto 0;
-  background: color-mix(in srgb, var(--color-outline-variant) 22%, transparent);
-  border-radius: 1px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-surface-container-high) 85%, transparent);
 }
 
 .dash__alerts {
@@ -719,8 +712,8 @@ function fleetCarPath(carId: string) {
   margin-bottom: 0.55rem;
   padding: 0.45rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-tertiary, #2ba673) 10%, transparent);
-  color: color-mix(in srgb, var(--color-tertiary, #2ba673) 80%, white 6%);
+  background: color-mix(in srgb, var(--color-success) 12%, transparent);
+  color: var(--color-success);
 }
 
 .dash__success-title {
@@ -760,12 +753,15 @@ function fleetCarPath(carId: string) {
   color: inherit;
   display: block;
   transition:
-    background-color 0.18s ease,
-    transform 0.18s ease;
+    background-color var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
+    transform var(--app-duration-fast, 160ms) var(--app-ease-out, ease);
 }
 
-.dash__alerts-item--link:hover {
-  background: color-mix(in srgb, var(--color-secondary) 12%, var(--color-surface-container-lowest));
+@media (hover: hover) and (pointer: fine) {
+  .dash__alerts-item--link:hover {
+    background: color-mix(in srgb, var(--color-secondary) 10%, var(--color-surface-container-lowest));
+    transform: translateX(2px);
+  }
 }
 
 .dash__alerts-item--link:focus-visible {
@@ -830,39 +826,8 @@ function fleetCarPath(carId: string) {
   white-space: nowrap;
 }
 
-.dash__alerts-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  border-radius: 999px;
-  padding: 0.16rem 0.5rem;
-  font-size: 0.68rem;
-  font-weight: 800;
-  white-space: nowrap;
-}
-
 .dash__alerts-chip-icon {
   font-size: 0.82rem;
-}
-
-.dash__alerts-chip--danger {
-  background: color-mix(in srgb, var(--color-error-container) 92%, white 4%);
-  color: var(--color-on-error-container);
-}
-
-.dash__alerts-chip--warning {
-  background: color-mix(in srgb, #ffb020 24%, var(--color-surface-container-high));
-  color: color-mix(in srgb, #8a5b00 76%, black 10%);
-}
-
-.dash__alerts-chip--success {
-  background: color-mix(in srgb, var(--color-tertiary, #2ba673) 16%, var(--color-surface-container-high));
-  color: color-mix(in srgb, var(--color-tertiary, #2ba673) 88%, black 6%);
-}
-
-.dash__alerts-chip--neutral {
-  background: var(--color-surface-container-high);
-  color: var(--color-on-surface-variant);
 }
 
 .dash__alerts-state {

@@ -278,7 +278,7 @@ const showRecentIncomesEmpty = computed(
 </script>
 
 <template>
-  <div class="finance-page" :class="{ 'finance-page--loading': financesStore.loading }">
+  <div class="finance-page app-page" :class="{ 'finance-page--loading': financesStore.loading }">
     <h1 class="app-page__title">{{ t('appSections.finance.title') }}</h1>
     <p class="app-page__lead">{{ t('appSections.finance.lead') }}</p>
 
@@ -465,14 +465,18 @@ const showRecentIncomesEmpty = computed(
 
 .finance-page__card {
   background: var(--color-surface-container-low);
-  border-radius: 1rem;
-  padding: 0.85rem;
-  transition: transform 180ms ease, box-shadow 180ms ease;
+  border-radius: var(--app-radius-card, 1rem);
+  padding: 1rem;
+  transition:
+    transform var(--app-duration-ui, 220ms) var(--app-ease-out, ease),
+    box-shadow var(--app-duration-ui, 220ms) var(--app-ease-out, ease);
 }
 
-.finance-page__card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-ambient);
+@media (hover: hover) and (pointer: fine) {
+  .finance-page__card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-ambient);
+  }
 }
 
 .finance-page__card--wide {
@@ -495,8 +499,9 @@ const showRecentIncomesEmpty = computed(
 
 .finance-page__table-card {
   background: var(--color-surface-container-low);
-  border-radius: 1rem;
-  padding: 0.95rem;
+  border-radius: var(--app-radius-card, 1rem);
+  padding: 1rem;
+  box-shadow: var(--shadow-ambient);
 }
 
 .finance-page__table {
@@ -537,7 +542,7 @@ const showRecentIncomesEmpty = computed(
 }
 
 .finance-page__table-row-earning {
-  color: #0f8a46 !important;
+  color: var(--color-success) !important;
 }
 
 @media (max-width: 75rem) {

@@ -52,10 +52,9 @@ const initials = computed(() => {
   justify-content: space-between;
   min-height: 4rem;
   padding: 0 1rem 0 1rem;
-  background: color-mix(in srgb, var(--color-surface-container-lowest) 82%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-outline-variant) 12%, transparent);
+  background: color-mix(in srgb, var(--color-surface-container-lowest) 88%, var(--color-surface) 12%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 @media (min-width: 768px) {
@@ -83,13 +82,20 @@ const initials = computed(() => {
   color: var(--color-on-surface-variant);
   cursor: pointer;
   transition:
-    background 0.15s ease,
-    color 0.15s ease;
+    background var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
+    color var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
+    transform var(--app-duration-fast, 160ms) var(--app-ease-out, ease);
 }
 
-.app-header__menu:hover {
-  color: var(--color-on-surface);
-  background: color-mix(in srgb, var(--color-surface-container) 50%, transparent);
+.app-header__menu:active {
+  transform: scale(0.94);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .app-header__menu:hover {
+    color: var(--color-on-surface);
+    background: color-mix(in srgb, var(--color-surface-container) 55%, transparent);
+  }
 }
 
 .app-header__menu:focus-visible {
@@ -145,8 +151,8 @@ const initials = computed(() => {
 
 .app-header__avatar {
   flex-shrink: 0;
-  width: 2.25rem;
-  height: 2.25rem;
+  width: 2.35rem;
+  height: 2.35rem;
   border-radius: 999px;
   display: flex;
   align-items: center;
@@ -156,7 +162,13 @@ const initials = computed(() => {
   font-weight: 800;
   letter-spacing: 0.02em;
   color: var(--color-on-secondary-fixed-variant);
-  background: var(--color-secondary-fixed);
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-secondary-fixed) 40%, transparent);
+  background: linear-gradient(
+    145deg,
+    var(--color-secondary-fixed) 0%,
+    color-mix(in srgb, var(--color-secondary-fixed) 70%, var(--color-surface-container-lowest)) 100%
+  );
+  box-shadow:
+    0 0 0 2px color-mix(in srgb, var(--color-secondary) 14%, transparent),
+    var(--shadow-ambient);
 }
 </style>

@@ -54,11 +54,11 @@ const emit = defineEmits<{
           <button
             v-if="primaryCtaLabel"
             type="button"
-            class="page-empty-state__cta page-empty-state__cta--primary"
+            class="app-btn app-btn--primary page-empty-state__cta"
             :aria-label="primaryAriaLabel || primaryCtaLabel"
             @click="emit('primary')"
           >
-            <span class="material-symbols-outlined page-empty-state__cta-icon" aria-hidden="true">
+            <span class="material-symbols-outlined app-btn__icon" aria-hidden="true">
               {{ props.primaryCtaIcon }}
             </span>
             {{ props.primaryCtaLabel }}
@@ -66,13 +66,13 @@ const emit = defineEmits<{
           <button
             v-if="secondaryCtaLabel"
             type="button"
-            class="page-empty-state__cta page-empty-state__cta--secondary"
+            class="app-btn app-btn--secondary page-empty-state__cta"
             :disabled="secondaryDisabled"
             :title="secondaryTitle"
             :aria-label="secondaryAriaLabel || secondaryCtaLabel"
             @click="emit('secondary')"
           >
-            <span class="material-symbols-outlined page-empty-state__cta-icon" aria-hidden="true">
+            <span class="material-symbols-outlined app-btn__icon" aria-hidden="true">
               {{ props.secondaryCtaIcon }}
             </span>
             {{ props.secondaryCtaLabel }}
@@ -160,7 +160,7 @@ const emit = defineEmits<{
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-secondary);
+  background: var(--app-gradient-cta);
   color: var(--color-on-secondary);
   box-shadow: 0 0 0 4px var(--color-surface-container-lowest);
 }
@@ -219,49 +219,12 @@ const emit = defineEmits<{
 }
 
 .page-empty-state__cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.5rem;
-  border: none;
-  border-radius: 0.75rem;
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: filter 0.18s ease, background 0.18s ease;
+  min-width: 12rem;
 }
 
-.page-empty-state__cta--primary {
-  color: var(--color-on-secondary);
-  background: var(--color-secondary);
-}
-
-.page-empty-state__cta--primary:hover:not(:disabled) {
-  filter: brightness(1.06);
-}
-
-.page-empty-state__cta--secondary {
-  color: var(--color-on-surface);
-  background: var(--color-surface-container-high);
-}
-
-.page-empty-state__cta--secondary:hover:not(:disabled) {
-  background: var(--color-surface-container-highest);
-}
-
-.page-empty-state__cta--secondary:disabled {
+.page-empty-state__cta:disabled {
   cursor: not-allowed;
   opacity: 0.55;
-}
-
-.page-empty-state__cta:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--color-secondary) 35%, transparent);
-  outline-offset: 3px;
-}
-
-.page-empty-state__cta-icon {
-  font-size: 1.25rem;
+  transform: none;
 }
 </style>

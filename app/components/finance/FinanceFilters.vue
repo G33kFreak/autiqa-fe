@@ -56,8 +56,9 @@ const periods = ['currentWeek', 'currentMonth', 'currentYear', 'customRange'] as
   gap: 0.75rem;
   align-items: end;
   background: var(--color-surface-container-low);
-  border-radius: 1rem;
-  padding: 0.8rem;
+  border-radius: var(--app-radius-card, 1rem);
+  padding: 1rem;
+  box-shadow: var(--shadow-ambient);
 }
 
 .finance-filters__periods {
@@ -79,12 +80,20 @@ const periods = ['currentWeek', 'currentMonth', 'currentYear', 'customRange'] as
   font-size: 0.78rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 180ms ease;
+  transition:
+    background var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
+    color var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
+    transform var(--app-duration-fast, 160ms) var(--app-ease-out, ease);
+}
+
+.finance-filters__period-btn:active:not([aria-disabled='true']) {
+  transform: scale(0.97);
 }
 
 .finance-filters__period-btn--active {
-  background: var(--color-secondary);
+  background: var(--app-gradient-cta);
   color: var(--color-on-secondary);
+  box-shadow: 0 2px 10px color-mix(in srgb, var(--color-secondary) 18%, transparent);
 }
 
 .finance-filters__period-btn[aria-disabled='true'] {
@@ -96,7 +105,7 @@ const periods = ['currentWeek', 'currentMonth', 'currentYear', 'customRange'] as
 
 .finance-filters__period-btn[aria-disabled='true'].finance-filters__period-btn--active {
   color: var(--color-on-secondary);
-  background: var(--color-secondary);
+  background: var(--app-gradient-cta);
   font-weight: 700;
 }
 

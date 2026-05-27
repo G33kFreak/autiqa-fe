@@ -31,19 +31,26 @@ withDefaults(defineProps<{
   justify-content: center;
   gap: 1rem;
   padding: 2rem 1rem;
-  border-radius: 0.75rem;
+  border-radius: var(--app-radius-card, 1rem);
   background: var(--color-surface-container-low);
+  box-shadow: var(--shadow-ambient);
 }
 
 .page-state-loader__spinner {
   font-size: 2rem;
-  color: var(--color-secondary-container);
-  animation: page-state-loader-spin 0.85s linear infinite;
+  color: var(--color-secondary);
+  animation: page-state-loader-spin 0.7s linear infinite;
 }
 
 @keyframes page-state-loader-spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-state-loader__spinner {
+    animation-duration: 1.4s;
   }
 }
 

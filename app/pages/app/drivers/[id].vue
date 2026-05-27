@@ -184,7 +184,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <section class="driver-details-page">
+  <section class="driver-details-page app-page">
     <div v-if="detailsLoading && !detailsResolved" class="driver-details-page__loading">
       <DriverDetailsSkeleton />
     </div>

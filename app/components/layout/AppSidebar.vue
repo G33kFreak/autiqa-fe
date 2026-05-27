@@ -100,9 +100,16 @@ function onNavClick() {
   height: 100vh;
   background: var(--color-surface-container-low);
   transform: translateX(-100%);
+  box-shadow: 4px 0 24px color-mix(in srgb, var(--color-inverse-surface) 6%, transparent);
   transition:
-    transform 0.22s ease,
-    width 0.22s ease;
+    transform var(--app-duration-ui, 220ms) var(--app-ease-out, ease),
+    width var(--app-duration-ui, 220ms) var(--app-ease-out, ease);
+}
+
+@media (min-width: 768px) {
+  .app-sidebar {
+    box-shadow: none;
+  }
 }
 
 .app-sidebar--open {
@@ -134,14 +141,19 @@ function onNavClick() {
   color: var(--color-on-surface-variant);
   cursor: pointer;
   transition:
-    background 0.15s ease,
-    color 0.15s ease;
+    background var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
+    color var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
+    transform var(--app-duration-fast, 160ms) var(--app-ease-out, ease);
 }
 
 @media (min-width: 768px) {
   .app-sidebar__collapse {
     display: flex;
   }
+}
+
+.app-sidebar__collapse:active {
+  transform: scale(0.94);
 }
 
 .app-sidebar__collapse:hover {
@@ -242,34 +254,35 @@ function onNavClick() {
   align-items: center;
   gap: 0.75rem;
   padding: 0.625rem 0.75rem;
-  border-radius: 0;
-  border-right: 4px solid transparent;
-  font-family: var(--font-display);
-  font-size: 0.875rem;
+  border-radius: 0.65rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
   font-weight: 600;
   color: var(--color-on-surface-variant);
   text-decoration: none;
   transition:
-    background 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease;
+    background var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
+    color var(--app-duration-fast, 160ms) var(--app-ease-out, ease),
+    transform var(--app-duration-fast, 160ms) var(--app-ease-out, ease);
 }
 
-.app-sidebar__link:hover {
-  color: var(--color-on-surface);
-  background: color-mix(in srgb, var(--color-surface-container) 55%, transparent);
+@media (hover: hover) and (pointer: fine) {
+  .app-sidebar__link:hover {
+    color: var(--color-on-surface);
+    background: color-mix(in srgb, var(--color-surface-container) 70%, transparent);
+  }
 }
 
 .app-sidebar__link--active {
-  color: var(--color-secondary-container);
+  color: var(--color-secondary);
   font-weight: 700;
-  border-right-color: var(--color-secondary-container);
-  background: color-mix(in srgb, var(--color-on-surface) 7%, transparent);
+  background: color-mix(in srgb, var(--color-secondary-fixed) 55%, var(--color-surface-container-lowest));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-secondary) 12%, transparent);
 }
 
 .app-sidebar__link--active:hover {
-  color: var(--color-secondary-container);
-  background: color-mix(in srgb, var(--color-on-surface) 10%, transparent);
+  color: var(--color-secondary);
+  background: color-mix(in srgb, var(--color-secondary-fixed) 62%, var(--color-surface-container-lowest));
 }
 
 .app-sidebar__link-icon {

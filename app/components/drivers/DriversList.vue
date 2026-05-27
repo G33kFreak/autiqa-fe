@@ -38,16 +38,16 @@ function openDriverDetails(driverId: string) {
       </p>
       <button
         type="button"
-        class="drivers-page__cta drivers-page__cta--primary drivers-page__summary-add"
+        class="app-btn app-btn--primary app-btn--compact drivers-page__summary-add"
         @click="emit('addDriver')"
       >
-        <span class="material-symbols-outlined drivers-page__cta-icon" aria-hidden="true">add</span>
+        <span class="material-symbols-outlined app-btn__icon" aria-hidden="true">add</span>
         {{ t('appSections.drivers.addDriverCta') }}
       </button>
     </div>
 
-    <div class="drivers-page__table-wrap">
-      <table class="drivers-page__table">
+    <div class="app-table-shell drivers-page__table-wrap">
+      <table class="app-table drivers-page__table">
         <thead>
           <tr>
             <th>{{ t('appSections.drivers.table.driver') }}</th>
@@ -60,7 +60,7 @@ function openDriverDetails(driverId: string) {
           <tr
             v-for="driver in props.drivers"
             :key="driver.id"
-            class="drivers-page__row-clickable"
+            class="app-table__row-clickable drivers-page__row-clickable"
             role="link"
             tabindex="0"
             @click="openDriverDetails(driver.id)"
@@ -119,78 +119,11 @@ function openDriverDetails(driverId: string) {
   gap: 0.75rem;
 }
 
-.drivers-page__cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.875rem 1.5rem;
-  border: none;
-  border-radius: 0.75rem;
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.drivers-page__cta--primary {
-  color: var(--color-on-secondary);
-  background: var(--color-secondary);
-}
-
-.drivers-page__cta--primary:hover:not(:disabled) {
-  filter: brightness(1.06);
-}
-
-.drivers-page__summary-add {
-  padding: 0.625rem 1rem;
-  font-size: 0.8125rem;
-}
-
-.drivers-page__cta-icon {
-  font-size: 1.25rem;
-}
-
-.drivers-page__table-wrap {
-  overflow-x: auto;
-  border-radius: 0.875rem;
-  background: var(--color-surface-container-low);
-  box-shadow: var(--shadow-ambient);
-}
-
 .drivers-page__table {
-  width: 100%;
-  border-collapse: collapse;
   min-width: 52rem;
 }
 
-.drivers-page__table thead th {
-  padding: 0.9rem 1rem;
-  text-align: left;
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-  background: var(--color-surface-container);
-}
-
-.drivers-page__table tbody tr {
-  background: var(--color-surface-container-lowest);
-  transition: background 0.18s ease;
-}
-
-.drivers-page__table tbody tr:hover {
-  background: var(--color-surface-container);
-}
-
-.drivers-page__row-clickable {
-  cursor: pointer;
-}
-
 .drivers-page__table tbody td {
-  padding: 1rem;
-  vertical-align: middle;
   color: var(--color-on-surface);
 }
 

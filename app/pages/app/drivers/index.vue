@@ -61,7 +61,7 @@ watch(searchInput, (value) => {
 </script>
 
 <template>
-  <div class="drivers-page">
+  <div class="drivers-page app-page">
     <template v-if="!showEmpty && !showListError">
       <h1 class="app-page__title">{{ t('appSections.drivers.title') }}</h1>
       <p class="app-page__lead">{{ t('appSections.drivers.lead') }}</p>

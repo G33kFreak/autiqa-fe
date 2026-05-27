@@ -54,7 +54,9 @@ function onBackdropClick() {
     <div class="app-shell__main-wrap">
       <LayoutAppHeader />
       <main class="app-shell__content">
-        <slot />
+        <div class="app-shell__page">
+          <slot />
+        </div>
       </main>
     </div>
   </div>
@@ -71,10 +73,12 @@ function onBackdropClick() {
   position: fixed;
   inset: 0;
   z-index: 45;
-  background: color-mix(in srgb, var(--color-inverse-surface) 35%, transparent);
+  background: color-mix(in srgb, var(--color-inverse-surface) 40%, transparent);
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--app-duration-ui, 220ms) var(--app-ease-out, ease);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
 }
 
 .app-shell__backdrop--visible {
@@ -97,7 +101,7 @@ function onBackdropClick() {
 @media (min-width: 768px) {
   .app-shell__main-wrap {
     margin-left: 16rem;
-    transition: margin-left 0.22s ease;
+    transition: margin-left var(--app-duration-ui, 220ms) var(--app-ease-out, ease);
   }
 
   .app-shell--sidebar-collapsed .app-shell__main-wrap {
@@ -107,12 +111,25 @@ function onBackdropClick() {
 
 .app-shell__content {
   flex: 1;
-  padding: 1.5rem 1rem 2rem;
+  padding: 1.25rem 1rem 2rem;
+}
+
+.app-shell__page {
+  width: 100%;
+  max-width: var(--app-content-max, 90rem);
+  margin-inline: auto;
 }
 
 @media (min-width: 768px) {
   .app-shell__content {
-    padding: 2rem 2rem 2.5rem;
+    padding: 1.5rem 1.75rem 2.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell__backdrop {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 }
 </style>
