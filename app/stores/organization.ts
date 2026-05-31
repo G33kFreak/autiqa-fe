@@ -9,6 +9,7 @@ import {
 } from '../api/organizations';
 
 export const useOrganizationStore = defineStore('organization', () => {
+  const authStore = useAuthStore();
   const { authenticatedApi } = useApi();
 
   async function fetchCurrent(): Promise<OrganizationDto | null> {
@@ -49,6 +50,10 @@ export const useOrganizationStore = defineStore('organization', () => {
     creating.value = true;
     try {
       const org = await createOrganizationRequest(authenticatedApi, payload);
+      const refreshed = await authStore.refresh();
+      if (!refreshed) {
+        throw new Error('Failed to refresh session after organization creation');
+      }
       vm.setLoaded(org);
       return org;
     } finally {
