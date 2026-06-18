@@ -234,6 +234,57 @@
         "error": "Couldn't save this vehicle. Please try again."
       }
     },
+    "drivers": {
+      "subtitle": "Everyone who drives for you, with contact details and current vehicle assignment.",
+      "addDriver": "Add driver",
+      "loading": "Loading your drivers…",
+      "count": "{n} on the roster",
+      "resultsFiltered": "{shown} of {total} shown",
+      "searchPlaceholder": "Search name, phone, or email",
+      "noResultsTitle": "No drivers match “{q}”.",
+      "clearSearch": "Clear search",
+      "emptyTitle": "Add your first driver",
+      "emptyBody": "Build your roster here. Add a driver and you can assign them to a vehicle and keep their contact details in one place.",
+      "emptyCta": "Add a driver",
+      "errorTitle": "Couldn't load your drivers",
+      "errorBody": "Something went wrong fetching your roster. Check your connection and try again.",
+      "retry": "Try again",
+      "table": {
+        "caption": "Drivers roster",
+        "driver": "Driver",
+        "phone": "Phone",
+        "email": "Email",
+        "status": "Status",
+        "unnamed": "Unnamed driver"
+      },
+      "status": {
+        "assigned": "Assigned",
+        "available": "Available"
+      },
+      "dialog": {
+        "title": "Add a driver",
+        "subtitle": "Name is required — add phone and email whenever you have them.",
+        "close": "Close",
+        "firstNameLabel": "First name",
+        "firstNamePlaceholder": "e.g. Anna",
+        "firstNameRequired": "Enter a first name to continue.",
+        "lastNameLabel": "Last name",
+        "lastNamePlaceholder": "e.g. Kowalska",
+        "lastNameRequired": "Enter a last name to continue.",
+        "phoneLabel": "Phone",
+        "phonePlaceholder": "e.g. +48 600 123 456",
+        "emailLabel": "Email",
+        "emailPlaceholder": "e.g. anna{'@'}example.com",
+        "emailInvalid": "Enter a valid email address.",
+        "optionalNote": "Phone and email are optional — you can add them later.",
+        "added": "Added {name}.",
+        "tally": "{n} added",
+        "addAnother": "Save & add another",
+        "submit": "Add driver",
+        "submitting": "Saving…",
+        "error": "Couldn't save this driver. Please try again."
+      }
+    },
     "pages": {
       "badge": "In progress",
       "dashboard": {

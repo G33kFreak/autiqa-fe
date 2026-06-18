@@ -234,6 +234,57 @@
         "error": "Nie udało się zapisać pojazdu. Spróbuj ponownie."
       }
     },
+    "drivers": {
+      "subtitle": "Wszyscy, którzy dla Ciebie jeżdżą — dane kontaktowe i aktualne przypisanie pojazdu.",
+      "addDriver": "Dodaj kierowcę",
+      "loading": "Wczytywanie kierowców…",
+      "count": "{n} na liście",
+      "resultsFiltered": "{shown} z {total} pokazano",
+      "searchPlaceholder": "Szukaj imienia, telefonu lub e-maila",
+      "noResultsTitle": "Brak kierowców pasujących do „{q}”.",
+      "clearSearch": "Wyczyść wyszukiwanie",
+      "emptyTitle": "Dodaj pierwszego kierowcę",
+      "emptyBody": "Tu zbudujesz swoją listę kierowców. Dodaj kierowcę, aby przypisać go do pojazdu i mieć jego dane kontaktowe w jednym miejscu.",
+      "emptyCta": "Dodaj kierowcę",
+      "errorTitle": "Nie udało się wczytać kierowców",
+      "errorBody": "Coś poszło nie tak podczas pobierania listy. Sprawdź połączenie i spróbuj ponownie.",
+      "retry": "Spróbuj ponownie",
+      "table": {
+        "caption": "Lista kierowców",
+        "driver": "Kierowca",
+        "phone": "Telefon",
+        "email": "E-mail",
+        "status": "Status",
+        "unnamed": "Kierowca bez nazwiska"
+      },
+      "status": {
+        "assigned": "Przypisany",
+        "available": "Dostępny"
+      },
+      "dialog": {
+        "title": "Dodaj kierowcę",
+        "subtitle": "Wymagane jest imię i nazwisko — telefon i e-mail uzupełnisz, gdy będziesz mieć dane.",
+        "close": "Zamknij",
+        "firstNameLabel": "Imię",
+        "firstNamePlaceholder": "np. Anna",
+        "firstNameRequired": "Podaj imię, aby kontynuować.",
+        "lastNameLabel": "Nazwisko",
+        "lastNamePlaceholder": "np. Kowalska",
+        "lastNameRequired": "Podaj nazwisko, aby kontynuować.",
+        "phoneLabel": "Telefon",
+        "phonePlaceholder": "np. +48 600 123 456",
+        "emailLabel": "E-mail",
+        "emailPlaceholder": "np. anna{'@'}example.com",
+        "emailInvalid": "Podaj poprawny adres e-mail.",
+        "optionalNote": "Telefon i e-mail są opcjonalne — możesz je dodać później.",
+        "added": "Dodano {name}.",
+        "tally": "Dodano: {n}",
+        "addAnother": "Zapisz i dodaj kolejnego",
+        "submit": "Dodaj kierowcę",
+        "submitting": "Zapisywanie…",
+        "error": "Nie udało się zapisać kierowcy. Spróbuj ponownie."
+      }
+    },
     "pages": {
       "badge": "W przygotowaniu",
       "dashboard": {

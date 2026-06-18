@@ -21,7 +21,10 @@ export type IconName =
   | 'shield'
   | 'refresh'
   | 'alert'
-  | 'check';
+  | 'check'
+  | 'phone'
+  | 'mail'
+  | 'circle';
 
 withDefaults(
   defineProps<{
@@ -60,6 +63,11 @@ const paths: Record<string, string> = {
     'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8M3 3v5h5',
   alert: 'M12 4.5 2.5 19.5h19L12 4.5ZM12 10v4M12 17h.01',
   check: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16ZM8.5 12l2.5 2.5 4.5-4.8',
+  phone:
+    'M6.5 4.5h2.2l1.1 3.2-1.6 1.2a11 11 0 0 0 5.1 5.1l1.2-1.6 3.2 1.1v2.2a1.5 1.5 0 0 1-1.6 1.5C10.3 17.5 6.5 13.7 5 8.1A1.5 1.5 0 0 1 6.5 4.5Z',
+  mail:
+    'M4 6.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1Zm.4.6 7.6 5.4 7.6-5.4',
+  circle: 'M12 5.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Z',
 };
 </script>
 
