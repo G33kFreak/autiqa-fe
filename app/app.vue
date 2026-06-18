@@ -1,6 +1,7 @@
 <script setup lang="ts">
-const i18nHead = useLocaleHead({ seo: true });
-useHead(i18nHead);
+useHead({
+  titleTemplate: (title) => title ? `${title} · Autiqa` : 'Autiqa',
+})
 </script>
 
 <template>

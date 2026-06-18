@@ -1,11 +1,3 @@
 <template>
-  <div class="layout-default">
-    <slot />
-  </div>
+  <slot />
 </template>
-
-<style scoped>
-.layout-default {
-  min-height: 100dvh;
-}
-</style>

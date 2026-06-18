@@ -1,856 +1,159 @@
 {
   "brand": "Autiqa",
-  "common": {
-    "loading": "Loading",
-    "clear": "Clear",
-    "close": "Close",
-    "loadError": "Couldn’t load this page. Please refresh or try again."
-  },
-  "meta": {
-    "home": {
-      "title": "Fleet intelligence for taxi & rental",
-      "description": "Vehicles, drivers, finance, and compliance alerts in one Autiqa workspace—built for operators who outgrew spreadsheets."
-    },
-    "login": {
-      "title": "Sign in",
-      "description": "Sign in to Autiqa fleet CRM."
-    },
-    "register": {
-      "title": "Register",
-      "description": "Create your Autiqa fleet account."
-    },
-    "forgotPassword": {
-      "title": "Reset password",
-      "description": "Request a code and set a new password for your Autiqa account."
-    },
-    "resetPassword": {
-      "title": "Enter code & new password",
-      "description": "Use the code from your email and choose a new Autiqa password."
-    },
-    "app": {
-      "title": "App",
-      "description": "Autiqa main application."
-    },
-    "verifyEmail": {
-      "title": "Verify email",
-      "description": "Enter the code we emailed you to activate your account."
-    },
-    "onboardingOrg": {
-      "title": "Let's Get You Set Up",
-      "description": "Tell us about your business so we can tailor Autiqa to your needs."
-    }
-  },
-  "landing": {
-    "a11y": {
-      "skip": "Skip to content",
-      "menu": "Open menu",
-      "language": "Language",
-      "mainNav": "Main navigation",
-      "footerNav": "Footer navigation"
-    },
-    "nav": {
-      "login": "Sign in",
-      "cta": "Get started",
-      "platform": "Platform",
-      "capabilities": "Capabilities",
-      "pricing": "Pricing"
-    },
-    "labels": {
-      "compare": "Why switch",
-      "deep": "Depth",
-      "bento": "Workspace",
-      "pricing": "Pricing"
-    },
-    "hero": {
-      "kicker": "Fleet control center",
-      "title1": "Fleet intelligence,",
-      "title2": "not scattered sheets.",
-      "proofAria": "Why operators switch",
-      "proof1": "Free for your first 3 vehicles",
-      "proof2": "Insurance and inspection alerts in one hub",
-      "proof3": "12 PLN per extra vehicle, PLN billing",
-      "lead": "Autiqa brings vehicles, drivers, income, expenses, and insurance timelines into one control center, so inspections, installments, and financial signals stay in the same story.",
-      "ctaPrimary": "Create account",
-      "ctaSecondary": "See capabilities"
-    },
-    "visual": {
-      "chartLabel": "Cumulative P/L trend",
-      "chartKpi": "$42,500",
-      "chartDelta": "+12.4%",
-      "alertK": "Alert overview",
-      "alertV": "Inspections due",
-      "cardTitle": "Insurance & timelines",
-      "cardVehicle": "Toyota Camry (WW 12345)",
-      "cardDriver": "Jan Kowalski",
-      "cardUntil": "Valid until Oct 24"
-    },
-    "compare": {
-      "sectionTitle": "Spreadsheets vs. one operating picture",
-      "sectionLead": "When finance and compliance live in different files, renewals slip and KPIs lag. Autiqa keeps the narrative unified.",
-      "badTitle": "Static spreadsheets",
-      "goodTitle": "Autiqa workspace",
-      "bad1Title": "Stale snapshots",
-      "bad1Body": "Numbers are only as fresh as the last export—easy to mis-key and painful to reconcile.",
-      "bad2Title": "Split sources of truth",
-      "bad2Body": "Operations tracks vehicles in one place while finance chases another. Nobody sees risk and cost together.",
-      "bad3Title": "Silent expiry risk",
-      "bad3Body": "Inspections and policy windows hide in rows. One missed date can ground revenue.",
-      "good1Title": "Unified alert hub",
-      "good1Body": "Dashboard overview highlights insurance installments, expiries, and inspection windows across the fleet.",
-      "good2Title": "Finance that matches operations",
-      "good2Body": "Track income, spend, and summaries with charts that reflect the same fleet you run day to day.",
-      "good3Title": "Fleet & driver records",
-      "good3Body": "Register vehicles and drivers, assign seats, and drill into per-asset compliance and economics."
-    },
-    "deep": {
-      "title": "Compliance and money in one narrative",
-      "lead": "Autiqa connects operational risk with financial performance so leaders can act early—not after a spreadsheet turns red.",
-      "finTitle": "Finance intelligence",
-      "finBody": "Monitor revenue, expenses, and category mix with summaries and trend views tuned for fleet operators.",
-      "finStripLabel": "Total revenue",
-      "finStripValue": "$142,500",
-      "compTitle": "Compliance timelines",
-      "compBody": "Model insurance policies with installments, track valid-until inspection dates, and see what needs attention next.",
-      "compStripLabel": "Upcoming installments",
-      "compStripValue": "3 installments"
-    },
-    "calculator": {
-      "title": "Fair pricing that fits your fleet size",
-      "lead": "Run up to three vehicles on us while you prove the workflow. Add capacity at a per-vehicle rate—no hidden surcharges.",
-      "perksAria": "Pricing highlights",
-      "perk1": "First 3 vehicles always free",
-      "perk2": "12 PLN per additional vehicle each month",
-      "perk3": "40+ vehicles: dedicated support and training to integrate the system",
-      "sliderLabel": "Vehicles in your fleet",
-      "sliderAria": "{count} vehicles selected",
-      "estimateLabel": "Monthly cost",
-      "netto": "net",
-      "freePrice": "0 PLN",
-      "freeNote": "Up to 3 vehicles stay on the house—full platform access included.",
-      "paidNote": "{billable} billable vehicles × {rate} PLN {netto} / month",
-      "enterpriseKicker": "Large fleet",
-      "enterpriseTitleBefore": "Let's tailor ",
-      "enterpriseTitleAccent": "your",
-      "enterpriseTitleAfter": " rollout",
-      "enterpriseBody": "For fleets above 40 vehicles we align billing, onboarding, and support with your operations team.",
-      "ctaStart": "Start free",
-      "ctaContact": "Contact sales",
-      "contactSubject": "Autiqa — fleet pricing (40+ vehicles)"
-    },
-    "bento": {
-      "title": "What you run inside Autiqa",
-      "fleetTitle": "Fleet registry & assignments",
-      "fleetBody": "Central inventory for every vehicle with plates, policies, and driver seat assignments.",
-      "fleetLink": "Start onboarding",
-      "alertsTitle": "Alerts overview",
-      "alertsBody": "Surface insurance dues, expiries, and inspection urgency from a single dashboard card.",
-      "timelineTitle": "Per-vehicle compliance",
-      "timelineBody": "Insurance and inspection timelines stay next to maintenance notes on each vehicle profile.",
-      "financeTitle": "Finance workspace",
-      "financeBody": "Income and expense ledgers with date filters, summaries, and charts for cashflow conversations.",
-      "financeLink": "Open finance when you sign in"
-    },
-    "footer": {
-      "tagline": "Tactical intelligence for taxi, rental, and mixed fleets that cannot afford blind spots.",
-      "copy": "© 2026 Autiqa. All rights reserved.",
-      "product": "Product",
-      "account": "Account",
-      "register": "Create account"
-    }
-  },
-  "login": {
-    "asideHeadline": "Command every vehicle. Calm every shift.",
-    "asideLede": "One place to see trips, utilization, and risk — built for taxi and rental fleets that cannot afford blind spots.",
-    "pluses": {
-      "liveMap": "Unified live map and status for every car you run — taxis, rentals, or mixed.",
-      "kpis": "Operational KPIs that update as your fleet moves, not when someone exports a sheet.",
-      "roles": "Role-based access so dispatch, finance, and partners see exactly what they need.",
-      "margins": "Designed for high churn and thin margins: fewer tools, fewer context switches."
-    },
-    "formTitle": "Sign in to your account",
-    "formSubtitle": "Enter your credentials to access the control center.",
-    "continueGoogle": "Continue with Google",
-    "dividerOr": "Or",
-    "emailLabel": "Email address",
-    "emailPlaceholder": "name{'@'}company.com",
-    "passwordLabel": "Password",
-    "passwordPlaceholder": "••••••••",
-    "forgotPassword": "Forgot password?",
-    "submit": "Sign in",
-    "submitting": "Signing in…",
-    "errors": {
-      "required": "Enter your email and password.",
-      "invalid": "Invalid email or password.",
-      "generic": "Could not sign you in. Please try again."
-    },
-    "passwordResetSuccess": "Your password was updated. You can sign in with your new password.",
-    "footerLead": "Don’t have an account?",
-    "requestAccess": "Register!"
-  },
-  "register": {
-    "asideHeadline": "Start with three vehicles on the house.",
-    "asideLede": "Prove the workflow on your real fleet before you scale. Polish-first billing and compliance timelines included from day one.",
-    "pluses": {
-      "freeTier": "First 3 vehicles stay free with full platform access while you evaluate.",
-      "compliance": "Insurance installments and inspection windows in one alert hub, not scattered rows.",
-      "pln": "12 PLN per extra vehicle, PLN billing, vocabulary tuned for Polish operators."
-    },
-    "formTitle": "Create your account",
-    "formSubtitle": "Fill in the form to get started with Autiqa.",
-    "nameLabel": "Full name",
-    "namePlaceholder": "Jane Doe",
-    "emailLabel": "Email address",
-    "emailPlaceholder": "name{'@'}company.com",
-    "passwordLabel": "Password",
-    "passwordPlaceholder": "••••••••",
-    "passwordHint": "At least 8 characters.",
-    "passwordRepeatLabel": "Confirm password",
-    "passwordRepeatPlaceholder": "••••••••",
-    "submit": "Create account",
-    "submitting": "Creating account…",
-    "footerLead": "Already have an account?",
-    "footerLogin": "Sign in",
-    "errors": {
-      "nameRequired": "Enter your name.",
-      "emailRequired": "Enter your email address.",
-      "emailInvalid": "Enter a valid email address.",
-      "passwordShort": "Password must be at least 8 characters.",
-      "passwordMismatch": "Passwords must match.",
-      "conflict": "An account with this email already exists.",
-      "badRequest": "Registration could not be completed. Check your details and try again.",
-      "generic": "Something went wrong. Please try again."
-    }
-  },
-  "forgotPassword": {
-    "asideHeadline": "Locked out? We will get you back in.",
-    "asideLede": "Password reset uses a short code by email — no magic links, no guesswork. You will be back on the map in minutes.",
-    "pluses": {
-      "otp": "Six-digit code delivered only to your inbox — not shown in the product or shared via link.",
-      "window": "Codes stay valid for 30 minutes so you have time without leaving the flow.",
-      "login": "After reset, sign in with your new password using the same login screen as always."
-    },
-    "formTitle": "Request a reset code",
-    "formSubtitle": "Enter the email you use for Autiqa. If an account exists, we will send a code.",
-    "emailLabel": "Email address",
-    "emailPlaceholder": "name{'@'}company.com",
-    "sendCode": "Send code",
-    "sending": "Sending…",
-    "backToLogin": "Back to sign in",
-    "errors": {
-      "generic": "Something went wrong. Please try again.",
-      "rateLimit": "Too many attempts from this network. Please wait up to an hour and try again.",
-      "badRequest": "We could not send a code. Check your email address and try again.",
-      "emailRequired": "Enter your email address.",
-      "emailInvalid": "Enter a valid email address."
-    }
-  },
-  "resetPassword": {
-    "asideHeadline": "Almost there.",
-    "asideLede": "Use the code from your email together with a new password. You can resend the code after a short wait if you need a fresh one.",
-    "pluses": {
-      "otp": "Six-digit code delivered only to your inbox — not shown in the product or shared via link.",
-      "window": "Codes stay valid for 30 minutes (server). The resend button has a short client-side cooldown.",
-      "login": "After reset, sign in with your new password using the same login screen as always."
-    },
-    "formTitle": "Code and new password",
-    "formSubtitle": "No email field here — use the address you already submitted. Check your inbox for the six-digit code.",
-    "codeLabel": "Code from email",
-    "codePlaceholder": "000000",
-    "codeHint": "The code expires in 30 minutes (see email).",
-    "newPasswordLabel": "New password",
-    "newPasswordPlaceholder": "••••••••",
-    "passwordHint": "At least 8 characters.",
-    "confirmPasswordLabel": "Confirm new password",
-    "confirmPasswordPlaceholder": "••••••••",
-    "submit": "Update password",
-    "submitting": "Updating…",
-    "sendAgain": "Send code again",
-    "sendAgainSending": "Sending…",
-    "sendAgainWait": "Resend in {n}s",
-    "backToForgot": "Use a different email",
-    "backToLogin": "Back to sign in",
-    "errors": {
-      "generic": "Something went wrong. Please try again.",
-      "rateLimit": "Too many attempts from this network. Please wait up to an hour and try again.",
-      "rateLimitReset": "Too many reset attempts. Please wait up to an hour and try again.",
-      "badRequestReset": "We could not update your password. Check your details and try again.",
-      "codeLength": "Enter the full six-digit code from the email.",
-      "passwordShort": "Password must be at least 8 characters.",
-      "passwordMismatch": "Passwords must match.",
-      "invalidCode": "Invalid or expired reset code.",
-      "samePassword": "New password must differ from your current password."
-    }
-  },
-  "layout": {
-    "appTagline": "Fleet intelligence",
-    "openMenu": "Open navigation menu",
-    "userFallback": "Account",
-    "sidebar": {
-      "mainNavigationAria": "Main navigation",
-      "appSectionsAria": "App sections",
-      "buildInfoAria": "Build information",
-      "copyright": "© 2026 Autiqa. All rights reserved.",
-      "alphaVersion": "Alpha version",
-      "collapseNav": "Collapse sidebar",
-      "expandNav": "Expand sidebar"
-    }
-  },
   "nav": {
-    "dashboard": "Dashboard",
-    "fleet": "Fleet",
-    "finance": "Finance",
-    "drivers": "Drivers",
-    "settings": "Settings"
+    "features": "Features",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "login": "Log in",
+    "signUp": "Start free"
   },
-  "appSections": {
-    "dashboard": {
-      "title": "Operational overview",
-      "lead": "High-level fleet health, utilization, and risk — tuned for taxi and rental operations that need signal without noise.",
-      "loading": "Loading dashboard…",
-      "fleetStats": {
-        "title": "Fleet at a glance",
-        "loading": "Loading fleet stats…",
-        "loadError": "Could not load fleet statistics.",
-        "carsTitle": "Vehicles",
-        "driversTitle": "Drivers",
-        "assigned": "Assigned",
-        "total": "Total",
-        "totalCars": "Total cars",
-        "carsWithDriver": "With assigned driver",
-        "totalDrivers": "Total drivers",
-        "driversAssigned": "Assigned to a vehicle"
-      },
-      "alerts": {
-        "hero": {
-          "kicker": "Tactical intelligence",
-          "title": "Command Center Overview",
-          "lead": "Monitor critical operational alerts and upcoming deadlines across your fleet."
-        },
-        "refresh": "Refresh alerts",
-        "refreshing": "Refreshing…",
-        "loading": "Loading alerts…",
-        "loadError": "Failed to load alerts. Please try again.",
-        "openCarDetails": "Open vehicle details: {model}",
-        "datePlaceholder": "N/A",
-        "badges": {
-          "unknownDate": "Unknown date",
-          "expired": "Expired",
-          "expiresToday": "Expires today",
-          "dueToday": "Due today",
-          "overdue": "Overdue",
-          "daysLeft": "{count}d left"
-        },
-        "meta": {
-          "due": "Due",
-          "coverageEnds": "Coverage ends",
-          "validUntil": "Valid until"
-        },
-        "dues": {
-          "title": "Insurance dues",
-          "subtitle": "Pending payments",
-          "emptyTitle": "No payment risk",
-          "emptyCopy": "All insurance dues are settled in this time window."
-        },
-        "expiry": {
-          "title": "Insurance expiry",
-          "subtitle": "Upcoming renewals",
-          "emptyTitle": "No expiring policies",
-          "emptyCopy": "Coverage windows are healthy and fully active."
-        },
-        "inspection": {
-          "title": "Technical inspection",
-          "subtitle": "Technical inspection status",
-          "emptyTitle": "Inspections are current",
-          "emptyCopy": "No upcoming technical inspection deadlines."
-        }
-      }
-    },
+  "hero": {
+    "headlineA": "Your fleet.",
+    "headlineB": "Under control.",
+    "subline": "Vehicles, drivers, finance, and compliance deadlines — in one place. For taxi fleets and tourist rental operators who outgrew spreadsheets.",
+    "cta": "Start free",
+    "ctaMeta": "14-day free trial · No credit card"
+  },
+  "heroVisual": {
+    "label": "Fleet Overview",
+    "live": "Live",
+    "active": "Active",
+    "expiring": "Expiring",
+    "thisWeek": "This week",
+    "statusOnTrip": "On Trip",
+    "statusAvailable": "Available",
+    "statusExpiring": "Expiring"
+  },
+  "features": {
+    "heading": "Everything an operator needs",
     "fleet": {
-      "title": "Fleet",
-      "lead": "Vehicles, assignments, and status in one place. Detailed VIN and plate views will connect here.",
-      "loading": "Loading vehicles…",
-      "emptyTitle": "Your Fleet Starts Here",
-      "emptyBody": "Everything you need to manage and grow your fleet, all in one place.",
-      "emptyCta": "Add your first vehicle",
-      "addVehicleCta": "Add vehicle",
-      "importSpreadsheetCta": "Import from spreadsheet",
-      "importSpreadsheetSoon": "Coming soon",
-      "fleetCount": "{count} vehicles registered",
-      "addVehicleTitle": "Add vehicle",
-      "addVehicleModel": "Model",
-      "addVehicleModelPlaceholder": "e.g. Toyota Camry",
-      "addVehicleVin": "VIN",
-      "addVehiclePlate": "Reg. plate",
-      "addVehiclePlatePlaceholder": "WZ12345",
-      "addVehicleVinPlaceholder": "V0ZAB12CDE3456789",
-      "addVehicleDriver": "Assigned driver",
-      "addVehicleDriverUnassigned": "No driver assigned",
-      "addVehicleDriverSearchNoResults": "No drivers found",
-      "addVehicleInspectionExpiry": "Technical inspection (valid until)",
-      "addVehicleSubmit": "Save vehicle",
-      "addVehicleSubmitAll": "Save all vehicles",
-      "addVehicleAddAnother": "Add another vehicle",
-      "addVehicleIndex": "Vehicle {n}",
-      "addVehicleRemoveRow": "Remove vehicle",
-      "addVehicleValidationModelsRequired": "Enter a model for each vehicle.",
-      "addVehicleCancel": "Cancel",
-      "addVehicleError": "Could not save this vehicle. Check the fields and try again.",
-      "dateInput": {
-        "previousMonth": "Previous month",
-        "nextMonth": "Next month"
-      },
-      "driverUnassigned": "Unassigned",
-      "unknownModel": "Unknown model",
-      "inspectionDaysLeft": "{count} days left",
-      "complianceExpired": "Expired",
-      "vehicleDetailsTitle": "Vehicle details",
-      "vehicleDetailsLead": "Detailed fleet card view is coming soon.",
-      "vehicleIdLabel": "Vehicle ID",
-      "vehicleDetails": {
-        "bentoNetProfit": "Net profit",
-        "bentoTotalRevenue": "Total revenue",
-        "bentoTotalExpenses": "Total expenses",
-        "commandView": "Vehicle Command View",
-        "financialSummary": "Financial Summary",
-        "totalIncome": "Income",
-        "totalFees": "Tickets",
-        "totalMaintenance": "Maintenance",
-        "totalOtherExpenses": "Other expenses",
-        "totalCombinedExpenses": "All expenses",
-        "totalProfitLoss": "Total profit/loss",
-        "incomeHistoryTitle": "Income history",
-        "incomeTableColTitleSource": "Title / Source",
-        "incomeTableColDriver": "Driver",
-        "incomeTableColOccurredAt": "Occurred at",
-        "incomeTableColAmount": "Amount",
-        "incomeTableColActions": "Row actions",
-        "deleteEntryConfirm": "Are you sure you want to delete this entry?",
-        "incomeDeleteError": "Could not delete income. Try again.",
-        "incomeViewAll": "View all",
-        "incomeAllDialogTitle": "All income",
-        "incomeDialogPrev": "Previous",
-        "incomeDialogNext": "Next",
-        "incomeDialogPageStatus": "Page {current} of {total}",
-        "emptyIncomeTitle": "No income recorded yet",
-        "emptyIncomeCopy": "Rentals, partner payouts, and other credits will list here. Use Add income in the vehicle header to log the first entry.",
-        "incomeDefaultTitle": "Income",
-        "ledgerTablistAria": "Tickets and service history",
-        "carFeesTitle": "Vehicle tickets",
-        "thisMonthFees": "This month: {total}",
-        "dueDate": "Due {date}",
-        "complianceStatus": "Assignments & deadlines",
-        "assignedDriver": "Assigned driver",
-        "assignOther": "Assign other",
-        "removeDriver": "Remove",
-        "editInfo": "Edit info",
-        "editVehicle": "Edit vehicle",
-        "addIncome": "Add income",
-        "addInsurancePolicy": "Insurance policy",
-        "save": "Save",
-        "cancel": "Cancel",
-        "unnamedVehicle": "Unnamed vehicle",
-        "emptyPlate": "Plate not set",
-        "emptyVin": "VIN not set",
-        "emptyFinancialSummary": "No financial data yet.",
-        "emptyFeesTitle": "No open tickets",
-        "emptyFeesCopy": "This vehicle has no ticket records yet. Use Add expense at the top of this page and choose Ticket to log a fine.",
-        "emptyComplianceTitle": "No compliance records",
-        "emptyComplianceCopy": "Add inspection and insurance dates for this vehicle to see deadlines and progress here.",
-        "emptyDriverCopy": "No driver is currently assigned.",
-        "emptyMaintenanceTitle": "No maintenance history",
-        "emptyMaintenanceCopy": "Service visits and repairs will show on this timeline. Add one with Add expense and select Maintenance.",
-        "complianceItemStatusLabel": "Status",
-        "complianceItemEmptyTitle": "We’re missing the expiry date",
-        "complianceItemEmptyCopy": "Add a valid-until date for this check to unlock the countdown and progress bar—fewer surprises at the roadside.",
-        "complianceItemEmptyCopyInsurance": "Add a valid-until date for your policy to unlock the countdown and progress bar—easier renewals, fewer gaps in cover.",
-        "complianceItemEmptyCtaInspection": "Add inspection expiry date",
-        "complianceItemEmptyCtaInsurance": "Add policy expiry date",
-        "validUntilLabel": "Valid until",
-        "timeRemaining": "Time remaining",
-        "complianceDuesLabel": "Policy dues",
-        "complianceDuePaid": "Paid",
-        "complianceDueToPay": "To pay",
-        "complianceDueUpcoming": "Upcoming",
-        "complianceDueOverdue": "Overdue",
-        "complianceDueTooltipPaid": "This due is already paid and linked to an expense record.",
-        "complianceDueTooltipUpcoming": "This due date is still in the future.",
-        "complianceDueTooltipOverdue": "This due date is today or already overdue.",
-        "complianceDueMarkPaid": "Mark paid",
-        "complianceDueMarkUnpaid": "Mark unpaid",
-        "dateNotSet": "Date not set",
-        "maintenanceHistory": "Maintenance History",
-        "addExpense": "Add expense",
-        "editExpense": "Edit",
-        "deleteExpense": "Delete",
-        "editExpenseTitle": "Edit expense",
-        "editExpenseLead": "Update maintenance event details.",
-        "expenseDeleteError": "Could not delete expense. Try again.",
-        "loadMore": "Load more",
-        "validUntil": "Valid until {date}",
-        "attachments": "Attachments",
-        "complianceItemEditDateAria": "Edit expiry date",
-        "inspectionDateDialog": {
-          "title": "Inspection expiry date",
-          "lead": "Choose the date through which the technical inspection remains valid.",
-          "dateLabel": "Valid until",
-          "save": "Save",
-          "validation": "Pick a valid date.",
-          "error": "Could not update the vehicle. Try again."
-        },
-        "insuranceDateDialog": {
-          "title": "Policy expiry date",
-          "lead": "Choose the date through which your OC/AC coverage remains valid.",
-          "dateLabel": "Valid until",
-          "save": "Save",
-          "validation": "Pick a valid date.",
-          "error": "Could not update the vehicle. Try again."
-        },
-        "insurancePolicyDialog": {
-          "title": "New insurance policy",
-          "lead": "Register coverage, premium, and payment schedule for this vehicle. Amounts must use up to two decimal places; scheduled amounts must add up to the total premium.",
-          "sectionPolicy": "Policy details",
-          "sectionPremium": "Premium & installments",
-          "sectionNotes": "Notes",
-          "insurerName": "Insurer",
-          "insurerPlaceholder": "e.g. ACME Insurance",
-          "policyNumber": "Policy number",
-          "policyNumberPlaceholder": "POL-2026-001",
-          "coverageStart": "Coverage start",
-          "coverageEnd": "Coverage end",
-          "paymentAmount": "Total premium",
-          "currency": "Currency (ISO)",
-          "paymentPlanLabel": "How is the premium paid?",
-          "paymentPlanOneTime": "One-time payment",
-          "paymentPlanSchedule": "Custom payment schedule",
-          "oneTimeDueDate": "Payment due date",
-          "oneTimePaymentHint": "The full premium is due on this date.",
-          "scheduleHint": "Add one row per installment. Dates and amounts must be valid; amounts must sum to the total premium.",
-          "dueDate": "Due date",
-          "amount": "Amount",
-          "removeRow": "Remove installment",
-          "addInstallment": "Add installment",
-          "notes": "Internal notes",
-          "notesPlaceholder": "Optional context for your team (not shown to drivers).",
-          "submit": "Create policy",
-          "error": "Could not create the policy. Check amounts and dates, then try again.",
-          "validation": {
-            "dates": "Choose coverage start and end dates.",
-            "coverageOrder": "Coverage end must be after the start date.",
-            "amount": "Enter a valid premium (non-negative, up to two decimals).",
-            "currency": "Use a 3-letter ISO currency code (e.g. PLN).",
-            "installments": "Add at least one installment with valid dates and amounts.",
-            "sumMismatch": "Installment amounts must add up exactly to the total premium.",
-            "oneTimeDue": "Choose a valid payment due date.",
-            "alreadyPaidAmount": "Enter a valid already-paid amount (non-negative, up to two decimals)."
-          },
-          "oneTimeAmount": "One-time amount",
-          "paymentPlanAlreadyPaid": "Already paid",
-          "alreadyPaidAmount": "Already paid amount",
-          "alreadyPaidHint": "Creates policy and immediately records payment as INSURANCE expense with occurred date set to coverage start.",
-          "errorPaidAuto": "Policy was created, but auto-payment could not be recorded. Open policy details and pay installment manually.",
-          "editTitle": "Edit insurance policy",
-          "editLead": "Update policy details and installments for this vehicle.",
-          "submitEdit": "Save changes"
-        },
-        "complianceItems": {
-          "technicalInspection": "Technical inspection",
-          "ocAcPolicy": "OC/AC policy"
-        },
-        "demoFees": {
-          "speedingTicketA4": "Speeding ticket (A4)",
-          "wrongParkingFeeZoneB": "Wrong parking ticket (city zone B)",
-          "busLaneViolation": "Bus lane violation",
-          "noValidTollPayment": "No valid toll payment"
-        },
-        "expenseDialog": {
-          "title": "Create expense",
-          "lead": "Log a new cost event for this vehicle and optionally link a driver.",
-          "openCta": "New expense",
-          "type": "Expense type",
-          "carPaymentKind": "Car payment kind",
-          "selectCarPaymentKind": "Select payment kind",
-          "amount": "Amount",
-          "currency": "Currency",
-          "titleField": "Title",
-          "titlePlaceholder": "e.g. Oil change",
-          "occurredAt": "Occurred at",
-          "notes": "Notes",
-          "notesPlaceholder": "Add optional details about this expense",
-          "linkedCar": "Linked car",
-          "linkedDriver": "Linked driver",
-          "searchCarPlaceholder": "Search by model or plate...",
-          "linked": "Linked",
-          "expenseTypes": {
-            "MAINTENANCE": "Maintenance",
-            "CAR_PAYMENT": "Car payment",
-            "INSURANCE": "Insurance",
-            "FEE": "Ticket",
-            "OTHER": "Other"
-          },
-          "carPaymentKinds": {
-            "BUY": "Buy",
-            "LEASE": "Lease"
-          },
-          "submit": "Create expense",
-          "validation": "Fill in required fields: title, amount, and date.",
-          "error": "Could not create expense. Check fields and try again."
-        },
-        "incomeDialog": {
-          "title": "Record income",
-          "lead": "Log revenue for a vehicle and link the driver it belongs to.",
-          "editTitle": "Edit income",
-          "editLead": "Update amount, date, links, and notes for this record.",
-          "amount": "Amount",
-          "titleField": "Title",
-          "titlePlaceholder": "e.g. Weekly rental",
-          "occurredAt": "Occurred at",
-          "notes": "Notes",
-          "notesPlaceholder": "Optional details about this income",
-          "linkedCar": "Linked car",
-          "linkedDriver": "Linked driver",
-          "searchCarPlaceholder": "Search by model or plate...",
-          "submit": "Save income",
-          "validation": "Fill in amount, date, linked car, and linked driver.",
-          "error": "Could not save income. Check fields and try again."
-        }
-      },
-      "table": {
-        "vehicleUnit": "Vehicle unit",
-        "plate": "Plate",
-        "vin": "VIN",
-        "assignedDriver": "Assigned driver",
-        "inspectionValidUntil": "Inspection valid until"
-      }
-    },
-    "map": {
-      "title": "Live map",
-      "lead": "Real-time positions and trip context for every active asset."
+      "title": "Fleet management",
+      "description": "All vehicles, drivers, and assignments in one view. Know who's on the road, what's available, and what needs attention."
     },
     "finance": {
-      "title": "Finance",
-      "lead": "Revenue, costs, and margin intelligence across vehicles and categories.",
-      "filters": {
-        "periods": {
-          "currentWeek": "Current week",
-          "currentMonth": "Current month",
-          "currentYear": "Current year",
-          "customRange": "Custom range"
-        },
-        "dateRange": "Date range",
-        "quickRange": "Quick range",
-        "pickRange": "Pick start and end date",
-        "fromDate": "From date",
-        "toDate": "To date",
-        "type": "Expense type",
-        "allTypes": "All types",
-        "currency": "Currency",
-        "allCurrencies": "All currencies",
-        "search": "Quick search",
-        "searchPlaceholder": "Search title or notes..."
+      "title": "Revenue and costs",
+      "description": "How much each vehicle earns. Fuel, maintenance, and insurance costs. Margin at fleet level and per vehicle."
+    },
+    "compliance": {
+      "title": "Compliance deadlines",
+      "description": "Inspections, insurance policies. Autiqa surfaces upcoming deadlines before a car gets grounded."
+    }
+  },
+  "featureFleet": {
+    "colVehicle": "Vehicle",
+    "colDriver": "Driver",
+    "colStatus": "Status",
+    "statusOnTrip": "On Trip",
+    "statusAvailable": "Available",
+    "statusExpiring": "Expiring",
+    "noDriver": "Unassigned"
+  },
+  "featureFinance": {
+    "revenue": "Revenue",
+    "costs": "Costs",
+    "net": "Net result",
+    "revenueLabel": "this month",
+    "costsLabel": "fuel, maint.",
+    "netLabel": "margin"
+  },
+  "featureCompliance": {
+    "inspection": "Technical inspection",
+    "insurance": "Insurance renewal",
+    "daysLeft": "{n} days",
+    "dayLeft": "1 day"
+  },
+  "segments": {
+    "heading": "Built for two types of operators",
+    "connector": "The same control system, shaped for your operation.",
+    "fleet": {
+      "label": "Taxi and ride-hail fleets",
+      "items": [
+        "Track driver assignments and shift coverage",
+        "Inspection and insurance alerts before a car is grounded",
+        "Vehicle-level profitability — decide what to keep, sell, or reassign"
+      ]
+    },
+    "rental": {
+      "label": "Tourist car rental",
+      "items": [
+        "Know which cars are out, which are back, which need servicing",
+        "Revenue and turnaround costs tracked per vehicle",
+        "Compliance between bookings — no policy slips through"
+      ]
+    }
+  },
+  "pricing": {
+    "heading": "Simple pricing",
+    "subline": "Up to 3 vehicles — always free. Beyond that, 13 PLN per vehicle per month.",
+    "sliderQuestion": "How many vehicles?",
+    "vehiclesLabel": "vehicles",
+    "zoneFreePrice": "Free",
+    "zoneFreeRange": "1–3 vehicles",
+    "zonePaidPrice": "13 PLN / vehicle",
+    "zonePaidRange": "4–40 vehicles",
+    "zoneEnterprisePrice": "Contact",
+    "zoneEnterpriseRange": "41+ vehicles",
+    "perMonth": "/ mo",
+    "freeCount": "free",
+    "freeNote": "No credit card required",
+    "enterpriseHeading": "Large fleets",
+    "enterpriseDesc": "Custom pricing, dedicated support, and integrations built for your scale.",
+    "ctaFree": "Start free",
+    "ctaPaid": "Start free",
+    "ctaEnterprise": "Let's talk",
+    "features": [
+      "Fleet management",
+      "Compliance alerts",
+      "Finance tracking",
+      "Driver management",
+      "Mobile app",
+      "Reports & export"
+    ]
+  },
+  "faq": {
+    "heading": "Frequently asked questions",
+    "subline": "Everything you want to know before getting started.",
+    "ctaText": "Ready to get started?",
+    "ctaAction": "Start free",
+    "items": [
+      {
+        "q": "Can I start without a credit card?",
+        "a": "Yes. Up to 3 vehicles, Autiqa is always free — no time limit, no credit card required. Beyond 3 vehicles, the paid plan is 13 PLN per vehicle per month. You only provide payment details when you decide to expand."
       },
-      "types": {
-        "MAINTENANCE": "Maintenance",
-        "CAR_PAYMENT": "Car payment",
-        "INSURANCE": "Insurance",
-        "FEE": "Fee",
-        "OTHER": "Other"
+      {
+        "q": "How does Autiqa notify me about upcoming inspections and insurance renewals?",
+        "a": "Autiqa tracks inspection deadlines, insurance expiry, and other policy dates for every vehicle in your fleet. Upcoming deadlines appear in the fleet view well ahead of time — before a car gets grounded and before you lose revenue."
       },
-      "kpis": {
-        "totalSpend": "Total spend",
-        "avgDaily": "Average daily spend",
-        "totalRevenue": "Total revenue",
-        "avgRevenueDaily": "Average daily earnings",
-        "profitLoss": "Profit / Loss",
-        "avgProfitLossDaily": "Average daily profit / loss",
-        "avgMonthly": "Average monthly spend",
-        "largest": "Largest single expense",
-        "focusRisk": "Category concentration",
-        "anomalies": "Anomaly count"
+      {
+        "q": "How long does it take to onboard my fleet?",
+        "a": "Most operators add their first vehicles within 15 minutes. You just need a license plate and basic vehicle details. Drivers, deadlines, and finance data can be filled in gradually — the system works from the moment you add the first vehicle."
       },
-      "charts": {
-        "spendTrend": "Expenses and earnings trend",
-        "spendTrendEmptyTitle": "No trend data for this period",
-        "spendTrendEmptyDescription": "Add expenses and income from fleet operations to see a daily chart of spending, earnings, and profit or loss here.",
-        "categoryMix": "Category composition",
-        "categoryMixEmptyTitle": "No category breakdown yet",
-        "categoryMixEmptyDescription": "Record fleet expenses—maintenance, tickets, insurance, and more—for the selected period, and this donut chart will show how spending is distributed across categories.",
-        "typeBreakdown": "Cumulative profit/loss (current year + projection)",
-        "intensity": "Top cars by expenses",
-        "intensityEmptyTitle": "No vehicle expense ranking yet",
-        "intensityEmptyDescription": "Log expenses tied to specific vehicles in the selected date range—this bar chart will rank plates by total spend.",
-        "recurring": "Top cars by revenue",
-        "recurringEmptyTitle": "No vehicle revenue ranking yet",
-        "recurringEmptyDescription": "Record income linked to vehicles for this period to see which units bring in the most revenue."
+      {
+        "q": "Does Autiqa work for tourist car rental?",
+        "a": "Yes. Autiqa supports both taxi and ride-hail fleets and tourist rental operators. You track vehicle availability, per-rental revenue, and compliance deadlines between bookings — so no policy slips through the gap between one customer and the next."
       },
-      "insights": {
-        "label": "Insights",
-        "title": "Operational intelligence",
-        "items": {
-          "total": "The selected period generated {value} in total spend.",
-          "top": "Top category currently drives {value} of the full expense load.",
-          "anomalies": "{value} transactions are currently above expected spend velocity.",
-          "largest": "Largest single expense in view is {value}."
-        }
+      {
+        "q": "Can I see how much each vehicle earns separately?",
+        "a": "Yes. The finance view shows revenue, costs (fuel, maintenance, insurance), and net margin at the individual vehicle level. You get a direct answer to: which vehicle is profitable, and which is costing more than it earns."
       },
-      "recent": {
-        "title": "Recent expenses",
-        "emptyTitle": "No recent expenses yet",
-        "emptyDescription": "When you log costs in Fleet—tickets, maintenance, fuel, and more—they will show up in this list with date, type, and amount.",
-        "date": "Date",
-        "type": "Type",
-        "titleCol": "Title",
-        "amount": "Amount"
-      },
-      "recentEarnings": {
-        "title": "Recent earnings",
-        "emptyTitle": "No recent earnings yet",
-        "emptyDescription": "Income you record for vehicles and drivers will appear here so you can quickly review the latest credits.",
-        "date": "Date",
-        "type": "Type",
-        "kind": "Income",
-        "titleCol": "Title",
-        "amount": "Amount"
+      {
+        "q": "What if my fleet exceeds 40 vehicles?",
+        "a": "For fleets above 40 vehicles, we arrange custom terms — a dedicated account manager, priority support, and the option to integrate with your existing systems. Get in touch and we'll work out the details."
       }
-    },
-    "drivers": {
-      "title": "Drivers",
-      "lead": "Contracts, performance, and compliance for everyone behind the wheel.",
-      "loading": "Loading drivers…",
-      "searchPlaceholder": "Search by first or last name...",
-      "emptyTitle": "Your Driver Roster Starts Here",
-      "emptyBody": "Add your first driver profile to manage assignments, compliance, and performance in one place.",
-      "emptyCta": "Add your first driver",
-      "addDriverCta": "Add driver",
-      "driverCount": "{count} drivers registered",
-      "driverNotFoundTitle": "Driver not found",
-      "driverNotFoundBody": "This driver does not exist or is not available in the current list.",
-      "table": {
-        "driver": "Driver",
-        "email": "Email",
-        "phone": "Phone",
-        "assignedCarId": "Assigned car ID",
-        "createdAt": "Added"
-      },
-      "dialog": {
-        "title": "Deploy Driver Fleet",
-        "lead": "Add multiple drivers to the operational roster.",
-        "newDriver": "New Driver Details",
-        "firstName": "First Name",
-        "firstNamePlaceholder": "e.g. Ivan",
-        "lastName": "Last Name",
-        "lastNamePlaceholder": "e.g. Petrov",
-        "email": "Email Address",
-        "emailPlaceholder": "ivan{'@'}example.com",
-        "phoneNumber": "Phone Number",
-        "phoneNumberPlaceholder": "+48 600 000 000",
-        "addAnother": "Add Another Driver",
-        "cancel": "Cancel",
-        "submit": "Submit All Drivers",
-        "submitting": "Submitting...",
-        "validation": "Please provide first and last name for each driver. Email and phone must be valid if filled.",
-        "error": "Could not save drivers. Check the fields and try again."
-      },
-      "details": {
-        "common": {
-          "emptyValue": "—"
-        },
-        "actions": {
-          "editDriver": "Edit driver",
-          "assignVehicle": "Assign vehicle",
-          "assignOtherVehicle": "Assign other vehicle"
-        },
-        "personal": {
-          "title": "Personal details",
-          "firstName": "First name",
-          "lastName": "Last name",
-          "email": "Email address",
-          "phone": "Phone number"
-        },
-        "assignment": {
-          "title": "Assigned car",
-          "assignedVehicleFallback": "Assigned vehicle",
-          "plateUnavailable": "Plate not available",
-          "empty": "No car assigned"
-        },
-        "assignDialog": {
-          "title": "Assign car",
-          "noCars": "No cars available",
-          "unnamedCar": "Unnamed car",
-          "noPlate": "No plate",
-          "currentlyAssigned": "Currently assigned"
-        },
-        "documents": {
-          "title": "Documents",
-          "uploading": "Uploading files...",
-          "dropzoneHint": "Drag and drop files here, or",
-          "supportedFormats": "Supported formats: {formats} (Max 5 MB each)",
-          "browse": "Browse files",
-          "selectedFiles": "Selected files",
-          "uploadedFiles": "Uploaded files",
-          "clear": "Clear",
-          "save": "Save",
-          "saving": "Saving...",
-          "empty": "No uploaded documents yet.",
-          "unknownSize": "Unknown size",
-          "unknownType": "unknown/type",
-          "validation": {
-            "selectAtLeastOne": "Please select at least one file.",
-            "unsupportedFormat": "Unsupported format. Allowed: {formats}.",
-            "maxSize": "Each file must be 5MB or smaller."
-          }
-        }
-      }
-    },
-    "maintenance": {
-      "title": "Maintenance",
-      "lead": "Work orders, downtime, and spend — keep the fleet road-ready."
-    },
-    "settings": {
-      "title": "Settings",
-      "lead": "Workspace preferences, integrations, and access controls.",
-      "signOut": "Sign out"
-    }
+    ]
   },
-  "appShell": {
-    "title": "Autiqa app",
-    "lead": "The main product UI (fleet, vehicles, reports) will live here.",
-    "backHome": "Home",
-    "logoutDebug": "Log out (debug)"
-  },
-  "onboardingOrg": {
-    "eyebrow": "Welcome",
-    "title": "Let's Get You Set Up",
-    "lede": "Tell us a bit about your business so we can tailor the experience to your needs.",
-    "progressAria": "Onboarding steps",
-    "stepOf": "Step {current} of {total}",
-    "orgNameLabel": "Organization name",
-    "orgNamePlaceholder": "e.g. North City Taxi",
-    "orgTypeLabel": "Organization type",
-    "orgTypePlaceholder": "e.g. Taxi fleet, rental, logistics…",
-    "continue": "Continue",
-    "back": "Back",
-    "finish": "Finish",
-    "errors": {
-      "nameRequired": "Enter your organization name.",
-      "generic": "Could not create your organization. Please try again."
-    }
-  },
-  "verifyEmail": {
-    "eyebrow": "Confirm your email",
-    "title": "Enter your code",
-    "subtitle": "We sent a 6-digit code to {email}. Paste or type it below to unlock Autiqa.",
-    "emailUnknown": "your inbox",
-    "otpLabel": "One-time code",
-    "otpAria": "Six-digit verification code",
-    "digitAria": "Digit {n} of 6",
-    "submit": "Verify & continue",
-    "resendLead": "Didn’t receive it?",
-    "resendAction": "Resend code",
-    "logout": "Sign out",
-    "footerHint": "Check spam or promotions — sometimes the message lands there.",
-    "errors": {
-      "invalidCode": "That code is invalid or expired. Check the message and try again.",
-      "generic": "We could not verify your email. Please try again."
-    }
+  "footer": {
+    "tagline": "Fleet control for operators.",
+    "product": "Product",
+    "company": "Company",
+    "links": {
+      "features": "Features",
+      "pricing": "Pricing",
+      "login": "Log in",
+      "about": "About",
+      "privacy": "Privacy",
+      "terms": "Terms"
+    },
+    "copyright": "© 2025 Autiqa. All rights reserved."
   }
 }

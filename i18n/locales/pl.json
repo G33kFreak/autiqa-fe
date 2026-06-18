@@ -1,856 +1,159 @@
 {
   "brand": "Autiqa",
-  "common": {
-    "loading": "Ładowanie",
-    "clear": "Wyczyść",
-    "close": "Zamknij",
-    "loadError": "Nie udało się wczytać strony. Odśwież lub spróbuj ponownie."
-  },
-  "meta": {
-    "home": {
-      "title": "Inteligencja floty pod taxi i wynajem",
-      "description": "Pojazdy, kierowcy, finanse i alerty o terminach oraz obowiązkach formalnych w jednym miejscu Autiqa — dla operatorów, którzy wyrośli z arkuszy."
-    },
-    "login": {
-      "title": "Logowanie",
-      "description": "Zaloguj się do CRM floty Autiqa."
-    },
-    "register": {
-      "title": "Rejestracja",
-      "description": "Załóż konto w Autiqa — CRM floty."
-    },
-    "forgotPassword": {
-      "title": "Reset hasła",
-      "description": "Poproś o kod i ustaw nowe hasło do konta Autiqa."
-    },
-    "resetPassword": {
-      "title": "Kod i nowe hasło",
-      "description": "Użyj kodu z e-maila i ustaw nowe hasło Autiqa."
-    },
-    "app": {
-      "title": "Panel",
-      "description": "Główna aplikacja Autiqa."
-    },
-    "verifyEmail": {
-      "title": "Potwierdzenie e-maila",
-      "description": "Wpisz kod z wiadomości, aby aktywować konto."
-    },
-    "onboardingOrg": {
-      "title": "Zacznijmy od konfiguracji",
-      "description": "Opowiedz o swojej firmie, abyśmy mogli dopasować Autiqę do Twoich potrzeb."
-    }
-  },
-  "landing": {
-    "a11y": {
-      "skip": "Przejdź do treści",
-      "menu": "Otwórz menu",
-      "language": "Język",
-      "mainNav": "Nawigacja główna",
-      "footerNav": "Nawigacja w stopce"
-    },
-    "nav": {
-      "login": "Zaloguj się",
-      "cta": "Zacznij",
-      "platform": "Platforma",
-      "capabilities": "Możliwości",
-      "pricing": "Cennik"
-    },
-    "labels": {
-      "compare": "Dlaczego zmiana",
-      "deep": "Głębia",
-      "bento": "Przestrzeń",
-      "pricing": "Cennik"
-    },
-    "hero": {
-      "kicker": "Centrum kontroli floty",
-      "title1": "Inteligencja floty,",
-      "title2": "nie porozrzucane arkusze.",
-      "proofAria": "Dlaczego operatorzy przechodzą",
-      "proof1": "Pierwsze 3 pojazdy bez opłat",
-      "proof2": "Alerty ubezpieczeń i przeglądów w jednym miejscu",
-      "proof3": "12 zł za kolejny pojazd, rozliczenia w PLN",
-      "lead": "Autiqa łączy pojazdy, kierowców, przychody, koszty i harmonogramy ubezpieczeń w jednym centrum, tak by przeglądy, raty i sygnały finansowe opowiadały jedną historię.",
-      "ctaPrimary": "Załóż konto",
-      "ctaSecondary": "Zobacz możliwości"
-    },
-    "visual": {
-      "chartLabel": "Skumulowany trend P/L",
-      "chartKpi": "42 500 PLN",
-      "chartDelta": "+12,4%",
-      "alertK": "Przegląd alertów",
-      "alertV": "Przeglądy do wykonania",
-      "cardTitle": "Ubezpieczenie i terminy",
-      "cardVehicle": "Toyota Camry (WW 12345)",
-      "cardDriver": "Jan Kowalski",
-      "cardUntil": "Ważne do 24 paź"
-    },
-    "compare": {
-      "sectionTitle": "Arkusze vs. jeden obraz operacyjny",
-      "sectionLead": "Gdy finanse i formalności flotowe żyją w osobnych plikach, odnowienia się gubią, a KPI się spóźniają. Autiqa trzyma narrację w jednym miejscu.",
-      "badTitle": "Statyczne arkusze",
-      "goodTitle": "Przestrzeń Autiqa",
-      "bad1Title": "Nieaktualne migawki",
-      "bad1Body": "Liczby są świeże tylko do ostatniego eksportu — łatwo o pomyłkę i żmudne uzgadnianie.",
-      "bad2Title": "Rozbite źródła prawdy",
-      "bad2Body": "Operacje widzi pojazdy w jednym miejscu, finanse w drugim. Ryzyko i koszt rzadko się spotykają.",
-      "bad3Title": "Ciche ryzyko wygaśnięć",
-      "bad3Body": "Przeglądy i okna polis chowają się w wierszach. Jeden przeoczony termin może zamrozić przychód.",
-      "good1Title": "Spójny hub alertów",
-      "good1Body": "Przegląd pulpitu podświetla raty OC/AC, wygaśnięcia i okna przeglądów technicznych w całej flocie.",
-      "good2Title": "Finanse zsynchronizowane z operacją",
-      "good2Body": "Śledź przychody, wydatki i podsumowania z wykresami odzwierciedlającymi tę samą flotę, którą prowadzisz co dnia.",
-      "good3Title": "Ewidencja pojazdów i kierowców",
-      "good3Body": "Rejestruj pojazdy i kierowców, przypisuj miejsca i schodź do statusów formalnych oraz ekonomicznych przy każdym pojeździe."
-    },
-    "deep": {
-      "title": "Formalności i finanse w jednej narracji",
-      "lead": "Autiqa scala operacyjne ryzyko z wynikiem finansowym, żeby reagować wcześniej — zanim arkusz się zaczerwieni.",
-      "finTitle": "Inteligencja finansowa",
-      "finBody": "Monitoruj przychody, koszty i mix kategorii z podsumowaniami i trendami pod operatorów floty.",
-      "finStripLabel": "Przychód łącznie",
-      "finStripValue": "142 500 PLN",
-      "compTitle": "Harmonogramy przeglądów i ubezpieczeń",
-      "compBody": "Modeluj polisy z ratami, śledź ważność przeglądów i widzisz, co wymaga uwagi jako następne.",
-      "compStripLabel": "Nadchodzące raty",
-      "compStripValue": "3 raty"
-    },
-    "calculator": {
-      "title": "Uczciwy cennik, w zależności od rozmiarów floty",
-      "lead": "Do trzech pojazdów bez opłat — sprawdzasz workflow w praktyce. Potem stawka za każdy kolejny samochód, bez ukrytych dopłat.",
-      "perksAria": "Najważniejsze zasady cennika",
-      "perk1": "Pierwsze 3 pojazdy zawsze za darmo",
-      "perk2": "12 zł za każdy dodatkowy pojazd miesięcznie",
-      "perk3": "40+ pojazdów: indywidualne wsparcie i szkolenie, które pomoże wdrożyć system",
-      "sliderLabel": "Pojazdy we flocie",
-      "sliderAria": "Wybrano {count} pojazdów",
-      "estimateLabel": "Koszt miesięczny",
-      "netto": "netto",
-      "freePrice": "0 zł",
-      "freeNote": "Do 3 pojazdów bez opłat — pełny dostęp do platformy.",
-      "paidNote": "{billable} płatnych pojazdów × {rate} zł {netto} / mies.",
-      "enterpriseKicker": "Duża flota",
-      "enterpriseTitleBefore": "Dopasujemy wdrożenie do ",
-      "enterpriseTitleAccent": "Twojej",
-      "enterpriseTitleAfter": " skali",
-      "enterpriseBody": "Przy flocie powyżej 40 pojazdów ustalamy rozliczenia, onboarding i wsparcie bezpośrednio ze sprzedażą.",
-      "ctaStart": "Zacznij za darmo",
-      "ctaContact": "Skontaktuj się ze sprzedażą",
-      "contactSubject": "Autiqa — wycena floty (40+ pojazdów)"
-    },
-    "bento": {
-      "title": "Co prowadzisz w Autiqa",
-      "fleetTitle": "Rejestr floty i przypisania",
-      "fleetBody": "Centralna ewidencja pojazdów z tablicami, polisami i przypisanymi kierowcami.",
-      "fleetLink": "Rozpocznij onboarding",
-      "alertsTitle": "Przegląd alertów",
-      "alertsBody": "W jednej karcie pulpitu: raty ubezpieczenia, wygaśnięcia i pilność przeglądów.",
-      "timelineTitle": "Terminy i formalności w profilu pojazdu",
-      "timelineBody": "Polisy i przeglądy obok notatek serwisowych na profilu pojazdu.",
-      "financeTitle": "Przestrzeń finansów",
-      "financeBody": "Przychody i koszty z filtrami dat, podsumowaniami i wykresami pod rozmowy o cashflow.",
-      "financeLink": "Finanse po zalogowaniu"
-    },
-    "footer": {
-      "tagline": "Inteligencja operacyjna dla taxi, wynajmu i flot mieszanych — bez ślepych plam.",
-      "copy": "© 2026 Autiqa. Wszelkie prawa zastrzeżone.",
-      "product": "Produkt",
-      "account": "Konto",
-      "register": "Załóż konto"
-    }
-  },
-  "login": {
-    "asideHeadline": "Panuj nad każdym pojazdem. Spokój na każdej zmianie.",
-    "asideLede": "Jedno miejsce na przejazdy, wykorzystanie floty i ryzyko — z myślą o taxi i wypożyczalniach, które nie mogą sobie pozwolić na ślepe plamy.",
-    "pluses": {
-      "liveMap": "Spójny podgląd mapy i statusu dla każdego auta — taxi, wynajem lub mix.",
-      "kpis": "KPI operacyjne aktualizują się wraz z ruchem floty, a nie po eksporcie arkusza.",
-      "roles": "Dostępy wg ról: dyspozytornia, finanse i partnerzy widzą tylko to, czego potrzebują.",
-      "margins": "Dla dużej rotacji i cienkich marż: mniej narzędzi, mniej przełączania kontekstu."
-    },
-    "formTitle": "Zaloguj się do konta",
-    "formSubtitle": "Wpisz dane logowania, aby wejść do panelu sterowania.",
-    "continueGoogle": "Kontynuuj z Googlem",
-    "dividerOr": "Lub",
-    "emailLabel": "Adres e-mail",
-    "emailPlaceholder": "jan{'@'}firma.pl",
-    "passwordLabel": "Hasło",
-    "passwordPlaceholder": "••••••••",
-    "forgotPassword": "Nie pamiętasz hasła?",
-    "submit": "Zaloguj się",
-    "submitting": "Logowanie…",
-    "errors": {
-      "required": "Podaj adres e-mail i hasło.",
-      "invalid": "Nieprawidłowy e-mail lub hasło.",
-      "generic": "Nie udało się zalogować. Spróbuj ponownie."
-    },
-    "passwordResetSuccess": "Hasło zostało zmienione. Możesz zalogować się nowym hasłem.",
-    "footerLead": "Nie masz konta?",
-    "requestAccess": "Zarejestruj się!"
-  },
-  "register": {
-    "asideHeadline": "Zacznij od trzech pojazdów bez opłat.",
-    "asideLede": "Sprawdź workflow na prawdziwej flocie, zanim rozbudujesz skład. Od pierwszego dnia: rozliczenia w PLN i terminy formalne w jednym miejscu.",
-    "pluses": {
-      "freeTier": "Pierwsze 3 pojazdy bez opłat, z pełnym dostępem do platformy na czas testów.",
-      "compliance": "Raty polis i terminy przeglądów w jednym hubie alertów, nie w rozproszonych wierszach.",
-      "pln": "12 PLN za każdy kolejny pojazd, faktury w PLN i słownictwo dopasowane do polskich operatorów."
-    },
-    "formTitle": "Utwórz konto",
-    "formSubtitle": "Wypełnij formularz, aby rozpocząć pracę z panelem Autiqa.",
-    "nameLabel": "Imię i nazwisko",
-    "namePlaceholder": "Jan Kowalski",
-    "emailLabel": "Adres e-mail",
-    "emailPlaceholder": "jan{'@'}firma.pl",
-    "passwordLabel": "Hasło",
-    "passwordPlaceholder": "••••••••",
-    "passwordHint": "Minimum 8 znaków.",
-    "passwordRepeatLabel": "Powtórz hasło",
-    "passwordRepeatPlaceholder": "••••••••",
-    "submit": "Zarejestruj się",
-    "submitting": "Tworzenie konta…",
-    "footerLead": "Masz już konto?",
-    "footerLogin": "Zaloguj się",
-    "errors": {
-      "nameRequired": "Podaj imię i nazwisko.",
-      "emailRequired": "Podaj adres e-mail.",
-      "emailInvalid": "Podaj prawidłowy adres e-mail.",
-      "passwordShort": "Hasło musi mieć co najmniej 8 znaków.",
-      "passwordMismatch": "Hasła muszą być takie same.",
-      "conflict": "Konto z tym adresem e-mail już istnieje.",
-      "badRequest": "Nie udało się zarejestrować. Sprawdź dane i spróbuj ponownie.",
-      "generic": "Coś poszło nie tak. Spróbuj ponownie."
-    }
-  },
-  "forgotPassword": {
-    "asideHeadline": "Nie możesz wejść? Wrócimy Cię do środka.",
-    "asideLede": "Reset hasła działa na krótki kod e-mailem — bez magicznych linków i zgadywania. W kilka minut wracasz do pracy.",
-    "pluses": {
-      "otp": "Sześciocyfrowy kod tylko na skrzynce — nie pokazujemy go w produkcie ani nie wysyłamy linkiem.",
-      "window": "Kod ważny jest 30 minut, więc masz czas bez wychodzenia z procesu.",
-      "login": "Po resecie logujesz się nowym hasłem tym samym ekranem co zawsze."
-    },
-    "formTitle": "Poproś o kod resetu",
-    "formSubtitle": "Podaj adres e-mail z Autiqy. Jeśli konto istnieje, wyślemy kod.",
-    "emailLabel": "Adres e-mail",
-    "emailPlaceholder": "jan{'@'}firma.pl",
-    "sendCode": "Wyślij kod",
-    "sending": "Wysyłanie…",
-    "backToLogin": "Wróć do logowania",
-    "errors": {
-      "generic": "Coś poszło nie tak. Spróbuj ponownie.",
-      "rateLimit": "Zbyt wiele prób z tej sieci. Odczekaj do godziny i spróbuj ponownie.",
-      "badRequest": "Nie udało się wysłać kodu. Sprawdź adres e-mail i spróbuj ponownie.",
-      "emailRequired": "Podaj adres e-mail.",
-      "emailInvalid": "Podaj prawidłowy adres e-mail."
-    }
-  },
-  "resetPassword": {
-    "asideHeadline": "Już prawie.",
-    "asideLede": "Użyj kodu z wiadomości razem z nowym hasłem. Możesz wysłać kod ponownie po krótkim oczekiwaniu.",
-    "pluses": {
-      "otp": "Sześciocyfrowy kod tylko na skrzynce — nie pokazujemy go w produkcie ani nie wysyłamy linkiem.",
-      "window": "Kod ważny jest 30 minut (serwer). Przycisk ponownego wysłania ma krótki limit po stronie aplikacji.",
-      "login": "Po resecie logujesz się nowym hasłem tym samym ekranem co zawsze."
-    },
-    "formTitle": "Kod i nowe hasło",
-    "formSubtitle": "Bez pola e-mail — użyj adresu, który już podałeś. Sprawdź skrzynkę po sześciocyfrowy kod.",
-    "codeLabel": "Kod z wiadomości",
-    "codePlaceholder": "000000",
-    "codeHint": "Kod wygasa po 30 minutach (treść w e-mailu).",
-    "newPasswordLabel": "Nowe hasło",
-    "newPasswordPlaceholder": "••••••••",
-    "passwordHint": "Co najmniej 8 znaków.",
-    "confirmPasswordLabel": "Potwierdź nowe hasło",
-    "confirmPasswordPlaceholder": "••••••••",
-    "submit": "Zapisz hasło",
-    "submitting": "Zapisywanie…",
-    "sendAgain": "Wyślij kod ponownie",
-    "sendAgainSending": "Wysyłanie…",
-    "sendAgainWait": "Ponownie za {n}s",
-    "backToForgot": "Inny adres e-mail",
-    "backToLogin": "Wróć do logowania",
-    "errors": {
-      "generic": "Coś poszło nie tak. Spróbuj ponownie.",
-      "rateLimit": "Zbyt wiele prób z tej sieci. Odczekaj do godziny i spróbuj ponownie.",
-      "rateLimitReset": "Zbyt wiele prób resetu. Odczekaj do godziny i spróbuj ponownie.",
-      "badRequestReset": "Nie udało się zmienić hasła. Sprawdź dane i spróbuj ponownie.",
-      "codeLength": "Wpisz pełny sześciocyfrowy kod z wiadomości.",
-      "passwordShort": "Hasło musi mieć co najmniej 8 znaków.",
-      "passwordMismatch": "Hasła muszą być takie same.",
-      "invalidCode": "Nieprawidłowy lub wygasły kod resetu.",
-      "samePassword": "Nowe hasło musi różnić się od obecnego."
-    }
-  },
-  "layout": {
-    "appTagline": "Inteligencja floty",
-    "openMenu": "Otwórz menu nawigacji",
-    "userFallback": "Konto",
-    "sidebar": {
-      "mainNavigationAria": "Główna nawigacja",
-      "appSectionsAria": "Sekcje aplikacji",
-      "buildInfoAria": "Informacje o wersji",
-      "copyright": "© 2026 Autiqa. Wszelkie prawa zastrzeżone.",
-      "alphaVersion": "Wersja alfa",
-      "collapseNav": "Zwiń panel nawigacji",
-      "expandNav": "Rozwiń panel nawigacji"
-    }
-  },
   "nav": {
-    "dashboard": "Pulpit",
-    "fleet": "Flota",
-    "finance": "Finanse",
-    "drivers": "Kierowcy",
-    "settings": "Ustawienia"
+    "features": "Funkcje",
+    "pricing": "Cennik",
+    "faq": "FAQ",
+    "login": "Zaloguj się",
+    "signUp": "Zacznij za darmo"
   },
-  "appSections": {
-    "dashboard": {
-      "title": "Przegląd operacyjny",
-      "lead": "Stan floty, wykorzystanie i ryzyko — dla taxi i wynajmu, gdzie liczy się sygnał, nie szum.",
-      "loading": "Ładowanie pulpitu…",
-      "fleetStats": {
-        "title": "Flota w skrócie",
-        "loading": "Ładowanie statystyk floty…",
-        "loadError": "Nie udało się wczytać statystyk floty.",
-        "carsTitle": "Pojazdy",
-        "driversTitle": "Kierowcy",
-        "assigned": "Przypisane",
-        "total": "Łącznie",
-        "totalCars": "Pojazdy łącznie",
-        "carsWithDriver": "Z przypisanym kierowcą",
-        "totalDrivers": "Kierowcy łącznie",
-        "driversAssigned": "Przypisani do pojazdu"
-      },
-      "alerts": {
-        "hero": {
-          "kicker": "Taktyczna inteligencja",
-          "title": "Przegląd centrum dowodzenia",
-          "lead": "Monitoruj kluczowe alerty operacyjne i zbliżające się terminy w całej flocie."
-        },
-        "refresh": "Odśwież alerty",
-        "refreshing": "Odświeżanie…",
-        "loading": "Ładowanie alertów…",
-        "loadError": "Nie udało się wczytać alertów. Spróbuj ponownie.",
-        "openCarDetails": "Otwórz szczegóły pojazdu: {model}",
-        "datePlaceholder": "brak",
-        "badges": {
-          "unknownDate": "Nieznana data",
-          "expired": "Przeterminowane",
-          "expiresToday": "Wygasa dziś",
-          "dueToday": "Termin dziś",
-          "overdue": "Po terminie",
-          "daysLeft": "zostało {count} d"
-        },
-        "meta": {
-          "due": "Termin",
-          "coverageEnds": "Ubezpieczenie do",
-          "validUntil": "Ważny do"
-        },
-        "dues": {
-          "title": "Raty ubezpieczenia",
-          "subtitle": "Oczekujące płatności",
-          "emptyTitle": "Brak ryzyka płatności",
-          "emptyCopy": "Wszystkie raty w tym oknie są uregulowane."
-        },
-        "expiry": {
-          "title": "Wygaśnięcie polisy",
-          "subtitle": "Zbliżające się odnowienia",
-          "emptyTitle": "Brak polis do odnowienia",
-          "emptyCopy": "Okresy ochrony są w porządku i aktywne."
-        },
-        "inspection": {
-          "title": "Przegląd techniczny",
-          "subtitle": "Status badań technicznych",
-          "emptyTitle": "Badania aktualne",
-          "emptyCopy": "Brak zbliżających się terminów przeglądu technicznego."
-        }
-      }
-    },
+  "hero": {
+    "headlineA": "Twoja flota.",
+    "headlineB": "Pod kontrolą.",
+    "subline": "Pojazdy, kierowcy, finanse i terminy formalne — w jednym miejscu. Dla operatorów taksówek i wynajmu turystycznego, którzy wyrośli z arkuszy.",
+    "cta": "Zacznij za darmo",
+    "ctaMeta": "14 dni bezpłatnie · bez karty kredytowej"
+  },
+  "heroVisual": {
+    "label": "Przegląd floty",
+    "live": "Na żywo",
+    "active": "Aktywne",
+    "expiring": "Wygasające",
+    "thisWeek": "W tym tygodniu",
+    "statusOnTrip": "W trasie",
+    "statusAvailable": "Dostępny",
+    "statusExpiring": "Wygasa"
+  },
+  "features": {
+    "heading": "Wszystko, czego potrzebuje operator",
     "fleet": {
-      "title": "Flota",
-      "lead": "Pojazdy, przydziały i status w jednym miejscu. Szczegóły VIN i tablic przygotujemy tutaj.",
-      "loading": "Ładowanie pojazdów…",
-      "emptyTitle": "Twoja flota zaczyna się tutaj",
-      "emptyBody": "Wszystko, czego potrzebujesz, by prowadzić i rozwijać flotę — w jednym miejscu.",
-      "emptyCta": "Dodaj pierwszy pojazd",
-      "addVehicleCta": "Dodaj pojazd",
-      "importSpreadsheetCta": "Importuj z arkusza",
-      "importSpreadsheetSoon": "Wkrótce",
-      "fleetCount": "Zarejestrowane pojazdy: {count}",
-      "addVehicleTitle": "Nowy pojazd",
-      "addVehicleModel": "Model",
-      "addVehicleModelPlaceholder": "np. Toyota Camry",
-      "addVehicleVin": "VIN",
-      "addVehiclePlate": "Nr. rejestracji",
-      "addVehiclePlatePlaceholder": "WZ12345",
-      "addVehicleVinPlaceholder": "V0ZAB12CDE3456789",
-      "addVehicleDriver": "Przypisany kierowca",
-      "addVehicleDriverUnassigned": "Brak przypisania",
-      "addVehicleDriverSearchNoResults": "Nie znaleziono kierowców",
-      "addVehicleInspectionExpiry": "Przegląd techniczny (ważny do)",
-      "addVehicleSubmit": "Zapisz pojazd",
-      "addVehicleSubmitAll": "Zapisz wszystkie pojazdy",
-      "addVehicleAddAnother": "Dodaj kolejny pojazd",
-      "addVehicleIndex": "Pojazd {n}",
-      "addVehicleRemoveRow": "Usuń pojazd",
-      "addVehicleValidationModelsRequired": "Podaj model dla każdego pojazdu.",
-      "addVehicleCancel": "Anuluj",
-      "addVehicleError": "Nie udało się zapisać pojazdu. Sprawdź dane i spróbuj ponownie.",
-      "dateInput": {
-        "previousMonth": "Poprzedni miesiąc",
-        "nextMonth": "Następny miesiąc"
-      },
-      "driverUnassigned": "Nieprzypisany",
-      "unknownModel": "Nieznany model",
-      "inspectionDaysLeft": "pozostało {count} dni",
-      "complianceExpired": "Przeterminowane",
-      "vehicleDetailsTitle": "Szczegóły pojazdu",
-      "vehicleDetailsLead": "Szczegółowy widok karty pojazdu pojawi się wkrótce.",
-      "vehicleIdLabel": "ID pojazdu",
-      "vehicleDetails": {
-        "bentoNetProfit": "Zysk netto",
-        "bentoTotalRevenue": "Przychód łącznie",
-        "bentoTotalExpenses": "Koszty łącznie",
-        "commandView": "Widok dowodzenia pojazdem",
-        "financialSummary": "Podsumowanie finansowe",
-        "totalIncome": "Przychody",
-        "totalFees": "Mandaty",
-        "totalMaintenance": "Serwis",
-        "totalOtherExpenses": "Inne wydatki",
-        "totalCombinedExpenses": "Wszystkie wydatki",
-        "totalProfitLoss": "Łączny zysk/strata",
-        "incomeHistoryTitle": "Historia przychodów",
-        "incomeTableColTitleSource": "Tytuł / źródło",
-        "incomeTableColDriver": "Kierowca",
-        "incomeTableColOccurredAt": "Data wpływu",
-        "incomeTableColAmount": "Kwota",
-        "incomeTableColActions": "Akcje wiersza",
-        "deleteEntryConfirm": "Czy na pewno chcesz usunąć ten wpis?",
-        "incomeDeleteError": "Nie udało się usunąć przychodu. Spróbuj ponownie.",
-        "incomeViewAll": "Zobacz wszystkie",
-        "incomeAllDialogTitle": "Wszystkie przychody",
-        "incomeDialogPrev": "Wstecz",
-        "incomeDialogNext": "Dalej",
-        "incomeDialogPageStatus": "Strona {current} z {total}",
-        "emptyIncomeTitle": "Brak zarejestrowanych przychodów",
-        "emptyIncomeCopy": "Wynajmy, wypłaty od partnerów i inne wpływy pojawią się tutaj. Dodaj pierwszy wpis przez Dodaj przychód u góry strony.",
-        "incomeDefaultTitle": "Przychód",
-        "ledgerTablistAria": "Mandaty i historia serwisu",
-        "carFeesTitle": "Mandaty pojazdu",
-        "thisMonthFees": "W tym miesiącu: {total}",
-        "dueDate": "Termin: {date}",
-        "complianceStatus": "Przypisania i terminy",
-        "assignedDriver": "Przypisany kierowca",
-        "assignOther": "Przypisz innego",
-        "removeDriver": "Usuń",
-        "editInfo": "Edytuj dane",
-        "editVehicle": "Edytuj pojazd",
-        "addIncome": "Dodaj przychód",
-        "addInsurancePolicy": "Polisa OC/AC",
-        "save": "Zapisz",
-        "cancel": "Anuluj",
-        "unnamedVehicle": "Nienazwany pojazd",
-        "emptyPlate": "Brak numeru rejestracyjnego",
-        "emptyVin": "Brak numeru VIN",
-        "emptyFinancialSummary": "Brak danych finansowych.",
-        "emptyFeesTitle": "Brak aktywnych mandatów",
-        "emptyFeesCopy": "Ten pojazd nie ma jeszcze żadnych mandatów. Dodaj mandat przez Dodaj wydatek u góry strony i wybierz typ Mandat.",
-        "emptyComplianceTitle": "Brak danych zgodności",
-        "emptyComplianceCopy": "Dodaj daty przeglądu i ubezpieczenia dla tego pojazdu, aby terminy i postęp pojawiły się tutaj.",
-        "emptyDriverCopy": "Aktualnie nie przypisano kierowcy.",
-        "emptyMaintenanceTitle": "Brak historii serwisowej",
-        "emptyMaintenanceCopy": "Wizyty w serwisie i naprawy pojawią się na tej osi czasu. Dodaj wpis przez Dodaj wydatek i wybierz Serwis.",
-        "complianceItemStatusLabel": "Status",
-        "complianceItemEmptyTitle": "Brakuje daty ważności",
-        "complianceItemEmptyCopy": "Podaj termin ważności, aby zobaczyć odliczanie i pasek postępu—mniej niespodzianek na drodze.",
-        "complianceItemEmptyCopyInsurance": "Podaj termin ważności polisy, aby zobaczyć odliczanie i pasek postępu—łatwiejsze odnowienia i mniej luk w ochronie.",
-        "complianceItemEmptyCtaInspection": "Dodaj datę ważności przeglądu",
-        "complianceItemEmptyCtaInsurance": "Dodaj datę ważności polisy",
-        "validUntilLabel": "Ważne do",
-        "timeRemaining": "Pozostały czas",
-        "complianceDuesLabel": "Należności polisy",
-        "complianceDuePaid": "Opłacono",
-        "complianceDueToPay": "Do zapłaty",
-        "complianceDueUpcoming": "Nadchodzi",
-        "complianceDueOverdue": "Po terminie",
-        "complianceDueTooltipPaid": "Ta należność jest już opłacona i powiązana z wpisem wydatku.",
-        "complianceDueTooltipUpcoming": "Termin tej należności jest jeszcze w przyszłości.",
-        "complianceDueTooltipOverdue": "Termin tej należności przypada na dziś lub już minął.",
-        "complianceDueMarkPaid": "Oznacz jako opłacone",
-        "complianceDueMarkUnpaid": "Oznacz jako nieopłacone",
-        "dateNotSet": "Brak daty",
-        "maintenanceHistory": "Historia serwisowa",
-        "addExpense": "Dodaj wydatek",
-        "editExpense": "Edytuj",
-        "deleteExpense": "Usuń",
-        "editExpenseTitle": "Edytuj wydatek",
-        "editExpenseLead": "Zaktualizuj szczegóły zdarzenia serwisowego.",
-        "expenseDeleteError": "Nie udało się usunąć wydatku. Spróbuj ponownie.",
-        "loadMore": "Wczytaj więcej",
-        "validUntil": "Ważne do {date}",
-        "attachments": "Załączniki",
-        "complianceItemEditDateAria": "Edytuj datę ważności",
-        "inspectionDateDialog": {
-          "title": "Data ważności przeglądu",
-          "lead": "Wybierz datę, do której przegląd techniczny pozostaje ważny.",
-          "dateLabel": "Ważne do",
-          "save": "Zapisz",
-          "validation": "Wybierz prawidłową datę.",
-          "error": "Nie udało się zaktualizować pojazdu. Spróbuj ponownie."
-        },
-        "insuranceDateDialog": {
-          "title": "Data ważności polisy",
-          "lead": "Wybierz datę, do której obowiązuje ochrona OC/AC.",
-          "dateLabel": "Ważne do",
-          "save": "Zapisz",
-          "validation": "Wybierz prawidłową datę.",
-          "error": "Nie udało się zaktualizować pojazdu. Spróbuj ponownie."
-        },
-        "insurancePolicyDialog": {
-          "title": "Nowa polisa ubezpieczeniowa",
-          "lead": "Zarejestruj ochronę, składkę i harmonogram płatności dla tego pojazdu. Kwoty do dwóch miejsc po przecinku; suma zaplanowanych kwot musi równać się składce.",
-          "sectionPolicy": "Dane polisy",
-          "sectionPremium": "Składka i raty",
-          "sectionNotes": "Notatki",
-          "insurerName": "Ubezpieczyciel",
-          "insurerPlaceholder": "np. ACME Ubezpieczenia",
-          "policyNumber": "Numer polisy",
-          "policyNumberPlaceholder": "POL-2026-001",
-          "coverageStart": "Początek ochrony",
-          "coverageEnd": "Koniec ochrony",
-          "paymentAmount": "Składka łącznie",
-          "currency": "Waluta (ISO)",
-          "paymentPlanLabel": "Sposób płatności składki",
-          "paymentPlanOneTime": "Jednorazowa płatność",
-          "paymentPlanSchedule": "Własny harmonogram rat",
-          "oneTimeDueDate": "Termin płatności",
-          "oneTimePaymentHint": "Cała składka jest należna w tym terminie.",
-          "scheduleHint": "Dodaj wiersz na każdą ratę. Daty i kwoty muszą być poprawne; suma kwot musi równać się składce łącznie.",
-          "dueDate": "Termin płatności",
-          "amount": "Kwota",
-          "removeRow": "Usuń ratę",
-          "addInstallment": "Dodaj ratę",
-          "notes": "Notatki wewnętrzne",
-          "notesPlaceholder": "Opcjonalny kontekst dla zespołu (niewidoczny dla kierowców).",
-          "submit": "Utwórz polisę",
-          "error": "Nie udało się utworzyć polisy. Sprawdź kwoty i daty, potem spróbuj ponownie.",
-          "validation": {
-            "dates": "Wybierz datę początku i końca ochrony.",
-            "coverageOrder": "Koniec ochrony musi być po dacie początku.",
-            "amount": "Podaj prawidłową składkę (nieujemną, do dwóch miejsc po przecinku).",
-            "currency": "Użyj 3-literowego kodu ISO waluty (np. PLN).",
-            "installments": "Dodaj co najmniej jedną ratę z prawidłowymi datami i kwotami.",
-            "sumMismatch": "Suma kwot rat musi dokładnie równać się składce łącznie.",
-            "oneTimeDue": "Wybierz prawidłowy termin płatności.",
-            "alreadyPaidAmount": "Podaj prawidłową kwotę już opłaconą (nieujemną, do dwóch miejsc po przecinku)."
-          },
-          "oneTimeAmount": "Kwota jednorazowa",
-          "paymentPlanAlreadyPaid": "Już opłacone",
-          "alreadyPaidAmount": "Kwota już opłacona",
-          "alreadyPaidHint": "Tworzy polisę i od razu zapisuje płatność jako wydatek INSURANCE z datą zdarzenia równą dacie początku ochrony.",
-          "errorPaidAuto": "Polisa została utworzona, ale nie udało się automatycznie zapisać płatności. Otwórz szczegóły polisy i opłać ratę ręcznie.",
-          "editTitle": "Edytuj polisę ubezpieczeniową",
-          "editLead": "Zaktualizuj dane polisy i raty dla tego pojazdu.",
-          "submitEdit": "Zapisz zmiany"
-        },
-        "complianceItems": {
-          "technicalInspection": "Przegląd techniczny",
-          "ocAcPolicy": "Polisa OC/AC"
-        },
-        "demoFees": {
-          "speedingTicketA4": "Mandat za prędkość (A4)",
-          "wrongParkingFeeZoneB": "Mandat za złe parkowanie (strefa miejska B)",
-          "busLaneViolation": "Naruszenie pasa dla autobusów",
-          "noValidTollPayment": "Brak ważnej opłaty drogowej"
-        },
-        "expenseDialog": {
-          "title": "Dodaj wydatek",
-          "lead": "Zapisz nowy koszt dla tego pojazdu i opcjonalnie przypisz kierowcę.",
-          "openCta": "Nowy wydatek",
-          "type": "Typ wydatku",
-          "carPaymentKind": "Rodzaj płatności auta",
-          "selectCarPaymentKind": "Wybierz rodzaj płatności",
-          "amount": "Kwota",
-          "currency": "Waluta",
-          "titleField": "Tytuł",
-          "titlePlaceholder": "np. Wymiana oleju",
-          "occurredAt": "Data zdarzenia",
-          "notes": "Notatki",
-          "notesPlaceholder": "Dodaj opcjonalne szczegóły wydatku",
-          "linkedCar": "Powiązany pojazd",
-          "linkedDriver": "Powiązany kierowca",
-          "searchCarPlaceholder": "Szukaj po modelu lub tablicy...",
-          "linked": "Powiązano",
-          "expenseTypes": {
-            "MAINTENANCE": "Serwis",
-            "CAR_PAYMENT": "Płatność za auto",
-            "INSURANCE": "Ubezpieczenie",
-            "FEE": "Mandat",
-            "OTHER": "Inne"
-          },
-          "carPaymentKinds": {
-            "BUY": "Zakup",
-            "LEASE": "Leasing"
-          },
-          "submit": "Zapisz wydatek",
-          "validation": "Uzupełnij wymagane pola: tytuł, kwota i data.",
-          "error": "Nie udało się dodać wydatku. Sprawdź pola i spróbuj ponownie."
-        },
-        "incomeDialog": {
-          "title": "Dodaj przychód",
-          "lead": "Zapisz przychód dla pojazdu i przypisz kierowcę.",
-          "editTitle": "Edytuj przychód",
-          "editLead": "Zaktualizuj kwotę, datę, powiązania i notatki tego wpisu.",
-          "amount": "Kwota",
-          "titleField": "Tytuł",
-          "titlePlaceholder": "np. Tygodniowy wynajem",
-          "occurredAt": "Data zdarzenia",
-          "notes": "Notatki",
-          "notesPlaceholder": "Opcjonalne szczegóły przychodu",
-          "linkedCar": "Powiązany pojazd",
-          "linkedDriver": "Powiązany kierowca",
-          "searchCarPlaceholder": "Szukaj po modelu lub tablicy...",
-          "submit": "Zapisz przychód",
-          "validation": "Uzupełnij kwotę, datę, pojazd i kierowcę.",
-          "error": "Nie udało się zapisać przychodu. Sprawdź pola i spróbuj ponownie."
-        }
-      },
-      "table": {
-        "vehicleUnit": "Pojazd",
-        "plate": "Tablica",
-        "vin": "VIN",
-        "assignedDriver": "Przypisany kierowca",
-        "inspectionValidUntil": "Ważność przeglądu"
-      }
-    },
-    "map": {
-      "title": "Mapa na żywo",
-      "lead": "Pozycje w czasie rzeczywistym i kontekst przejazdów dla każdego aktywnego zasobu."
+      "title": "Zarządzanie flotą",
+      "description": "Wszystkie pojazdy, kierowcy i przypisania w jednym widoku. Wiesz, kto jedzie, co jest dostępne i co wymaga uwagi."
     },
     "finance": {
-      "title": "Finanse",
-      "lead": "Podsumowanie wydatków i przychodów.",
-      "filters": {
-        "periods": {
-          "currentWeek": "Bieżący tydzień",
-          "currentMonth": "Bieżący miesiąc",
-          "currentYear": "Bieżący rok",
-          "customRange": "Własny zakres"
-        },
-        "dateRange": "Zakres dat",
-        "quickRange": "Szybki zakres",
-        "pickRange": "Wybierz datę początkową i końcową",
-        "fromDate": "Data od",
-        "toDate": "Data do",
-        "type": "Typ wydatku",
-        "allTypes": "Wszystkie typy",
-        "currency": "Waluta",
-        "allCurrencies": "Wszystkie waluty",
-        "search": "Szybkie wyszukiwanie",
-        "searchPlaceholder": "Szukaj po tytule lub notatkach..."
+      "title": "Przychody i koszty",
+      "description": "Ile zarabia każdy pojazd. Koszty paliwa, serwisu i ubezpieczenia. Marża na poziomie floty i pojedynczego auta."
+    },
+    "compliance": {
+      "title": "Terminy formalne",
+      "description": "Przeglądy techniczne, OC, polisy. Autiqa wyświetla zbliżające się terminy zanim auto zostanie uziemione."
+    }
+  },
+  "featureFleet": {
+    "colVehicle": "Pojazd",
+    "colDriver": "Kierowca",
+    "colStatus": "Status",
+    "statusOnTrip": "W trasie",
+    "statusAvailable": "Dostępny",
+    "statusExpiring": "Wygasa",
+    "noDriver": "Brak"
+  },
+  "featureFinance": {
+    "revenue": "Przychody",
+    "costs": "Koszty",
+    "net": "Wynik netto",
+    "revenueLabel": "w tym miesiącu",
+    "costsLabel": "paliwo, serwis",
+    "netLabel": "marża"
+  },
+  "featureCompliance": {
+    "inspection": "Przegląd techniczny",
+    "insurance": "Odnowienie OC",
+    "daysLeft": "{n} dni",
+    "dayLeft": "1 dzień"
+  },
+  "segments": {
+    "heading": "Dla dwóch typów operatorów",
+    "connector": "Ten sam system kontroli, dopasowany do Twojego modelu.",
+    "fleet": {
+      "label": "Flota taksówek i ride-hail",
+      "items": [
+        "Śledzenie przypisań kierowców i zmian",
+        "Alerty o przeglądach i OC zanim auto zostanie uziemione",
+        "Rentowność na poziomie pojazdu — co zachować, co sprzedać"
+      ]
+    },
+    "rental": {
+      "label": "Wynajem turystyczny",
+      "items": [
+        "Które auta są dostępne, które wyjechały, które czekają na serwis",
+        "Przychody i koszty obrotu na każdym pojeździe",
+        "Compliance między rezerwacjami — żadna polisa nie przepada"
+      ]
+    }
+  },
+  "pricing": {
+    "heading": "Prosty cennik",
+    "subline": "Do 3 pojazdów — zawsze bezpłatnie. Powyżej 13 PLN za pojazd miesięcznie.",
+    "sliderQuestion": "Ile masz pojazdów?",
+    "vehiclesLabel": "pojazdów",
+    "zoneFreePrice": "Bezpłatnie",
+    "zoneFreeRange": "1–3 pojazdy",
+    "zonePaidPrice": "13 PLN / pojazd",
+    "zonePaidRange": "4–40 pojazdów",
+    "zoneEnterprisePrice": "Kontakt",
+    "zoneEnterpriseRange": "41+ pojazdów",
+    "perMonth": "/ mies.",
+    "freeCount": "bezpłatnie",
+    "freeNote": "Bez karty kredytowej",
+    "enterpriseHeading": "Duże floty",
+    "enterpriseDesc": "Dedykowane warunki, priorytetowe wsparcie i integracje dopasowane do skali.",
+    "ctaFree": "Zacznij bezpłatnie",
+    "ctaPaid": "Zacznij bezpłatnie",
+    "ctaEnterprise": "Porozmawiajmy",
+    "features": [
+      "Zarządzanie flotą",
+      "Alerty compliance",
+      "Śledzenie finansów",
+      "Zarządzanie kierowcami",
+      "Aplikacja mobilna",
+      "Raporty i eksport"
+    ]
+  },
+  "faq": {
+    "heading": "Najczęstsze pytania",
+    "subline": "Wszystko, co chcesz wiedzieć przed startem.",
+    "ctaText": "Gotowy, żeby zacząć?",
+    "ctaAction": "Zacznij za darmo",
+    "items": [
+      {
+        "q": "Mogę zacząć bez karty kredytowej?",
+        "a": "Tak. Do 3 pojazdów Autiqa jest zawsze bezpłatna — bez limitu czasowego i bez karty kredytowej. Powyżej 3 pojazdów plan płatny kosztuje 13 PLN za pojazd miesięcznie. Dane płatności podajesz dopiero wtedy, gdy zdecydujesz się na rozszerzenie."
       },
-      "types": {
-        "MAINTENANCE": "Serwis",
-        "CAR_PAYMENT": "Rata pojazdu",
-        "INSURANCE": "Ubezpieczenie",
-        "FEE": "Mandaty",
-        "OTHER": "Inne"
+      {
+        "q": "Jak Autiqa informuje o zbliżających się przeglądach i OC?",
+        "a": "Autiqa śledzi terminy przeglądów technicznych, wygaśnięcia OC i innych polis dla każdego pojazdu. Zbliżające się deadline'y pojawiają się w widoku floty z odpowiednim wyprzedzeniem — zanim auto zostanie uziemione i zanim stracisz przychód."
       },
-      "kpis": {
-        "totalSpend": "Łączne wydatki",
-        "avgDaily": "Średni wydatek dzienny",
-        "totalRevenue": "Łączne przychody",
-        "avgRevenueDaily": "Średnie przychody dzienne",
-        "profitLoss": "Zysk / strata",
-        "avgProfitLossDaily": "Średni zysk / strata dziennie",
-        "avgMonthly": "Średni wydatek miesięcznie",
-        "largest": "Największy pojedynczy wydatek",
-        "focusRisk": "Koncentracja kategorii",
-        "anomalies": "Liczba anomalii"
+      {
+        "q": "Ile czasu zajmuje dodanie floty?",
+        "a": "Większość operatorów dodaje pierwsze pojazdy w ciągu 15 minut. Wystarczy numer rejestracyjny i podstawowe dane pojazdu. Kierowców, terminy i finanse możesz uzupełniać stopniowo — system działa od razu po dodaniu pierwszego auta."
       },
-      "charts": {
-        "spendTrend": "Trend wydatków i przychodów",
-        "spendTrendEmptyTitle": "Brak danych trendu w tym okresie",
-        "spendTrendEmptyDescription": "Dodaj wydatki i przychody z operacji floty, aby zobaczyć tutaj wykres dzienny wydatków, przychodów oraz zysku lub straty.",
-        "categoryMix": "Struktura kategorii",
-        "categoryMixEmptyTitle": "Brak podziału według kategorii",
-        "categoryMixEmptyDescription": "Zapisuj wydatki floty—serwis, mandaty, ubezpieczenie i inne—w wybranym okresie, a ten wykres pokaże, jak rozkładają się koszty między kategoriami.",
-        "typeBreakdown": "Skumulowany zysk/strata (rok bieżący + prognoza)",
-        "intensity": "Top pojazdów wg wydatków",
-        "intensityEmptyTitle": "Brak rankingu wydatków per pojazd",
-        "intensityEmptyDescription": "Zapisuj wydatki przypisane do pojazdów w wybranym zakresie dat—wykres słupkowy uporządkuje tablice według łącznych kosztów.",
-        "recurring": "Top pojazdów wg przychodu",
-        "recurringEmptyTitle": "Brak rankingu przychodu per pojazd",
-        "recurringEmptyDescription": "Rejestruj przychody powiązane z pojazdami w tym okresie, aby zobaczyć, które jednostki generują największy wpływ."
+      {
+        "q": "Czy Autiqa działa dla wynajmu turystycznego?",
+        "a": "Tak. Autiqa obsługuje zarówno floty taksówek i ride-hail, jak i operatorów wynajmu turystycznego. Śledzisz dostępność pojazdów, przychody z każdego wypożyczenia i terminy compliance między rezerwacjami — tak żeby żadna polisa nie przepadła między jednym klientem a drugim."
       },
-      "insights": {
-        "label": "Wnioski",
-        "title": "Inteligencja operacyjna",
-        "items": {
-          "total": "W wybranym okresie wygenerowano {value} wydatków.",
-          "top": "Największa kategoria odpowiada obecnie za {value} całego obciążenia kosztowego.",
-          "anomalies": "Liczba transakcji powyżej oczekiwanej dynamiki wydatków: {value}.",
-          "largest": "Największy pojedynczy wydatek w widoku to {value}."
-        }
+      {
+        "q": "Mogę zobaczyć, ile zarabia każdy pojazd osobno?",
+        "a": "Tak. Widok finansów pokazuje przychody, koszty (paliwo, serwis, ubezpieczenie) i marżę netto na poziomie każdego pojazdu. Masz bezpośrednią odpowiedź na pytanie: które auto jest opłacalne, a które kosztuje więcej niż zarabia."
       },
-      "recent": {
-        "title": "Ostatnie wydatki",
-        "emptyTitle": "Brak ostatnich wydatków",
-        "emptyDescription": "Po zapisaniu kosztów we Flocie—mandaty, serwis, paliwo i inne—pojawią się tutaj z datą, typem i kwotą.",
-        "date": "Data",
-        "type": "Typ",
-        "titleCol": "Tytuł",
-        "amount": "Kwota"
-      },
-      "recentEarnings": {
-        "title": "Ostatnie przychody",
-        "emptyTitle": "Brak ostatnich przychodów",
-        "emptyDescription": "Przychody zapisane dla pojazdów i kierowców pojawią się tutaj, abyś mógł szybko przejrzeć ostatnie wpływy.",
-        "date": "Data",
-        "type": "Typ",
-        "kind": "Przychód",
-        "titleCol": "Tytuł",
-        "amount": "Kwota"
+      {
+        "q": "Co, jeśli moja flota przekroczy 40 pojazdów?",
+        "a": "Dla flot powyżej 40 pojazdów przygotowujemy indywidualne warunki — dedykowany opiekun, priorytetowe wsparcie i możliwość integracji z istniejącymi systemami. Napisz do nas, żebyśmy omówili szczegóły."
       }
-    },
-    "drivers": {
-      "title": "Kierowcy",
-      "lead": "Umowy, wyniki i zgodność dla każdego za kierownicą.",
-      "loading": "Ładowanie kierowców…",
-      "searchPlaceholder": "Szukaj po imieniu lub nazwisku...",
-      "emptyTitle": "Twoja lista kierowców zaczyna się tutaj",
-      "emptyBody": "Dodaj pierwszy profil kierowcy, aby zarządzać przypisaniami, zgodnością i wynikami w jednym miejscu.",
-      "emptyCta": "Dodaj pierwszego kierowcę",
-      "addDriverCta": "Dodaj kierowcę",
-      "driverCount": "Zarejestrowani kierowcy: {count}",
-      "driverNotFoundTitle": "Nie znaleziono kierowcy",
-      "driverNotFoundBody": "Ten kierowca nie istnieje lub nie jest dostępny na bieżącej liście.",
-      "table": {
-        "driver": "Kierowca",
-        "email": "E-mail",
-        "phone": "Telefon",
-        "assignedCarId": "ID przypisanego auta",
-        "createdAt": "Dodano"
-      },
-      "dialog": {
-        "title": "Wdróż zespół kierowców",
-        "lead": "Dodaj wielu kierowców do operacyjnej listy.",
-        "newDriver": "Dane nowego kierowcy",
-        "firstName": "Imię",
-        "firstNamePlaceholder": "np. Jan",
-        "lastName": "Nazwisko",
-        "lastNamePlaceholder": "np. Kowalski",
-        "email": "Adres e-mail",
-        "emailPlaceholder": "jan{'@'}example.com",
-        "phoneNumber": "Numer telefonu",
-        "phoneNumberPlaceholder": "+48 600 000 000",
-        "addAnother": "Dodaj kolejnego kierowcę",
-        "cancel": "Anuluj",
-        "submit": "Zapisz wszystkich kierowców",
-        "submitting": "Zapisywanie...",
-        "validation": "Podaj imię i nazwisko dla każdego kierowcy. E-mail i telefon muszą mieć poprawny format, jeśli są uzupełnione.",
-        "error": "Nie udało się zapisać kierowców. Sprawdź pola i spróbuj ponownie."
-      },
-      "details": {
-        "common": {
-          "emptyValue": "—"
-        },
-        "actions": {
-          "editDriver": "Edytuj kierowcę",
-          "assignVehicle": "Przypisz pojazd",
-          "assignOtherVehicle": "Przypisz inny pojazd"
-        },
-        "personal": {
-          "title": "Dane osobowe",
-          "firstName": "Imię",
-          "lastName": "Nazwisko",
-          "email": "Adres e-mail",
-          "phone": "Numer telefonu"
-        },
-        "assignment": {
-          "title": "Przypisane auto",
-          "assignedVehicleFallback": "Przypisany pojazd",
-          "plateUnavailable": "Brak tablicy",
-          "empty": "Brak przypisanego auta"
-        },
-        "assignDialog": {
-          "title": "Przypisz auto",
-          "noCars": "Brak dostępnych aut",
-          "unnamedCar": "Nienazwane auto",
-          "noPlate": "Brak tablicy",
-          "currentlyAssigned": "Obecnie przypisane"
-        },
-        "documents": {
-          "title": "Dokumenty",
-          "uploading": "Przesyłanie plików...",
-          "dropzoneHint": "Przeciągnij i upuść pliki tutaj lub",
-          "supportedFormats": "Obsługiwane formaty: {formats} (maks. 5 MB każdy)",
-          "browse": "Wybierz pliki",
-          "selectedFiles": "Wybrane pliki",
-          "uploadedFiles": "Przesłane pliki",
-          "clear": "Wyczyść",
-          "save": "Zapisz",
-          "saving": "Zapisywanie...",
-          "empty": "Brak przesłanych dokumentów.",
-          "unknownSize": "Nieznany rozmiar",
-          "unknownType": "nieznany/typ",
-          "validation": {
-            "selectAtLeastOne": "Wybierz co najmniej jeden plik.",
-            "unsupportedFormat": "Nieobsługiwany format. Dozwolone: {formats}.",
-            "maxSize": "Każdy plik musi mieć maksymalnie 5 MB."
-          }
-        }
-      }
-    },
-    "maintenance": {
-      "title": "Serwis",
-      "lead": "Zlecenia, przestoje i koszty — utrzymanie floty w gotowości."
-    },
-    "settings": {
-      "title": "Ustawienia",
-      "lead": "Preferencje przestrzeni, integracje i kontrola dostępu.",
-      "signOut": "Wyloguj się"
-    }
+    ]
   },
-  "appShell": {
-    "title": "Panel Autiqa",
-    "lead": "Tu powstanie główna aplikacja (flota, pojazdy, raporty).",
-    "backHome": "Strona główna",
-    "logoutDebug": "Wyloguj (debug)"
-  },
-  "onboardingOrg": {
-    "eyebrow": "Witamy",
-    "title": "Zacznijmy od konfiguracji",
-    "lede": "Opowiedz nam krótko o swojej firmie, abyśmy mogli dopasować działanie aplikacji do Twoich potrzeb.",
-    "progressAria": "Kroki wdrożenia",
-    "stepOf": "Krok {current} z {total}",
-    "orgNameLabel": "Nazwa organizacji",
-    "orgNamePlaceholder": "np. Taxi Północne Miasto",
-    "orgTypeLabel": "Typ organizacji",
-    "orgTypePlaceholder": "np. flota taxi, wynajem, logistyka…",
-    "continue": "Dalej",
-    "back": "Wstecz",
-    "finish": "Zakończ",
-    "errors": {
-      "nameRequired": "Podaj nazwę organizacji.",
-      "generic": "Nie udało się utworzyć organizacji. Spróbuj ponownie."
-    }
-  },
-  "verifyEmail": {
-    "eyebrow": "Potwierdź adres e-mail",
-    "title": "Wpisz kod",
-    "subtitle": "Wysłaliśmy 6-cyfrowy kod na {email}. Wklej go lub wpisz poniżej, aby wejść do Autiqa.",
-    "emailUnknown": "Twoją skrzynkę",
-    "otpLabel": "Kod jednorazowy",
-    "otpAria": "Sześciocyfrowy kod weryfikacyjny",
-    "digitAria": "Cyfra {n} z 6",
-    "submit": "Potwierdź i przejdź dalej",
-    "resendLead": "Nie dostałeś wiadomości?",
-    "resendAction": "Wyślij kod ponownie",
-    "logout": "Wyloguj się",
-    "footerHint": "Sprawdź folder spam lub oferty — czasem wiadomość tam trafia.",
-    "errors": {
-      "invalidCode": "Ten kod jest nieprawidłowy lub wygasł. Sprawdź wiadomość i spróbuj ponownie.",
-      "generic": "Nie udało się potwierdzić adresu e-mail. Spróbuj ponownie."
-    }
+  "footer": {
+    "tagline": "Kontrola floty dla operatorów.",
+    "product": "Produkt",
+    "company": "Firma",
+    "links": {
+      "features": "Funkcje",
+      "pricing": "Cennik",
+      "login": "Zaloguj się",
+      "about": "O nas",
+      "privacy": "Prywatność",
+      "terms": "Warunki"
+    },
+    "copyright": "© 2025 Autiqa. Wszelkie prawa zastrzeżone."
   }
 }

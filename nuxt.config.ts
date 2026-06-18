@@ -1,58 +1,38 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  build: {
-    transpile: ['@vuepic/vue-datepicker'],
-  },
-  vite: {
-    optimizeDeps: {
-      include: [
-        '@vue/devtools-core',
-        '@vue/devtools-kit',
-        'echarts/core',
-        'echarts/renderers',
-        'echarts/charts',
-        'echarts/components',
-        'http-status-codes',
-        'vue-echarts',
-        'date-fns/locale/en-US',
-        'date-fns/locale/pl',
-      ],
-    },
-  },
-  runtimeConfig: {
-    public: {
-      /** API origin for browser `$fetch` and Nitro proxy (no trailing slash). */
-      apiBase: 'http://localhost:3001',
-      /** Canonical site origin for SEO (no trailing slash). */
-      siteUrl: process.env.NUXT_PUBLIC_SITE_URL || 'https://autiqa.pl',
-    },
-  },
 
   modules: [
-    '@pinia/nuxt',
-    '@nuxtjs/i18n',
-    '@nuxt/eslint',
     '@nuxt/fonts',
-    '@nuxt/hints',
+    '@nuxt/eslint',
+    '@nuxtjs/i18n',
   ],
 
-  css: ['~/assets/css/main.css', '@vuepic/vue-datepicker/dist/main.css'],
+  css: ['~/assets/css/main.css'],
+
+  fonts: {
+    families: [
+      { name: 'Manrope', provider: 'google', weights: [300, 400, 500, 600, 700, 800] },
+    ],
+    defaults: {
+      preload: true,
+    },
+  },
 
   app: {
     head: {
-      titleTemplate: '%s · Autiqa',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       ],
       link: [
-        { rel: 'icon', type: 'image/svg+xml', href: '/autiqa-mark.svg' },
+        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         {
           rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0',
+          href: 'https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap',
         },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.ico' },
       ],
     },
   },
@@ -66,28 +46,12 @@ export default defineNuxtConfig({
     ],
     langDir: 'locales',
     detectBrowserLanguage: false,
-    vueI18n: 'app/i18n/i18n.config.ts',
+    vueI18n: 'i18n.config.ts',
   },
 
-  fonts: {
-    families: [
-      { name: 'Manrope', provider: 'google', weights: [500, 600, 700, 800] },
-      { name: 'Inter', provider: 'google', weights: [400, 500, 600] },
-    ],
+  runtimeConfig: {
+    public: {
+      apiBase: 'http://localhost:3001',
+    },
   },
-
-  /**
-   * Central layout assignment (see layouts/dashboard.vue for the app chrome).
-   * More specific paths must come before wildcards. i18n: default locale (pl) has no prefix; `en` uses `/en/...`.
-   */
-  routeRules: {
-    '/app/verify-email': { appLayout: false },
-    '/en/app/verify-email': { appLayout: false },
-    '/app/onboarding-org': { appLayout: false },
-    '/en/app/onboarding-org': { appLayout: false },
-    '/app': { appLayout: 'dashboard' },
-    '/en/app': { appLayout: 'dashboard' },
-    '/app/**': { appLayout: 'dashboard' },
-    '/en/app/**': { appLayout: 'dashboard' },
-  },
-});
+})

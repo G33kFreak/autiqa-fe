@@ -1,58 +1,89 @@
-@import './inputs.css';
-@import './auth.css';
-@import './app.css';
-@import './app-dialog.css';
+@import './landing.css';
 
 :root {
-  /* Light theme — Tactical Intelligence (surface hierarchy) */
-  --color-background: #f7f9fb;
-  --color-surface: #f7f9fb;
-  --color-surface-bright: #f7f9fb;
-  --color-surface-container: #eceef0;
-  --color-surface-container-low: #f2f4f6;
-  --color-surface-container-high: #e6e8ea;
-  --color-surface-container-highest: #e0e3e5;
-  --color-surface-container-lowest: #ffffff;
-  --color-surface-dim: #d8dadc;
-  --color-surface-variant: #e0e3e5;
+  /* ── Palette ─────────────────────────────────────────────── */
+  --color-bg:                oklch(1.000 0.000   0);
+  --color-surface:           oklch(0.972 0.005 270);
+  --color-surface-mid:       oklch(0.948 0.008 270);
+  --color-surface-high:      oklch(0.930 0.010 270);
 
-  --color-on-background: #191c1e;
-  --color-on-surface: #191c1e;
-  --color-on-surface-variant: #45464d;
-  --color-outline: #76777d;
-  --color-outline-variant: #c6c6cd;
+  /* Bolder primary: chroma pushed from 0.140 → 0.185 */
+  --color-primary:           oklch(0.375 0.185 268);
+  --color-primary-hover:     oklch(0.325 0.185 268);
+  --color-primary-subtle:    oklch(0.375 0.185 268 / 0.08);
+  --color-on-primary:        oklch(1.000 0.000   0);
 
-  --color-primary: #000000;
-  --color-primary-container: #131b2e;
-  --color-on-primary: #ffffff;
+  --color-ink:               oklch(0.155 0.018 268);
+  --color-muted:             oklch(0.440 0.012 268);
+  --color-outline:           oklch(0.830 0.008 270);
 
-  --color-secondary: #0050cc;
-  --color-secondary-container: #0266ff;
-  --color-on-secondary: #ffffff;
-  --color-on-secondary-container: #f9f7ff;
-  --color-secondary-fixed: #dae1ff;
+  --color-risk:              oklch(0.420 0.180  26);
+  --color-risk-bg:           oklch(0.420 0.180  26 / 0.10);
+  --color-comply:            oklch(0.440 0.140 158);
+  --color-comply-bg:         oklch(0.440 0.140 158 / 0.10);
+  --color-warn:              oklch(0.560 0.150  65);
+  --color-warn-bg:           oklch(0.560 0.150  65 / 0.10);
 
-  --color-inverse-primary: #bec6e0;
-  --color-inverse-surface: #2d3133;
-  --color-inverse-on-surface: #eff1f3;
+  /* ── Hero (dark indigo context) ──────────────────────────── */
+  --color-hero-bg:           oklch(0.375 0.185 268);
+  --color-hero-surface:      oklch(0.440 0.145 268);
+  --color-hero-surface-high: oklch(0.505 0.115 268);
+  --color-hero-ink:          oklch(1.000 0.000   0);
+  --color-hero-muted:        oklch(0.770 0.045 272);
+  --color-hero-outline:      oklch(1.000 0.000   0 / 0.12);
 
-  --color-tertiary-container: #001e2c;
-  --color-on-tertiary: #ffffff;
+  /* ── Dark sections ───────────────────────────────────────── */
+  --color-dark-bg:           oklch(0.108 0.018 268);
+  --color-dark-surface:      oklch(0.158 0.022 268);
+  --color-dark-ink:          oklch(0.965 0.006 270);
+  --color-dark-muted:        oklch(0.570 0.030 270);
+  --color-dark-outline:      oklch(1.000 0.000   0 / 0.10);
 
-  --color-error: #ba1a1a;
-  --color-error-container: #ffdad6;
-  --color-on-error-container: #93000a;
-  --color-success: #059669;
-  --color-on-secondary-fixed-variant: #1a2a6b;
-
+  /* ── Typography ──────────────────────────────────────────── */
   --font-display: 'Manrope', system-ui, sans-serif;
-  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-sans:    'Manrope', system-ui, sans-serif;
 
-  --shadow-ambient: 0 12px 32px rgba(25, 28, 30, 0.06);
+  /* ── Spacing (4pt base) ──────────────────────────────────── */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
 
-  /* Legacy aliases used in early pages */
-  --color-on-surface-muted: color-mix(in srgb, var(--color-on-surface) 55%, transparent);
-  --color-secondary-deep: var(--color-secondary-container);
+  /* ── Radii ────────────────────────────────────────────────── */
+  --radius-sm:   0.375rem;
+  --radius-md:   0.5rem;
+  --radius-lg:   0.75rem;
+  --radius-xl:   1rem;
+  --radius-2xl:  1.25rem;
+  --radius-full: 999px;
+
+  /* ── Shadows ─────────────────────────────────────────────── */
+  --shadow-ambient: 0 4px 24px oklch(0.155 0.018 268 / 0.07);
+  --shadow-float:   0 12px 48px oklch(0.155 0.018 268 / 0.13), 0 2px 8px oklch(0.155 0.018 268 / 0.06);
+
+  /* ── Easing ──────────────────────────────────────────────── */
+  --ease-out:    cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* ── Durations ───────────────────────────────────────────── */
+  --duration-fast: 140ms;
+  --duration-ui:   210ms;
+  --duration-slow: 380ms;
+
+  /* ── Z-index ─────────────────────────────────────────────── */
+  --z-sticky:   100;
+  --z-dropdown: 200;
+  --z-modal:    400;
+  --z-toast:    500;
+  --z-tooltip:  600;
 }
 
 *,
@@ -63,16 +94,17 @@
 
 html {
   color-scheme: light;
+  scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
   min-height: 100dvh;
-  background: var(--color-surface);
-  color: var(--color-on-surface);
+  background: var(--color-bg);
+  color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: 0.875rem;
-  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -80,11 +112,19 @@ body {
   min-height: 100dvh;
 }
 
-.material-symbols-outlined {
-  font-variation-settings:
-    'FILL' 0,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 24;
-  vertical-align: middle;
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
 }

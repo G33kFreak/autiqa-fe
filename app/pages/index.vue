@@ -1,7 +1,13 @@
-<script setup lang="ts">
-useLandingSeo();
-</script>
-
 <template>
-  <LandingHome />
+  <div>
+    <LandingHeader />
+    <main>
+      <LandingHero />
+      <LandingFeatures />
+      <LandingSegments />
+      <LandingPricing />
+      <LandingFaq />
+    </main>
+    <LandingFooter />
+  </div>
 </template>
