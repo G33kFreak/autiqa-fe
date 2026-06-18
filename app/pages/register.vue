@@ -73,7 +73,9 @@ async function submit() {
       email: email.value.trim(),
       password: password.value,
     })
-    await navigateTo(localePath('/app'))
+    // The account starts inactive; send them straight to email verification.
+    // (02.verify-email middleware enforces this for any later navigation.)
+    await navigateTo(localePath('/verify-email'))
   } catch (e: unknown) {
     const status = e instanceof FetchError ? (e.status ?? e.statusCode) : 0
     if (status === StatusCodes.CONFLICT) fail('conflict')

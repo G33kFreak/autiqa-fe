@@ -7,6 +7,8 @@ import {
   logoutSession,
   registerAccount,
   refreshSession as refreshSessionRequest,
+  verifyEmail as verifyEmailRequest,
+  resendVerification as resendVerificationRequest,
 } from '../api/auth';
 import { getMe } from '../api/users';
 
@@ -50,6 +52,17 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function fetchUser() {
     user.value = await getMe(authenticatedApi);
+  }
+
+  /** Confirm the email OTP, then refresh `user` so `isActive` reflects the change. */
+  async function verifyEmail(otpCode: string) {
+    await verifyEmailRequest(authenticatedApi, { otpCode });
+    await fetchUser();
+  }
+
+  /** Ask the API to send a fresh OTP to the signed-in user's email. */
+  async function resendVerification() {
+    await resendVerificationRequest(authenticatedApi);
   }
 
   /**
@@ -103,6 +116,8 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     logout,
     fetchUser,
+    verifyEmail,
+    resendVerification,
     initAuth,
     refresh,
   };

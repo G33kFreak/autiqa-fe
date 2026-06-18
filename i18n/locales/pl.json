@@ -215,6 +215,28 @@
       "generic": "Coś poszło nie tak. Spróbuj ponownie."
     }
   },
+  "verifyEmail": {
+    "metaTitle": "Zweryfikuj adres e-mail",
+    "metaDescription": "Potwierdź adres e-mail, aby aktywować konto Autiqa.",
+    "title": "Sprawdź skrzynkę",
+    "subtitle": "Wysłaliśmy 6-cyfrowy kod na adres {email}. Wpisz go poniżej, aby aktywować konto.",
+    "otpAria": "6-cyfrowy kod weryfikacyjny",
+    "digitAria": "Cyfra {n}",
+    "submit": "Zweryfikuj e-mail",
+    "submitPending": "Weryfikacja…",
+    "resendLead": "Nie dostałeś kodu?",
+    "resendAction": "Wyślij ponownie",
+    "resending": "Wysyłanie…",
+    "resendIn": "Wyślij ponownie za {n}s",
+    "resendDone": "Nowy kod jest w drodze.",
+    "useDifferentEmail": "Użyj innego adresu e-mail",
+    "backToHome": "Wróć na stronę główną",
+    "errors": {
+      "invalidCode": "Ten kod jest nieprawidłowy lub wygasł. Spróbuj ponownie.",
+      "resendFailed": "Nie udało się wysłać nowego kodu. Spróbuj ponownie.",
+      "generic": "Coś poszło nie tak. Spróbuj ponownie."
+    }
+  },
   "footer": {
     "tagline": "Kontrola floty dla operatorów.",
     "product": "Produkt",
