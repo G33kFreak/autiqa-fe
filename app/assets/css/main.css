@@ -23,6 +23,8 @@
   --color-comply-bg:         oklch(0.440 0.140 158 / 0.10);
   --color-warn:              oklch(0.560 0.150  65);
   --color-warn-bg:           oklch(0.560 0.150  65 / 0.10);
+  /* Darker amber for warn text on light surfaces — clears 4.5:1 where --color-warn does not. */
+  --color-warn-text:         oklch(0.470 0.140  65);
 
   /* ── Hero (dark indigo context) ──────────────────────────── */
   --color-hero-bg:           oklch(0.375 0.185 268);

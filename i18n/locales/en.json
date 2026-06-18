@@ -181,6 +181,59 @@
       "closeMenu": "Close menu",
       "account": "Account"
     },
+    "fleet": {
+      "subtitle": "Every vehicle in your fleet, with inspection and insurance deadlines at a glance.",
+      "addVehicle": "Add vehicle",
+      "loading": "Loading your fleet…",
+      "count": "{n} in fleet",
+      "resultsFiltered": "{shown} of {total} shown",
+      "searchPlaceholder": "Search model, plate, VIN, or driver",
+      "noResultsTitle": "No vehicles match “{q}”.",
+      "clearSearch": "Clear search",
+      "emptyTitle": "Add your first vehicle",
+      "emptyBody": "Your fleet starts here. Add a vehicle and Autiqa begins tracking its inspection and insurance deadlines right away.",
+      "emptyCta": "Add a vehicle",
+      "errorTitle": "Couldn't load your fleet",
+      "errorBody": "Something went wrong fetching your vehicles. Check your connection and try again.",
+      "retry": "Try again",
+      "table": {
+        "caption": "Fleet vehicles",
+        "vehicle": "Vehicle",
+        "plate": "Plate",
+        "vin": "VIN",
+        "driver": "Driver",
+        "inspection": "Inspection",
+        "insurance": "Insurance",
+        "unassigned": "Unassigned",
+        "unknownModel": "Unnamed vehicle"
+      },
+      "compliance": {
+        "notSet": "Not set",
+        "overdue": "Overdue by {n}d",
+        "today": "Due today",
+        "inDays": "in {n} days"
+      },
+      "dialog": {
+        "title": "Add a vehicle",
+        "subtitle": "Only the model is required — fill in the rest whenever you have it.",
+        "close": "Close",
+        "modelLabel": "Model",
+        "modelPlaceholder": "e.g. Toyota Corolla",
+        "modelRequired": "Enter a model to continue.",
+        "plateLabel": "Plate number",
+        "platePlaceholder": "e.g. WA 12345",
+        "vinLabel": "VIN",
+        "vinPlaceholder": "17 characters",
+        "inspectionLabel": "Inspection valid until",
+        "optionalNote": "Plate, VIN, and inspection date are optional — you can edit them later.",
+        "added": "Added {model}.",
+        "tally": "{n} added",
+        "addAnother": "Save & add another",
+        "submit": "Add vehicle",
+        "submitting": "Saving…",
+        "error": "Couldn't save this vehicle. Please try again."
+      }
+    },
     "pages": {
       "badge": "In progress",
       "dashboard": {

@@ -13,7 +13,15 @@ export type IconName =
   | 'menu'
   | 'close'
   | 'logout'
-  | 'chevron';
+  | 'chevron'
+  | 'search'
+  | 'plus'
+  | 'car'
+  | 'calendar'
+  | 'shield'
+  | 'refresh'
+  | 'alert'
+  | 'check';
 
 withDefaults(
   defineProps<{
@@ -40,6 +48,18 @@ const paths: Record<string, string> = {
   close: 'M6 6l12 12M18 6L6 18',
   logout: 'M15 7V5.5a1.5 1.5 0 0 0-1.5-1.5h-7A1.5 1.5 0 0 0 5 5.5v13A1.5 1.5 0 0 0 6.5 20h7a1.5 1.5 0 0 0 1.5-1.5V17M10 12h11m0 0-3-3m3 3-3 3',
   chevron: 'M8 10l4 4 4-4',
+  search: 'M10.5 17a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13Zm4.6-1.9L20 20',
+  plus: 'M12 5v14M5 12h14',
+  car:
+    'M4 15h16M5.5 15l1.6-5A2 2 0 0 1 9 8.6h6a2 2 0 0 1 1.9 1.4l1.6 5M8 11h8M8 17.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm8 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z',
+  calendar:
+    'M5 6.5h14a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1ZM8 4.5v4M16 4.5v4M4 10.5h16',
+  shield:
+    'M12 3.8l6.6 2.4v5c0 4-2.8 6.8-6.6 8.1-3.8-1.3-6.6-4.1-6.6-8.1v-5L12 3.8ZM9.4 11.8l1.8 1.8 3.4-3.6',
+  refresh:
+    'M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8M3 3v5h5',
+  alert: 'M12 4.5 2.5 19.5h19L12 4.5ZM12 10v4M12 17h.01',
+  check: 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16ZM8.5 12l2.5 2.5 4.5-4.8',
 };
 </script>
 

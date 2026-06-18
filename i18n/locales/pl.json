@@ -181,6 +181,59 @@
       "closeMenu": "Zamknij menu",
       "account": "Konto"
     },
+    "fleet": {
+      "subtitle": "Wszystkie pojazdy w Twojej flocie — terminy przeglądów i ubezpieczeń w jednym miejscu.",
+      "addVehicle": "Dodaj pojazd",
+      "loading": "Wczytywanie floty…",
+      "count": "{n} we flocie",
+      "resultsFiltered": "{shown} z {total} pokazano",
+      "searchPlaceholder": "Szukaj modelu, rejestracji, VIN lub kierowcy",
+      "noResultsTitle": "Brak pojazdów pasujących do „{q}”.",
+      "clearSearch": "Wyczyść wyszukiwanie",
+      "emptyTitle": "Dodaj pierwszy pojazd",
+      "emptyBody": "Tu zaczyna się Twoja flota. Dodaj pojazd, a Autiqa od razu zacznie pilnować terminów przeglądu i ubezpieczenia.",
+      "emptyCta": "Dodaj pojazd",
+      "errorTitle": "Nie udało się wczytać floty",
+      "errorBody": "Coś poszło nie tak podczas pobierania pojazdów. Sprawdź połączenie i spróbuj ponownie.",
+      "retry": "Spróbuj ponownie",
+      "table": {
+        "caption": "Pojazdy floty",
+        "vehicle": "Pojazd",
+        "plate": "Rejestracja",
+        "vin": "VIN",
+        "driver": "Kierowca",
+        "inspection": "Przegląd",
+        "insurance": "Ubezpieczenie",
+        "unassigned": "Nieprzypisany",
+        "unknownModel": "Pojazd bez nazwy"
+      },
+      "compliance": {
+        "notSet": "Brak daty",
+        "overdue": "Po terminie o {n} dni",
+        "today": "Termin dziś",
+        "inDays": "za {n} dni"
+      },
+      "dialog": {
+        "title": "Dodaj pojazd",
+        "subtitle": "Wymagany jest tylko model — resztę uzupełnisz, gdy będziesz mieć dane.",
+        "close": "Zamknij",
+        "modelLabel": "Model",
+        "modelPlaceholder": "np. Toyota Corolla",
+        "modelRequired": "Podaj model, aby kontynuować.",
+        "plateLabel": "Numer rejestracyjny",
+        "platePlaceholder": "np. WA 12345",
+        "vinLabel": "VIN",
+        "vinPlaceholder": "17 znaków",
+        "inspectionLabel": "Przegląd ważny do",
+        "optionalNote": "Rejestracja, VIN i data przeglądu są opcjonalne — możesz je uzupełnić później.",
+        "added": "Dodano {model}.",
+        "tally": "Dodano: {n}",
+        "addAnother": "Zapisz i dodaj kolejny",
+        "submit": "Dodaj pojazd",
+        "submitting": "Zapisywanie…",
+        "error": "Nie udało się zapisać pojazdu. Spróbuj ponownie."
+      }
+    },
     "pages": {
       "badge": "W przygotowaniu",
       "dashboard": {

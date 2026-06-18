@@ -81,7 +81,10 @@ watch(() => route.fullPath, closeMobile);
 <style scoped>
 .shell {
   display: flex;
-  min-height: 100dvh;
+  /* Lock the frame to the viewport so the sidebar + topbar stay put;
+     only .shell__content scrolls (see below). */
+  height: 100dvh;
+  overflow: hidden;
   background: var(--color-bg);
 }
 
@@ -90,6 +93,9 @@ watch(() => route.fullPath, closeMobile);
   flex-direction: column;
   flex: 1;
   min-width: 0;
+  /* Let the content track shrink below its intrinsic height so it — not the
+     page — owns the scroll. Without this, flex children refuse to shrink. */
+  min-height: 0;
 }
 
 /* ── Top bar ──────────────────────────────────────────────── */
@@ -164,6 +170,8 @@ watch(() => route.fullPath, closeMobile);
 /* ── Content ──────────────────────────────────────────────── */
 .shell__content {
   flex: 1;
+  min-height: 0;
+  overflow-y: auto;
   padding: var(--space-10) var(--space-8);
 }
 
