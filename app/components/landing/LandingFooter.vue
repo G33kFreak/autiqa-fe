@@ -1,9 +1,13 @@
+<script setup lang="ts">
+const localePath = useLocalePath()
+</script>
+
 <template>
   <footer class="site-footer">
     <div class="landing-container">
       <div v-reveal="{ y: 16 }" class="site-footer__body">
         <div class="site-footer__brand">
-          <NuxtLink to="/">
+          <NuxtLink :to="localePath('/')">
             <AutiqaLogo :light="true" />
           </NuxtLink>
           <p class="site-footer__tagline">{{ $t('footer.tagline') }}</p>
@@ -14,16 +18,16 @@
           <ul>
             <li><a href="#features">{{ $t('footer.links.features') }}</a></li>
             <li><a href="#pricing">{{ $t('footer.links.pricing') }}</a></li>
-            <li><NuxtLink to="/login">{{ $t('footer.links.login') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/login')">{{ $t('footer.links.login') }}</NuxtLink></li>
           </ul>
         </nav>
 
         <nav class="site-footer__col" aria-label="Company links">
           <span class="site-footer__col-head">{{ $t('footer.company') }}</span>
           <ul>
-            <li><NuxtLink to="/about">{{ $t('footer.links.about') }}</NuxtLink></li>
-            <li><NuxtLink to="/privacy">{{ $t('footer.links.privacy') }}</NuxtLink></li>
-            <li><NuxtLink to="/terms">{{ $t('footer.links.terms') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/about')">{{ $t('footer.links.about') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/privacy')">{{ $t('footer.links.privacy') }}</NuxtLink></li>
+            <li><NuxtLink :to="localePath('/terms')">{{ $t('footer.links.terms') }}</NuxtLink></li>
           </ul>
         </nav>
       </div>

@@ -142,6 +142,68 @@
       }
     ]
   },
+  "login": {
+    "title": "Zaloguj się",
+    "subtitle": "Witaj z powrotem. Wpisz swoje dane poniżej.",
+    "brandHeadline": "Twoja flota. Pod kontrolą.",
+    "brandLede": "Pojazdy, kierowcy, finanse i terminy — w jednym miejscu.",
+    "emailLabel": "Adres e-mail",
+    "emailPlaceholder": "Wpisz adres e-mail",
+    "passwordLabel": "Hasło",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Zapomniałeś hasła?",
+    "submit": "Zaloguj się",
+    "footerLead": "Nie masz konta?",
+    "requestAccess": "Zarejestruj się",
+    "backToHome": "Wróć na stronę główną"
+  },
+  "register": {
+    "title": "Załóż konto",
+    "subtitle": "Zarządzaj flotą w jednym miejscu. Bez wdrożeniowców.",
+    "brandHeadline": "Wszystko, czego potrzebuje Twoja flota — od pierwszego dnia.",
+    "brandLede": "Dodaj pojazdy, a Autiqa od razu zacznie pilnować terminów, kosztów i dostępności.",
+    "valueProps": {
+      "fleet": "Status floty i dostępność na żywo",
+      "compliance": "Terminy wychwycone, zanim auto stanie",
+      "finance": "Koszty i przychody na pojazd"
+    },
+    "nameLabel": "Imię i nazwisko",
+    "namePlaceholder": "Jan Kowalski",
+    "emailLabel": "E-mail służbowy",
+    "emailPlaceholder": "ty{'@'}firma.com",
+    "passwordLabel": "Hasło",
+    "passwordPlaceholder": "Co najmniej 8 znaków",
+    "passwordShow": "Pokaż hasło",
+    "passwordHide": "Ukryj hasło",
+    "confirmLabel": "Potwierdź hasło",
+    "confirmPlaceholder": "Wpisz hasło ponownie",
+    "passwordsMatch": "Hasła są zgodne",
+    "strength": {
+      "label": "Siła hasła",
+      "weak": "Słabe",
+      "fair": "Średnie",
+      "good": "Dobre",
+      "strong": "Silne"
+    },
+    "submit": "Załóż konto",
+    "acceptTerms": "Kontynuując, akceptujesz nasz {terms} oraz {privacy}.",
+    "terms": "Kontynuując, akceptujesz nasz {terms} oraz {privacy}.",
+    "termsLink": "Regulamin",
+    "privacyLink": "Politykę prywatności",
+    "footerLead": "Masz już konto?",
+    "signIn": "Zaloguj się",
+    "backToHome": "Wróć na stronę główną",
+    "errors": {
+      "nameRequired": "Podaj imię i nazwisko.",
+      "emailRequired": "Podaj adres e-mail.",
+      "emailInvalid": "Podaj prawidłowy adres e-mail.",
+      "passwordShort": "Hasło musi mieć co najmniej 8 znaków.",
+      "passwordMismatch": "Hasła nie są zgodne.",
+      "conflict": "Konto z tym adresem e-mail już istnieje.",
+      "badRequest": "Sprawdź dane i spróbuj ponownie.",
+      "generic": "Coś poszło nie tak. Spróbuj ponownie."
+    }
+  },
   "footer": {
     "tagline": "Kontrola floty dla operatorów.",
     "product": "Produkt",

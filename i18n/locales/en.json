@@ -142,6 +142,68 @@
       }
     ]
   },
+  "login": {
+    "title": "Sign in",
+    "subtitle": "Welcome back. Enter your details below.",
+    "brandHeadline": "Your fleet. Under control.",
+    "brandLede": "Vehicles, drivers, finance, and compliance deadlines — in one place.",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "Enter your email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
+    "forgotPassword": "Forgot password?",
+    "submit": "Sign in",
+    "footerLead": "No account yet?",
+    "requestAccess": "Sign up",
+    "backToHome": "Back to homepage"
+  },
+  "register": {
+    "title": "Create your account",
+    "subtitle": "Start running your fleet in one place. No setup consultants.",
+    "brandHeadline": "Everything your fleet needs, from day one.",
+    "brandLede": "Add your vehicles and Autiqa starts tracking compliance, costs, and availability immediately.",
+    "valueProps": {
+      "fleet": "Live fleet status and availability",
+      "compliance": "Deadlines caught before a car is grounded",
+      "finance": "Per-vehicle costs and revenue"
+    },
+    "nameLabel": "Full name",
+    "namePlaceholder": "Jan Kowalski",
+    "emailLabel": "Work email",
+    "emailPlaceholder": "you{'@'}company.com",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "At least 8 characters",
+    "passwordShow": "Show password",
+    "passwordHide": "Hide password",
+    "confirmLabel": "Confirm password",
+    "confirmPlaceholder": "Re-enter your password",
+    "passwordsMatch": "Passwords match",
+    "strength": {
+      "label": "Password strength",
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong"
+    },
+    "submit": "Create account",
+    "acceptTerms": "By continuing you agree to our {terms} and {privacy}.",
+    "terms": "By continuing you agree to our {terms} and {privacy}.",
+    "termsLink": "Terms",
+    "privacyLink": "Privacy Policy",
+    "footerLead": "Already have an account?",
+    "signIn": "Sign in",
+    "backToHome": "Back to homepage",
+    "errors": {
+      "nameRequired": "Enter your full name.",
+      "emailRequired": "Enter your email address.",
+      "emailInvalid": "Enter a valid email address.",
+      "passwordShort": "Password must be at least 8 characters.",
+      "passwordMismatch": "Passwords don't match.",
+      "conflict": "An account with this email already exists.",
+      "badRequest": "Check your details and try again.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
   "footer": {
     "tagline": "Fleet control for operators.",
     "product": "Product",

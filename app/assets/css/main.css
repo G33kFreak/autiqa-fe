@@ -40,8 +40,8 @@
   --color-dark-outline:      oklch(1.000 0.000   0 / 0.10);
 
   /* ── Typography ──────────────────────────────────────────── */
-  --font-display: 'Manrope', system-ui, sans-serif;
-  --font-sans:    'Manrope', system-ui, sans-serif;
+  --font-display: 'Syne', system-ui, sans-serif;
+  --font-sans:    'Onest', system-ui, sans-serif;
 
   /* ── Spacing (4pt base) ──────────────────────────────────── */
   --space-1:  0.25rem;

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const localePath = useLocalePath()
 const openIndex = ref<number | null>(null)
 
 function toggle(i: number) {
@@ -65,7 +66,7 @@ function toggle(i: number) {
 
       <div v-reveal="{ y: 12 }" class="faq-cta">
         <span>{{ $t('faq.ctaText') }}</span>
-        <NuxtLink to="/register" class="btn btn--primary faq-cta__btn">
+        <NuxtLink :to="localePath('/register')" class="btn btn--primary faq-cta__btn">
           {{ $t('faq.ctaAction') }}
         </NuxtLink>
       </div>

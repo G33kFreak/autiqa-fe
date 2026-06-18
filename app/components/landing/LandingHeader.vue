@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const { locale } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
+const localePath = useLocalePath()
 
 const scrolled = ref(false)
 const menuOpen = ref(false)
@@ -28,7 +29,7 @@ function closeMenu() {
 <template>
   <header class="site-header" :class="{ 'site-header--scrolled': scrolled }">
     <div class="site-header__inner landing-container">
-      <NuxtLink to="/" class="site-header__logo" @click="closeMenu">
+      <NuxtLink :to="localePath('/')" class="site-header__logo" @click="closeMenu">
         <AutiqaLogo :light="!scrolled" />
       </NuxtLink>
 
@@ -43,8 +44,8 @@ function closeMenu() {
           :href="switchLocalePath(locale === 'pl' ? 'en' : 'pl')"
           class="locale-toggle"
         >{{ locale === 'pl' ? 'EN' : 'PL' }}</a>
-        <NuxtLink to="/login" class="nav-link">{{ $t('nav.login') }}</NuxtLink>
-        <NuxtLink to="/register" class="btn" :class="scrolled ? 'btn--primary' : 'btn--ghost-light'">
+        <NuxtLink :to="localePath('/login')" class="nav-link">{{ $t('nav.login') }}</NuxtLink>
+        <NuxtLink :to="localePath('/register')" class="btn" :class="scrolled ? 'btn--primary' : 'btn--ghost-light'">
           {{ $t('nav.signUp') }}
         </NuxtLink>
       </div>
@@ -72,10 +73,10 @@ function closeMenu() {
         <a href="#features" class="mobile-nav-link" @click="closeMenu">{{ $t('nav.features') }}</a>
         <a href="#pricing" class="mobile-nav-link" @click="closeMenu">{{ $t('nav.pricing') }}</a>
         <a href="#faq" class="mobile-nav-link" @click="closeMenu">{{ $t('nav.faq') }}</a>
-        <NuxtLink to="/login" class="mobile-nav-link" @click="closeMenu">{{ $t('nav.login') }}</NuxtLink>
+        <NuxtLink :to="localePath('/login')" class="mobile-nav-link" @click="closeMenu">{{ $t('nav.login') }}</NuxtLink>
       </nav>
       <div class="mobile-menu__footer">
-        <NuxtLink to="/register" class="btn btn--primary" style="width: 100%; justify-content: center" @click="closeMenu">
+        <NuxtLink :to="localePath('/register')" class="btn btn--primary" style="width: 100%; justify-content: center" @click="closeMenu">
           {{ $t('nav.signUp') }}
         </NuxtLink>
         <a :href="switchLocalePath(locale === 'pl' ? 'en' : 'pl')" class="locale-toggle">

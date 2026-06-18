@@ -1,3 +1,7 @@
+<script setup lang="ts">
+const localePath = useLocalePath()
+</script>
+
 <template>
   <section class="hero">
     <div class="hero__container landing-container">
@@ -9,7 +13,7 @@
           </h1>
           <p class="hero__subline">{{ $t('hero.subline') }}</p>
           <div class="hero__actions">
-            <NuxtLink to="/register" class="btn btn--hero-cta">
+            <NuxtLink :to="localePath('/register')" class="btn btn--hero-cta">
               {{ $t('hero.cta') }}
             </NuxtLink>
             <span class="hero__cta-meta">{{ $t('hero.ctaMeta') }}</span>
