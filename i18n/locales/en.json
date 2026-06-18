@@ -153,9 +153,20 @@
     "passwordPlaceholder": "••••••••",
     "forgotPassword": "Forgot password?",
     "submit": "Sign in",
+    "submitPending": "Signing in…",
     "footerLead": "No account yet?",
     "requestAccess": "Sign up",
-    "backToHome": "Back to homepage"
+    "backToHome": "Back to homepage",
+    "errors": {
+      "required": "Enter your email and password.",
+      "invalid": "Invalid email or password.",
+      "generic": "Couldn't sign you in. Please try again."
+    }
+  },
+  "app": {
+    "logout": "Sign out",
+    "placeholderTitle": "Welcome to Autiqa",
+    "placeholderLede": "Hi {name}. The app is being built — your fleet dashboard will live here soon."
   },
   "register": {
     "title": "Create your account",

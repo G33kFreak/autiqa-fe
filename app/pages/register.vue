@@ -1,15 +1,14 @@
 <script setup lang="ts">
+import { FetchError } from 'ofetch'
+import { StatusCodes } from 'http-status-codes'
+
 definePageMeta({ layout: false })
 
 const { t } = useI18n()
 const localePath = useLocalePath()
+const authStore = useAuthStore()
 
-/* ── Form state ──────────────────────────────────────────────
- * UI only for now. `submit()` runs the same client-side validation
- * the real flow will use; wiring the API later is a single call:
- *   await authStore.register({ name, email, password })
- * The server contract is { name, email, password }.
- * ----------------------------------------------------------- */
+/* ── Form state ───────────────────────────────────────────── */
 const name = ref('')
 const email = ref('')
 const password = ref('')
@@ -67,10 +66,22 @@ async function submit() {
   if (pending.value) return
   if (!validate()) return
 
-  // UI-only demo of the pending state. Replace with authStore.register(…).
   pending.value = true
-  await new Promise((r) => setTimeout(r, 900))
-  pending.value = false
+  try {
+    await authStore.register({
+      name: name.value.trim(),
+      email: email.value.trim(),
+      password: password.value,
+    })
+    await navigateTo(localePath('/app'))
+  } catch (e: unknown) {
+    const status = e instanceof FetchError ? (e.status ?? e.statusCode) : 0
+    if (status === StatusCodes.CONFLICT) fail('conflict')
+    else if (status === StatusCodes.BAD_REQUEST) fail('badRequest')
+    else fail('generic')
+  } finally {
+    pending.value = false
+  }
 }
 </script>
 

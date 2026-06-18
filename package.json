@@ -13,7 +13,10 @@
     "@nuxt/eslint": "^1.15.2",
     "@nuxt/fonts": "^0.14.0",
     "@nuxtjs/i18n": "^10.2.4",
+    "@pinia/nuxt": "^0.11.3",
+    "http-status-codes": "^2.3.0",
     "nuxt": "^4.4.8",
+    "pinia": "^3.0.4",
     "vue": "^3.5.35",
     "vue-router": "^5.1.0"
   }

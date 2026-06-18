@@ -1,6 +1,51 @@
 <script setup lang="ts">
+import { FetchError } from 'ofetch'
+import { StatusCodes } from 'http-status-codes'
+
 definePageMeta({ layout: false })
+
+const { t } = useI18n()
+const route = useRoute()
 const localePath = useLocalePath()
+const authStore = useAuthStore()
+
+const email = ref('')
+const password = ref('')
+const pending = ref(false)
+const formError = ref('')
+
+/** Only honour same-origin redirect targets. */
+function safeRedirect(): string {
+  const q = route.query.redirect
+  return typeof q === 'string' && q.startsWith('/') && !q.startsWith('//')
+    ? q
+    : localePath('/app')
+}
+
+async function submit() {
+  if (pending.value) return
+  formError.value = ''
+
+  const trimmedEmail = email.value.trim()
+  if (!trimmedEmail || !password.value) {
+    formError.value = t('login.errors.required')
+    return
+  }
+
+  pending.value = true
+  try {
+    await authStore.login(trimmedEmail, password.value)
+    await navigateTo(safeRedirect())
+  } catch (e: unknown) {
+    const status = e instanceof FetchError ? (e.status ?? e.statusCode) : 0
+    formError.value =
+      status === StatusCodes.UNAUTHORIZED || status === StatusCodes.FORBIDDEN
+        ? t('login.errors.invalid')
+        : t('login.errors.generic')
+  } finally {
+    pending.value = false
+  }
+}
 </script>
 
 <template>
@@ -93,17 +138,30 @@ const localePath = useLocalePath()
           <p class="login-subtitle">{{ $t('login.subtitle') }}</p>
         </header>
 
-        <form class="login-form" novalidate @submit.prevent>
+        <form class="login-form" novalidate :aria-busy="pending" @submit.prevent="submit">
+
+          <transition name="lf-banner">
+            <div v-if="formError" class="lf-error" role="alert">
+              <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4" />
+                <line x1="8" y1="4.75" x2="8" y2="8.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
+                <circle cx="8" cy="11" r="0.7" fill="currentColor" />
+              </svg>
+              <span>{{ formError }}</span>
+            </div>
+          </transition>
 
           <div class="lf-field">
             <label class="lf-label" for="l-email">{{ $t('login.emailLabel') }}</label>
             <input
               id="l-email"
+              v-model="email"
               type="email"
               class="lf-input"
               :placeholder="$t('login.emailPlaceholder')"
               autocomplete="email"
               inputmode="email"
+              :disabled="pending"
             />
           </div>
 
@@ -114,15 +172,17 @@ const localePath = useLocalePath()
             </div>
             <input
               id="l-password"
+              v-model="password"
               type="password"
               class="lf-input"
               :placeholder="$t('login.passwordPlaceholder')"
               autocomplete="current-password"
+              :disabled="pending"
             />
           </div>
 
-          <button type="submit" class="lf-submit">
-            {{ $t('login.submit') }}
+          <button type="submit" class="lf-submit" :disabled="pending">
+            {{ pending ? $t('login.submitPending') : $t('login.submit') }}
           </button>
 
         </form>
@@ -558,6 +618,43 @@ const localePath = useLocalePath()
 .lf-submit:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 3px;
+}
+
+.lf-submit:disabled {
+  opacity: 0.65;
+  cursor: progress;
+  box-shadow: none;
+}
+
+/* Error banner */
+.lf-error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.6875rem 0.875rem;
+  border: 1px solid oklch(0.420 0.180 26 / 0.30);
+  border-radius: var(--radius-md);
+  background: oklch(0.420 0.180 26 / 0.07);
+  color: oklch(0.420 0.180 26);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.lf-error svg {
+  flex-shrink: 0;
+}
+
+.lf-banner-enter-active,
+.lf-banner-leave-active {
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.lf-banner-enter-from,
+.lf-banner-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 
 /* Footnote */

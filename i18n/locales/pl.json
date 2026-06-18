@@ -153,9 +153,20 @@
     "passwordPlaceholder": "••••••••",
     "forgotPassword": "Zapomniałeś hasła?",
     "submit": "Zaloguj się",
+    "submitPending": "Logowanie…",
     "footerLead": "Nie masz konta?",
     "requestAccess": "Zarejestruj się",
-    "backToHome": "Wróć na stronę główną"
+    "backToHome": "Wróć na stronę główną",
+    "errors": {
+      "required": "Podaj adres e-mail i hasło.",
+      "invalid": "Nieprawidłowy e-mail lub hasło.",
+      "generic": "Nie udało się zalogować. Spróbuj ponownie."
+    }
+  },
+  "app": {
+    "logout": "Wyloguj się",
+    "placeholderTitle": "Witaj w Autiqa",
+    "placeholderLede": "Cześć, {name}. Aplikacja jest w przygotowaniu — wkrótce pojawi się tutaj Twój panel floty."
   },
   "register": {
     "title": "Załóż konto",
