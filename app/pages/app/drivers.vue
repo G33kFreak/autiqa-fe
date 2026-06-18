@@ -4,7 +4,7 @@ const { t } = useI18n();
 
 <template>
   <AppPagePlaceholder
-    :title="t('app.pages.dashboard.title')"
-    :lede="t('app.pages.dashboard.lede')"
+    :title="t('app.pages.drivers.title')"
+    :lede="t('app.pages.drivers.lede')"
   />
 </template>

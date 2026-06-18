@@ -165,8 +165,45 @@
   },
   "app": {
     "logout": "Wyloguj się",
-    "placeholderTitle": "Witaj w Autiqa",
-    "placeholderLede": "Cześć, {name}. Aplikacja jest w przygotowaniu — wkrótce pojawi się tutaj Twój panel floty."
+    "workspaceFallback": "Mój zespół",
+    "nav": {
+      "label": "Nawigacja główna",
+      "dashboard": "Pulpit",
+      "fleet": "Flota",
+      "drivers": "Kierowcy",
+      "finances": "Finanse",
+      "settings": "Ustawienia"
+    },
+    "shell": {
+      "collapse": "Zwiń panel boczny",
+      "expand": "Rozwiń panel boczny",
+      "openMenu": "Otwórz menu",
+      "closeMenu": "Zamknij menu",
+      "account": "Konto"
+    },
+    "pages": {
+      "badge": "W przygotowaniu",
+      "dashboard": {
+        "title": "Pulpit",
+        "lede": "Tutaj pojawi się pełny obraz Twojej floty — kondycja, ryzyko zgodności i finanse w jednym miejscu."
+      },
+      "fleet": {
+        "title": "Flota",
+        "lede": "Każdy pojazd, jego status i terminy zgodności. Już wkrótce."
+      },
+      "drivers": {
+        "title": "Kierowcy",
+        "lede": "Tutaj znajdą się dane kierowców i przypisania pojazdów."
+      },
+      "finances": {
+        "title": "Finanse",
+        "lede": "Ekonomia pojedynczych pojazdów, koszty i przychody. Już wkrótce."
+      },
+      "settings": {
+        "title": "Ustawienia",
+        "lede": "Tutaj pojawią się organizacja, członkowie i preferencje."
+      }
+    }
   },
   "register": {
     "title": "Załóż konto",
@@ -235,6 +272,27 @@
       "invalidCode": "Ten kod jest nieprawidłowy lub wygasł. Spróbuj ponownie.",
       "resendFailed": "Nie udało się wysłać nowego kodu. Spróbuj ponownie.",
       "generic": "Coś poszło nie tak. Spróbuj ponownie."
+    }
+  },
+  "onboardingOrg": {
+    "metaTitle": "Utwórz przestrzeń roboczą",
+    "metaDescription": "Nazwij swoją organizację, aby skonfigurować centrum zarządzania flotą Autiqa.",
+    "step": "Ostatni krok",
+    "title": "Nazwij swoją przestrzeń",
+    "subtitle": "To dom Twojej floty — pojazdy, kierowcy i finanse są w jednym miejscu. Nazwę możesz zmienić w każdej chwili.",
+    "nameLabel": "Nazwa organizacji",
+    "namePlaceholder": "np. Acme Flota",
+    "previewLabel": "Jak będzie wyglądać",
+    "previewPlaceholder": "Twoja przestrzeń",
+    "submit": "Utwórz przestrzeń",
+    "submitPending": "Tworzenie…",
+    "signOutLead": "Nie to konto?",
+    "signOut": "Wyloguj się",
+    "signingOut": "Wylogowywanie…",
+    "backToHome": "Wróć na stronę główną",
+    "errors": {
+      "invalid": "Podaj nazwę przestrzeni roboczej.",
+      "generic": "Nie udało się utworzyć przestrzeni. Spróbuj ponownie."
     }
   },
   "footer": {

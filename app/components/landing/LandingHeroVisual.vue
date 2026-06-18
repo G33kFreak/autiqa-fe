@@ -1,9 +1,27 @@
 <script setup lang="ts">
 // Presentational hero visual — demo content, not connected to API
+
+// Pause the infinite float loops when the visual scrolls out of view, so the
+// browser stops compositing them every frame. Purely a perf concern — looks
+// identical while on-screen.
+const scene = ref<HTMLElement | null>(null)
+const inView = ref(true)
+let observer: IntersectionObserver | null = null
+
+onMounted(() => {
+  if (!scene.value || typeof IntersectionObserver === 'undefined') return
+  observer = new IntersectionObserver(
+    ([entry]) => { inView.value = entry?.isIntersecting ?? true },
+    { rootMargin: '120px' },
+  )
+  observer.observe(scene.value)
+})
+
+onBeforeUnmount(() => observer?.disconnect())
 </script>
 
 <template>
-  <div class="hero-scene" role="img" :aria-label="$t('heroVisual.label')">
+  <div ref="scene" class="hero-scene" :class="{ 'is-paused': !inView }" role="img" :aria-label="$t('heroVisual.label')">
 
     <!-- Live driver pill -->
     <div class="pill-live">
@@ -123,6 +141,17 @@
     0 20px 60px oklch(0.08 0.015 268 / 0.40),
     0 4px 14px  oklch(0.08 0.015 268 / 0.18);
   color: var(--color-hero-ink);
+}
+
+/* Promote the floating elements to their own GPU layer so the large soft
+   shadow rasterizes once and only composites on each frame — instead of
+   re-blurring every frame as the card moves. The visual is unchanged; this is
+   what makes the float loops cheap on high-pixel external displays. */
+.card-fleet,
+.card-revenue,
+.card-alert,
+.pill-live {
+  will-change: transform;
 }
 
 /* ── Live pill ────────────────────────────────────────────── */
@@ -430,6 +459,19 @@
 @keyframes dot-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
   50%       { opacity: 0.40; transform: scale(0.78); }
+}
+
+/* ── Paused off-screen (perf; no visual change while in view) ── */
+
+.hero-scene.is-paused :is(
+  .pill-live,
+  .pill-dot,
+  .card-fleet,
+  .live-dot,
+  .card-revenue,
+  .card-alert
+) {
+  animation-play-state: paused;
 }
 
 /* ── Reduced motion ───────────────────────────────────────── */

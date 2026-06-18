@@ -165,8 +165,45 @@
   },
   "app": {
     "logout": "Sign out",
-    "placeholderTitle": "Welcome to Autiqa",
-    "placeholderLede": "Hi {name}. The app is being built — your fleet dashboard will live here soon."
+    "workspaceFallback": "My workspace",
+    "nav": {
+      "label": "Primary navigation",
+      "dashboard": "Dashboard",
+      "fleet": "Fleet",
+      "drivers": "Drivers",
+      "finances": "Finances",
+      "settings": "Settings"
+    },
+    "shell": {
+      "collapse": "Collapse sidebar",
+      "expand": "Expand sidebar",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "account": "Account"
+    },
+    "pages": {
+      "badge": "In progress",
+      "dashboard": {
+        "title": "Dashboard",
+        "lede": "Your fleet's operating picture will live here — health, compliance risk, and money in one view."
+      },
+      "fleet": {
+        "title": "Fleet",
+        "lede": "Every vehicle, its status, and compliance timeline. Coming next."
+      },
+      "drivers": {
+        "title": "Drivers",
+        "lede": "Driver records and vehicle assignments will live here."
+      },
+      "finances": {
+        "title": "Finances",
+        "lede": "Per-vehicle economics, costs, and revenue. Coming next."
+      },
+      "settings": {
+        "title": "Settings",
+        "lede": "Organization, members, and preferences will live here."
+      }
+    }
   },
   "register": {
     "title": "Create your account",
@@ -235,6 +272,27 @@
       "invalidCode": "That code is incorrect or has expired. Try again.",
       "resendFailed": "Couldn't send a new code. Please try again.",
       "generic": "Something went wrong. Please try again."
+    }
+  },
+  "onboardingOrg": {
+    "metaTitle": "Create your workspace",
+    "metaDescription": "Name your organization to set up your Autiqa fleet control center.",
+    "step": "Last step",
+    "title": "Name your workspace",
+    "subtitle": "This is your fleet's home — vehicles, drivers, and finances all live inside it. You can rename it anytime.",
+    "nameLabel": "Organization name",
+    "namePlaceholder": "e.g. Acme Fleet",
+    "previewLabel": "How it'll appear",
+    "previewPlaceholder": "Your workspace",
+    "submit": "Create workspace",
+    "submitPending": "Creating…",
+    "signOutLead": "Wrong account?",
+    "signOut": "Sign out",
+    "signingOut": "Signing out…",
+    "backToHome": "Back to homepage",
+    "errors": {
+      "invalid": "Enter a name for your workspace.",
+      "generic": "Couldn't create your workspace. Please try again."
     }
   },
   "footer": {

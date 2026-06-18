@@ -46,6 +46,7 @@ export const useAuthStore = defineStore('auth', () => {
       accessToken.value = null;
       user.value = null;
       refreshPromise.value = null;
+      useOrganizationStore().reset();
       await navigateTo('/login');
     }
   }
