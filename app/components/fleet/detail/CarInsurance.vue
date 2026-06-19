@@ -15,7 +15,9 @@ const emit = defineEmits<{
   'delete-policy': [policyId: string];
 }>();
 
-const { t, locale } = useI18n();
+const { t, tm, rt, locale } = useI18n();
+
+const emptyHints = computed(() => tm('app.car.insurance.emptyHints').map((h) => rt(h)));
 
 const sorted = computed(() =>
   [...props.policies].sort(
@@ -35,12 +37,12 @@ function statusLabel(status: ComplianceStatus): string {
 }
 
 function paidCount(policy: CarInsuranceDto): number {
-  return policy.installments.filter((i) => i.paidAt).length;
+  return policy.installments.filter((i) => i.paid).length;
 }
 
 function paidSum(policy: CarInsuranceDto): number {
   return policy.installments
-    .filter((i) => i.paidAt)
+    .filter((i) => i.paid)
     .reduce((sum, i) => sum + (Number(i.amount) || 0), 0);
 }
 </script>
@@ -58,17 +60,19 @@ function paidSum(policy: CarInsuranceDto): number {
       </button>
     </div>
 
-    <div v-if="policies.length === 0" class="ui-empty">
-      <span class="ui-empty__icon" aria-hidden="true">
-        <AppIcon name="shield" :size="24" />
-      </span>
-      <h3 class="ui-empty__title">{{ t('app.car.insurance.emptyTitle') }}</h3>
-      <p class="ui-empty__body">{{ t('app.car.insurance.emptyBody') }}</p>
-      <button type="button" class="ui-btn ui-btn--secondary ui-btn--sm" @click="emit('add')">
+    <AppEmptyState
+      v-if="policies.length === 0"
+      icon="shield"
+      :title="t('app.car.insurance.emptyTitle')"
+      :body="t('app.car.insurance.emptyBody')"
+      :hints="emptyHints"
+      :hints-label="t('app.car.common.examplesLabel')"
+    >
+      <button type="button" class="ui-btn ui-btn--primary ui-btn--sm" @click="emit('add')">
         <AppIcon name="plus" :size="16" />
         <span>{{ t('app.car.insurance.add') }}</span>
       </button>
-    </div>
+    </AppEmptyState>
 
     <div v-else class="ins__policies">
       <article
@@ -129,24 +133,24 @@ function paidSum(policy: CarInsuranceDto): number {
               v-for="inst in policy.installments"
               :key="inst.id"
               class="ins__installment"
-              :class="{ 'ins__installment--paid': inst.paidAt }"
+              :class="{ 'ins__installment--paid': inst.paid }"
             >
               <button
                 type="button"
                 class="ins__check"
-                :class="{ 'ins__check--on': inst.paidAt }"
-                :aria-pressed="!!inst.paidAt"
-                :aria-label="inst.paidAt ? t('app.car.insurance.markUnpaid') : t('app.car.insurance.markPaid')"
+                :class="{ 'ins__check--on': inst.paid }"
+                :aria-pressed="inst.paid"
+                :aria-label="inst.paid ? t('app.car.insurance.markUnpaid') : t('app.car.insurance.markPaid')"
                 :disabled="isPending(inst.id)"
-                @click="emit('toggle-installment', { policyId: policy.id, installmentId: inst.id, paid: !inst.paidAt })"
+                @click="emit('toggle-installment', { policyId: policy.id, installmentId: inst.id, paid: !inst.paid })"
               >
                 <span v-if="isPending(inst.id)" class="ui-spinner ui-spinner--ink" aria-hidden="true" />
-                <AppIcon v-else-if="inst.paidAt" name="tick" :size="15" />
+                <AppIcon v-else-if="inst.paid" name="tick" :size="15" />
               </button>
               <span class="ins__installment-date">{{ formatDate(inst.dueDate, locale) }}</span>
               <span class="ins__installment-amount">{{ money(inst.amount, policy.currency) }}</span>
               <span class="ins__installment-status">
-                {{ inst.paidAt ? t('app.car.insurance.statusPaid') : t('app.car.insurance.statusDue') }}
+                {{ inst.paid ? t('app.car.insurance.statusPaid') : t('app.car.insurance.statusDue') }}
               </span>
             </li>
           </ul>

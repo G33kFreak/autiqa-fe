@@ -226,7 +226,7 @@ function onDeleteEntry(entry: LedgerEntryDto) {
     title: t('app.car.ledger.deleteConfirmTitle'),
     message: t('app.car.ledger.deleteConfirmBody'),
     confirmLabel: t('app.common.delete'),
-    action: () => d.deleteLedgerEntry(entry.id),
+    action: () => d.deleteLedgerEntry(entry),
   });
 }
 

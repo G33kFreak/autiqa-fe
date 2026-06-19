@@ -6,47 +6,26 @@ import type {
 } from '#shared/dto/car-document.dto';
 import {
   deleteCarPhoto,
-  getCarPhotos,
   setCarCoverPhoto,
   uploadCarPhoto,
 } from '../api/car-photos';
-import {
-  deleteCarDocument,
-  getCarDocuments,
-  uploadCarDocument,
-} from '../api/car-documents';
-import {
-  demoDocuments,
-  demoPhotos,
-  fileToDataUrl,
-  imageFileToDataUrl,
-  withDemoFallback,
-} from '~/utils/car-demo';
+import { deleteCarDocument, uploadCarDocument } from '../api/car-documents';
 
-/** Photos and documents for a vehicle. Thin: real API first, demo fallback. */
+/** Photos and documents for a vehicle. Thin, no caching. */
 export const useCarAssetsStore = defineStore('carAssets', () => {
   const { authenticatedApi } = useApi();
 
   // ── Photos ──
-  function listPhotos(carId: string): Promise<CarPhotoDto[]> {
-    return withDemoFallback(
-      () => getCarPhotos(authenticatedApi, carId),
-      () => demoPhotos.list(carId),
-    );
+  // TODO(photos-endpoint): the car photos read endpoint isn't deployed yet.
+  // Until it ships, treat the gallery as available-but-empty so the detail page
+  // loads and shows its empty state instead of failing the whole `Promise.all`.
+  // Restore `getCarPhotos(authenticatedApi, carId)` (and its import) once ready.
+  function listPhotos(_carId: string): Promise<CarPhotoDto[]> {
+    return Promise.resolve([]);
   }
 
   async function uploadPhoto(carId: string, file: File): Promise<CarPhotoDto[]> {
-    await withDemoFallback(
-      () => uploadCarPhoto(authenticatedApi, carId, file),
-      async () => {
-        const url = await imageFileToDataUrl(file);
-        return demoPhotos.add(carId, {
-          url,
-          name: file.name,
-          sizeBytes: file.size,
-        });
-      },
-    );
+    await uploadCarPhoto(authenticatedApi, carId, file);
     return listPhotos(carId);
   }
 
@@ -54,10 +33,7 @@ export const useCarAssetsStore = defineStore('carAssets', () => {
     carId: string,
     photoId: string,
   ): Promise<CarPhotoDto[]> {
-    await withDemoFallback(
-      () => setCarCoverPhoto(authenticatedApi, carId, photoId),
-      () => demoPhotos.setCover(carId, photoId),
-    );
+    await setCarCoverPhoto(authenticatedApi, carId, photoId);
     return listPhotos(carId);
   }
 
@@ -65,19 +41,17 @@ export const useCarAssetsStore = defineStore('carAssets', () => {
     carId: string,
     photoId: string,
   ): Promise<CarPhotoDto[]> {
-    await withDemoFallback(
-      () => deleteCarPhoto(authenticatedApi, carId, photoId),
-      () => demoPhotos.remove(carId, photoId),
-    );
+    await deleteCarPhoto(authenticatedApi, carId, photoId);
     return listPhotos(carId);
   }
 
   // ── Documents ──
-  function listDocuments(carId: string): Promise<CarDocumentDto[]> {
-    return withDemoFallback(
-      () => getCarDocuments(authenticatedApi, carId),
-      () => demoDocuments.list(carId),
-    );
+  // TODO(documents-endpoint): the car documents read endpoint isn't deployed
+  // yet. Until it ships, treat documents as available-but-empty so the detail
+  // page loads and shows its empty state instead of failing the `Promise.all`.
+  // Restore `getCarDocuments(authenticatedApi, carId)` (and its import) once ready.
+  function listDocuments(_carId: string): Promise<CarDocumentDto[]> {
+    return Promise.resolve([]);
   }
 
   async function uploadDocument(
@@ -85,20 +59,7 @@ export const useCarAssetsStore = defineStore('carAssets', () => {
     file: File,
     meta: { category: CarDocumentCategory; expiresAt?: string | null },
   ): Promise<CarDocumentDto[]> {
-    await withDemoFallback(
-      () => uploadCarDocument(authenticatedApi, carId, file, meta),
-      async () => {
-        const url = await fileToDataUrl(file);
-        return demoDocuments.add(carId, {
-          name: file.name,
-          category: meta.category,
-          url,
-          mimeType: file.type || null,
-          sizeBytes: file.size,
-          expiresAt: meta.expiresAt ?? null,
-        });
-      },
-    );
+    await uploadCarDocument(authenticatedApi, carId, file, meta);
     return listDocuments(carId);
   }
 
@@ -106,10 +67,7 @@ export const useCarAssetsStore = defineStore('carAssets', () => {
     carId: string,
     documentId: string,
   ): Promise<CarDocumentDto[]> {
-    await withDemoFallback(
-      () => deleteCarDocument(authenticatedApi, carId, documentId),
-      () => demoDocuments.remove(carId, documentId),
-    );
+    await deleteCarDocument(authenticatedApi, carId, documentId);
     return listDocuments(carId);
   }
 

@@ -9,10 +9,9 @@ const LEDGER_CATEGORY_ICON: Record<LedgerCategory, IconName> = {
   deposit: 'shield',
   income_other: 'wallet',
   maintenance: 'wrench',
-  fuel: 'fuel',
+  car_payment: 'wallet',
   insurance: 'shield',
   fee: 'receipt',
-  fine: 'alert',
   expense_other: 'receipt',
 };
 

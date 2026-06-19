@@ -10,7 +10,9 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{ add: []; delete: [id: string] }>();
-const { t, locale } = useI18n();
+const { t, tm, rt, locale } = useI18n();
+
+const emptyHints = computed(() => tm('app.car.documents.emptyHints').map((h) => rt(h)));
 
 const sorted = computed(() =>
   [...props.documents].sort(
@@ -37,17 +39,19 @@ function expiryTone(doc: CarDocumentDto) {
       </button>
     </div>
 
-    <div v-if="documents.length === 0" class="ui-empty">
-      <span class="ui-empty__icon" aria-hidden="true">
-        <AppIcon name="document" :size="24" />
-      </span>
-      <h3 class="ui-empty__title">{{ t('app.car.documents.emptyTitle') }}</h3>
-      <p class="ui-empty__body">{{ t('app.car.documents.emptyBody') }}</p>
-      <button type="button" class="ui-btn ui-btn--secondary ui-btn--sm" @click="emit('add')">
+    <AppEmptyState
+      v-if="documents.length === 0"
+      icon="document"
+      :title="t('app.car.documents.emptyTitle')"
+      :body="t('app.car.documents.emptyBody')"
+      :hints="emptyHints"
+      :hints-label="t('app.car.common.examplesLabel')"
+    >
+      <button type="button" class="ui-btn ui-btn--primary ui-btn--sm" @click="emit('add')">
         <AppIcon name="upload" :size="16" />
         <span>{{ t('app.car.documents.add') }}</span>
       </button>
-    </div>
+    </AppEmptyState>
 
     <ul v-else class="doc__list">
       <li v-for="doc in sorted" :key="doc.id" class="doc__item">

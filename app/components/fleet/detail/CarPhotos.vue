@@ -14,9 +14,11 @@ const emit = defineEmits<{
   delete: [id: string];
 }>();
 
-const { t } = useI18n();
+const { t, tm, rt } = useI18n();
 const fileInput = ref<HTMLInputElement | null>(null);
 const dragging = ref(false);
+
+const emptyHints = computed(() => tm('app.car.photos.emptyHints').map((h) => rt(h)));
 
 function pick() {
   fileInput.value?.click();
@@ -72,17 +74,21 @@ function onDrop(event: DragEvent) {
       @change="onFileChange"
     >
 
-    <div v-if="photos.length === 0" class="ui-empty" :class="{ 'ph__drop--active': dragging }">
-      <span class="ui-empty__icon" aria-hidden="true">
-        <AppIcon name="image" :size="24" />
-      </span>
-      <h3 class="ui-empty__title">{{ t('app.car.photos.emptyTitle') }}</h3>
-      <p class="ui-empty__body">{{ t('app.car.photos.emptyBody') }}</p>
-      <button type="button" class="ui-btn ui-btn--secondary ui-btn--sm" :disabled="uploading" @click="pick">
+    <AppEmptyState
+      v-if="photos.length === 0"
+      icon="image"
+      variant="dashed"
+      :active="dragging"
+      :title="t('app.car.photos.emptyTitle')"
+      :body="t('app.car.photos.emptyBody')"
+      :hints="emptyHints"
+      :hints-label="t('app.car.common.examplesLabel')"
+    >
+      <button type="button" class="ui-btn ui-btn--primary ui-btn--sm" :disabled="uploading" @click="pick">
         <AppIcon name="upload" :size="16" />
         <span>{{ t('app.car.photos.upload') }}</span>
       </button>
-    </div>
+    </AppEmptyState>
 
     <div v-else class="ph__grid" :class="{ 'ph__grid--drag': dragging }">
       <figure v-for="(photo, i) in photos" :key="photo.id" class="ph__cell">

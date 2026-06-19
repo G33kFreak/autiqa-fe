@@ -1,27 +1,26 @@
 import type { ApiClient } from './types';
 import type {
-  CarInsuranceDto,
-  CreateCarInsuranceDto,
-} from '#shared/dto/car-insurance.dto';
+  CreateInsurancePolicyDto,
+  InsurancePolicyDto,
+} from '#shared/dto/car-insurance-policy.dto';
 
-/** List a car's insurance policies, newest coverage first. */
-export function getCarInsurance(client: ApiClient, carId: string) {
-  return client<CarInsuranceDto[]>(`/cars/${carId}/insurance`, { method: 'GET' });
+const base = (carId: string) => `/cars/${carId}/insurance-policies`;
+
+/** List a car's insurance policies. */
+export function getCarInsurancePolicies(client: ApiClient, carId: string) {
+  return client<InsurancePolicyDto[]>(base(carId), { method: 'GET' });
 }
 
-/** Create an insurance policy (the schedule is derived server-side). */
-export function createCarInsurance(
+/** Create an insurance policy (schedule derived server-side). */
+export function createCarInsurancePolicy(
   client: ApiClient,
   carId: string,
-  body: CreateCarInsuranceDto,
+  body: CreateInsurancePolicyDto,
 ) {
-  return client<CarInsuranceDto>(`/cars/${carId}/insurance`, {
-    method: 'POST',
-    body,
-  });
+  return client<InsurancePolicyDto>(base(carId), { method: 'POST', body });
 }
 
-/** Mark a single installment paid or unpaid. */
+/** Settle or reopen a single installment. */
 export function setInsuranceInstallmentPaid(
   client: ApiClient,
   carId: string,
@@ -29,19 +28,17 @@ export function setInsuranceInstallmentPaid(
   installmentId: string,
   paid: boolean,
 ) {
-  return client<CarInsuranceDto>(
-    `/cars/${carId}/insurance/${policyId}/installments/${installmentId}`,
+  return client<InsurancePolicyDto>(
+    `${base(carId)}/${policyId}/installments/${installmentId}`,
     { method: 'PATCH', body: { paid } },
   );
 }
 
 /** Delete an insurance policy. */
-export function deleteCarInsurance(
+export function deleteCarInsurancePolicy(
   client: ApiClient,
   carId: string,
   policyId: string,
 ) {
-  return client<unknown>(`/cars/${carId}/insurance/${policyId}`, {
-    method: 'DELETE',
-  });
+  return client<unknown>(`${base(carId)}/${policyId}`, { method: 'DELETE' });
 }

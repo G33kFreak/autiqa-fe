@@ -34,6 +34,10 @@ const categories = computed<readonly LedgerCategory[]>(() =>
   direction.value === 'income' ? LEDGER_INCOME_CATEGORIES : LEDGER_EXPENSE_CATEGORIES,
 );
 
+/** Income and expenses are distinct records server-side, so an existing entry's
+ * direction is fixed — only its details can change. */
+const isEditing = computed(() => editingId.value !== null);
+
 function todayInput(): string {
   return toDateInputValue(new Date().toISOString());
 }
@@ -133,6 +137,7 @@ defineExpose({ openCreate, openEdit });
           class="le__toggle-btn"
           :class="{ 'le__toggle-btn--active le__toggle-btn--income': direction === 'income' }"
           :aria-pressed="direction === 'income'"
+          :disabled="saving || isEditing"
           @click="setDirection('income')"
         >
           <AppIcon name="trending-up" :size="17" />
@@ -143,6 +148,7 @@ defineExpose({ openCreate, openEdit });
           class="le__toggle-btn"
           :class="{ 'le__toggle-btn--active le__toggle-btn--expense': direction === 'expense' }"
           :aria-pressed="direction === 'expense'"
+          :disabled="saving || isEditing"
           @click="setDirection('expense')"
         >
           <AppIcon name="trending-down" :size="17" />
@@ -280,6 +286,16 @@ defineExpose({ openCreate, openEdit });
 .le__toggle-btn:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: 2px;
+}
+
+/* When editing, direction is locked: the chosen side keeps its selected look,
+   the other reads as unavailable. */
+.le__toggle-btn:disabled {
+  cursor: not-allowed;
+}
+
+.le__toggle-btn:disabled:not(.le__toggle-btn--active) {
+  opacity: 0.45;
 }
 
 .le__amount {

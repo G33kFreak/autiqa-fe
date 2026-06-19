@@ -3,33 +3,72 @@ import type {
   CarInsuranceDto,
   CreateCarInsuranceDto,
 } from '#shared/dto/car-insurance.dto';
+import type {
+  CreateInsurancePolicyDto,
+  InsurancePolicyDto,
+} from '#shared/dto/car-insurance-policy.dto';
 import {
-  createCarInsurance,
-  deleteCarInsurance,
-  getCarInsurance,
+  createCarInsurancePolicy,
+  deleteCarInsurancePolicy,
+  getCarInsurancePolicies,
   setInsuranceInstallmentPaid,
 } from '../api/car-insurance';
-import { demoInsurance, withDemoFallback } from '~/utils/car-demo';
 
-/** Per-car insurance policies and their installment schedules. Thin, no caching. */
+/**
+ * Per-car insurance. The backend exposes rich `InsurancePolicyDto`s on
+ * `/cars/:id/insurance-policies`; this store folds them into the UI-shaped
+ * `CarInsuranceDto` view model (insurer → provider, paymentAmount → premium,
+ * an installment's linked `expenseId` → a `paid` flag).
+ */
+
+function toViewModel(p: InsurancePolicyDto): CarInsuranceDto {
+  return {
+    id: p.id,
+    carId: p.carId,
+    provider: p.insurerName ?? '',
+    policyNumber: p.policyNumber,
+    coverageStart: p.coverageStart,
+    coverageEnd: p.coverageEnd,
+    premium: p.paymentAmount,
+    currency: p.currency,
+    installments: [...p.installments]
+      .sort((a, b) => a.sequence - b.sequence)
+      .map((i) => ({
+        id: i.id,
+        dueDate: i.dueDate,
+        amount: i.amount,
+        paid: i.expenseId != null,
+      })),
+    createdAt: p.createdAt,
+  };
+}
+
+function toCreateBody(body: CreateCarInsuranceDto): CreateInsurancePolicyDto {
+  return {
+    insurerName: body.provider,
+    policyNumber: body.policyNumber ?? null,
+    coverageStart: body.coverageStart,
+    coverageEnd: body.coverageEnd,
+    paymentAmount: body.premium,
+    currency: body.currency,
+    paymentType: body.installmentCount > 1 ? 'INSTALLMENTS' : 'ONE_TIME',
+    installmentCount: body.installmentCount,
+  };
+}
+
 export const useCarInsuranceStore = defineStore('carInsurance', () => {
-  const { authenticatedApi } = useApi();
+  const { authenticatedApi: api } = useApi();
 
-  function list(carId: string): Promise<CarInsuranceDto[]> {
-    return withDemoFallback(
-      () => getCarInsurance(authenticatedApi, carId),
-      () => demoInsurance.list(carId),
-    );
+  async function list(carId: string): Promise<CarInsuranceDto[]> {
+    const policies = await getCarInsurancePolicies(api, carId);
+    return policies.map(toViewModel);
   }
 
   async function create(
     carId: string,
     body: CreateCarInsuranceDto,
   ): Promise<CarInsuranceDto[]> {
-    await withDemoFallback(
-      () => createCarInsurance(authenticatedApi, carId, body),
-      () => demoInsurance.add(carId, body),
-    );
+    await createCarInsurancePolicy(api, carId, toCreateBody(body));
     return list(carId);
   }
 
@@ -39,17 +78,7 @@ export const useCarInsuranceStore = defineStore('carInsurance', () => {
     installmentId: string,
     paid: boolean,
   ): Promise<CarInsuranceDto[]> {
-    await withDemoFallback(
-      () =>
-        setInsuranceInstallmentPaid(
-          authenticatedApi,
-          carId,
-          policyId,
-          installmentId,
-          paid,
-        ),
-      () => demoInsurance.setInstallmentPaid(carId, policyId, installmentId, paid),
-    );
+    await setInsuranceInstallmentPaid(api, carId, policyId, installmentId, paid);
     return list(carId);
   }
 
@@ -57,10 +86,7 @@ export const useCarInsuranceStore = defineStore('carInsurance', () => {
     carId: string,
     policyId: string,
   ): Promise<CarInsuranceDto[]> {
-    await withDemoFallback(
-      () => deleteCarInsurance(authenticatedApi, carId, policyId),
-      () => demoInsurance.remove(carId, policyId),
-    );
+    await deleteCarInsurancePolicy(api, carId, policyId);
     return list(carId);
   }
 

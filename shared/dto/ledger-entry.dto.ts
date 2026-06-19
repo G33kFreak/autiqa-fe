@@ -8,6 +8,11 @@
  */
 export type LedgerDirection = 'income' | 'expense';
 
+/**
+ * Categories mirror the backend type enums (uppercase on the wire — e.g.
+ * expense `MAINTENANCE`/`CAR_PAYMENT`/`INSURANCE`/`FEE`/`OTHER`). The store maps
+ * these lowercase keys to/from those enums; see stores/ledger.ts.
+ */
 export type LedgerCategory =
   // income
   | 'rental'
@@ -16,10 +21,9 @@ export type LedgerCategory =
   | 'income_other'
   // expense
   | 'maintenance'
-  | 'fuel'
+  | 'car_payment'
   | 'insurance'
   | 'fee'
-  | 'fine'
   | 'expense_other';
 
 export const LEDGER_INCOME_CATEGORIES: readonly LedgerCategory[] = [
@@ -31,10 +35,9 @@ export const LEDGER_INCOME_CATEGORIES: readonly LedgerCategory[] = [
 
 export const LEDGER_EXPENSE_CATEGORIES: readonly LedgerCategory[] = [
   'maintenance',
-  'fuel',
+  'car_payment',
   'insurance',
   'fee',
-  'fine',
   'expense_other',
 ] as const;
 

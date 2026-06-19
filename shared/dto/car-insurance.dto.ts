@@ -1,16 +1,15 @@
 /**
- * A vehicle insurance policy — mirrors the backend `CarInsuranceDto`.
- *
- * Unlike v1, paying an installment does not silently spawn a ledger expense;
- * the policy owns its own cost and payment schedule. `coverageEnd` of the most
- * recent policy is what feeds the vehicle's insurance compliance deadline.
+ * Insurance **view model** for the detail screen. The backend wire shape lives
+ * in car-insurance-policy.dto.ts (`InsurancePolicyDto`); the store maps onto
+ * this so components read stable, UI-shaped fields. `coverageEnd` of the most
+ * recent policy feeds the vehicle's insurance compliance deadline.
  */
 export interface InsuranceInstallmentDto {
   id: string;
   dueDate: string;
   amount: string;
-  /** ISO timestamp when settled, or null while outstanding. */
-  paidAt: string | null;
+  /** Settled (backend: has a linked expense) vs. outstanding. */
+  paid: boolean;
 }
 
 export interface CarInsuranceDto {

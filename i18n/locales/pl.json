@@ -329,7 +329,8 @@
       "errorTitle": "Nie udało się wczytać pojazdu",
       "errorBody": "Coś poszło nie tak podczas pobierania danych. Sprawdź połączenie i spróbuj ponownie.",
       "common": {
-        "noContact": "Brak danych kontaktowych"
+        "noContact": "Brak danych kontaktowych",
+        "examplesLabel": "Na przykład"
       },
       "header": {
         "unnamed": "Pojazd bez nazwy",
@@ -395,7 +396,13 @@
         "add": "Dodaj wpis",
         "emptyTitle": "Brak wpisów",
         "emptyBody": "Rejestruj wynajmy, kursy, paliwo i naprawy, aby poznać rzeczywistą ekonomię pojazdu.",
-        "costBreakdown": "Struktura kosztów"
+        "costBreakdown": "Struktura kosztów",
+        "emptyHints": [
+          "Przychód z wynajmu",
+          "Serwis",
+          "Ubezpieczenie",
+          "Opłaty"
+        ]
       },
       "maintenance": {
         "title": "Historia serwisowa",
@@ -409,7 +416,13 @@
         "yesterday": "Wczoraj",
         "daysAgo": "{n} dni temu",
         "emptyTitle": "Brak historii serwisowej",
-        "emptyBody": "Rejestruj wymianę oleju, hamulce, opony i naprawy, aby zbudować historię serwisową, która zostaje z pojazdem."
+        "emptyBody": "Rejestruj wymianę oleju, hamulce, opony i naprawy, aby zbudować historię serwisową, która zostaje z pojazdem.",
+        "emptyHints": [
+          "Wymiana oleju",
+          "Hamulce",
+          "Opony",
+          "Przegląd"
+        ]
       },
       "ledger": {
         "addTitle": "Dodaj wpis księgowy",
@@ -433,10 +446,9 @@
           "deposit": "Kaucja",
           "income_other": "Inny przychód",
           "maintenance": "Serwis",
-          "fuel": "Paliwo",
+          "car_payment": "Płatność za pojazd",
           "insurance": "Ubezpieczenie",
           "fee": "Opłata",
-          "fine": "Mandat",
           "expense_other": "Inny wydatek"
         }
       },
@@ -473,7 +485,12 @@
         "statusDue": "Do zapłaty",
         "deletePolicy": "Usuń polisę",
         "deleteConfirmTitle": "Usunąć tę polisę?",
-        "deleteConfirmBody": "Polisa wraz z harmonogramem płatności zostanie usunięta. Tej operacji nie można cofnąć."
+        "deleteConfirmBody": "Polisa wraz z harmonogramem płatności zostanie usunięta. Tej operacji nie można cofnąć.",
+        "emptyHints": [
+          "Polisa OC / AC",
+          "Okres ochrony",
+          "Raty"
+        ]
       },
       "photos": {
         "title": "Zdjęcia",
@@ -489,7 +506,13 @@
         "previous": "Poprzednie zdjęcie",
         "next": "Następne zdjęcie",
         "deleteConfirmTitle": "Usunąć to zdjęcie?",
-        "deleteConfirmBody": "Zdjęcie zostanie trwale usunięte z tego pojazdu."
+        "deleteConfirmBody": "Zdjęcie zostanie trwale usunięte z tego pojazdu.",
+        "emptyHints": [
+          "Karoseria",
+          "Wnętrze",
+          "Licznik",
+          "Uszkodzenia"
+        ]
       },
       "documents": {
         "title": "Dokumenty",
@@ -519,7 +542,12 @@
           "agreement": "Umowa",
           "invoice": "Faktura",
           "other": "Inne"
-        }
+        },
+        "emptyHints": [
+          "Dowód rejestracyjny",
+          "Polisa",
+          "Protokół przeglądu"
+        ]
       }
     }
   },

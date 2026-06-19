@@ -329,7 +329,8 @@
       "errorTitle": "Couldn't load this vehicle",
       "errorBody": "Something went wrong fetching the details. Check your connection and try again.",
       "common": {
-        "noContact": "No contact details"
+        "noContact": "No contact details",
+        "examplesLabel": "For example"
       },
       "header": {
         "unnamed": "Unnamed vehicle",
@@ -395,7 +396,13 @@
         "add": "Add entry",
         "emptyTitle": "No entries yet",
         "emptyBody": "Log rentals, fares, fuel, and repairs to see this vehicle’s real economics.",
-        "costBreakdown": "Cost breakdown"
+        "costBreakdown": "Cost breakdown",
+        "emptyHints": [
+          "Rental income",
+          "Maintenance",
+          "Insurance",
+          "Fees"
+        ]
       },
       "maintenance": {
         "title": "Maintenance history",
@@ -409,7 +416,13 @@
         "yesterday": "Yesterday",
         "daysAgo": "{n} days ago",
         "emptyTitle": "No service history yet",
-        "emptyBody": "Log oil changes, brakes, tyres, and repairs to build a service record that travels with the vehicle."
+        "emptyBody": "Log oil changes, brakes, tyres, and repairs to build a service record that travels with the vehicle.",
+        "emptyHints": [
+          "Oil change",
+          "Brakes",
+          "Tyres",
+          "Inspection"
+        ]
       },
       "ledger": {
         "addTitle": "Add ledger entry",
@@ -433,10 +446,9 @@
           "deposit": "Deposit",
           "income_other": "Other income",
           "maintenance": "Maintenance",
-          "fuel": "Fuel",
+          "car_payment": "Car payment",
           "insurance": "Insurance",
           "fee": "Fee",
-          "fine": "Fine",
           "expense_other": "Other expense"
         }
       },
@@ -473,7 +485,12 @@
         "statusDue": "Due",
         "deletePolicy": "Delete policy",
         "deleteConfirmTitle": "Delete this policy?",
-        "deleteConfirmBody": "The policy and its payment schedule will be removed. This cannot be undone."
+        "deleteConfirmBody": "The policy and its payment schedule will be removed. This cannot be undone.",
+        "emptyHints": [
+          "OC / AC policy",
+          "Coverage dates",
+          "Installments"
+        ]
       },
       "photos": {
         "title": "Photos",
@@ -489,7 +506,13 @@
         "previous": "Previous photo",
         "next": "Next photo",
         "deleteConfirmTitle": "Delete this photo?",
-        "deleteConfirmBody": "The photo will be permanently removed from this vehicle."
+        "deleteConfirmBody": "The photo will be permanently removed from this vehicle.",
+        "emptyHints": [
+          "Bodywork",
+          "Interior",
+          "Odometer",
+          "Damage"
+        ]
       },
       "documents": {
         "title": "Documents",
@@ -519,7 +542,12 @@
           "agreement": "Agreement",
           "invoice": "Invoice",
           "other": "Other"
-        }
+        },
+        "emptyHints": [
+          "Registration",
+          "Insurance policy",
+          "Inspection report"
+        ]
       }
     }
   },

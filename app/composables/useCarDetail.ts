@@ -12,7 +12,7 @@ import type {
   CreateCarInsuranceDto,
 } from '#shared/dto/car-insurance.dto';
 import type { DriverDto } from '#shared/dto/driver.dto';
-import { CarNotFoundError } from '~/utils/car-demo';
+import { CarNotFoundError } from '~/utils/car-errors';
 import { complianceStatus, type ComplianceTone } from '~/utils/compliance';
 
 /**
@@ -104,14 +104,18 @@ export function useCarDetail(carId: Ref<string>) {
   }
 
   // ── Ledger ──
+  /** Attribute entries to the car's current driver when the caller hasn't. */
+  function withCarDriver(body: CreateLedgerEntryDto): CreateLedgerEntryDto {
+    return { ...body, driverId: body.driverId ?? car.value?.driver?.id ?? null };
+  }
   async function addLedgerEntry(body: CreateLedgerEntryDto) {
-    ledger.value = await ledgerStore.create(carId.value, body);
+    ledger.value = await ledgerStore.create(carId.value, withCarDriver(body));
   }
   async function updateLedgerEntry(id: string, body: CreateLedgerEntryDto) {
-    ledger.value = await ledgerStore.update(carId.value, id, body);
+    ledger.value = await ledgerStore.update(carId.value, id, withCarDriver(body));
   }
-  async function deleteLedgerEntry(id: string) {
-    ledger.value = await ledgerStore.remove(carId.value, id);
+  async function deleteLedgerEntry(entry: LedgerEntryDto) {
+    ledger.value = await ledgerStore.remove(carId.value, entry.id, entry.direction);
   }
 
   // ── Insurance ──
