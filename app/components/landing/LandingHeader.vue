@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const { locale } = useI18n()
-const switchLocalePath = useSwitchLocalePath()
 const localePath = useLocalePath()
 
 const scrolled = ref(false)
@@ -40,10 +38,7 @@ function closeMenu() {
       </nav>
 
       <div class="site-header__actions">
-        <a
-          :href="switchLocalePath(locale === 'pl' ? 'en' : 'pl')"
-          class="locale-toggle"
-        >{{ locale === 'pl' ? 'EN' : 'PL' }}</a>
+        <LangSwitcher align="end" />
         <NuxtLink :to="localePath('/login')" class="nav-link">{{ $t('nav.login') }}</NuxtLink>
         <NuxtLink :to="localePath('/register')" class="btn" :class="scrolled ? 'btn--primary' : 'btn--ghost-light'">
           {{ $t('nav.signUp') }}
@@ -79,9 +74,7 @@ function closeMenu() {
         <NuxtLink :to="localePath('/register')" class="btn btn--primary" style="width: 100%; justify-content: center" @click="closeMenu">
           {{ $t('nav.signUp') }}
         </NuxtLink>
-        <a :href="switchLocalePath(locale === 'pl' ? 'en' : 'pl')" class="locale-toggle">
-          {{ locale === 'pl' ? 'English' : 'Polski' }}
-        </a>
+        <LangSwitcher align="start" placement="top" />
       </div>
     </div>
   </header>
@@ -162,25 +155,17 @@ function closeMenu() {
   margin-left: auto;
 }
 
-.locale-toggle {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: oklch(1.000 0.000 0 / 0.60);
-  text-decoration: none;
-  letter-spacing: 0.04em;
-  transition: color var(--duration-fast) var(--ease-out);
-  cursor: pointer;
+/* The switcher inherits `currentColor`: light over the transparent hero
+   header, muted ink once the header gains its white background. */
+.site-header__actions :deep(.lang__trigger) {
+  color: oklch(1.000 0.000 0 / 0.82);
 }
 
-.locale-toggle:hover {
-  color: oklch(1.000 0.000 0 / 0.90);
-}
-
-.site-header--scrolled .locale-toggle {
+.site-header--scrolled .site-header__actions :deep(.lang__trigger) {
   color: var(--color-muted);
 }
 
-.site-header--scrolled .locale-toggle:hover {
+.site-header--scrolled .site-header__actions :deep(.lang__trigger):hover {
   color: var(--color-ink);
 }
 

@@ -24,7 +24,9 @@ export type IconName =
   | 'check'
   | 'phone'
   | 'mail'
-  | 'circle';
+  | 'circle'
+  | 'globe'
+  | 'tick';
 
 withDefaults(
   defineProps<{
@@ -68,6 +70,9 @@ const paths: Record<string, string> = {
   mail:
     'M4 6.5h16a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1Zm.4.6 7.6 5.4 7.6-5.4',
   circle: 'M12 5.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13Z',
+  globe:
+    'M12 3.5a8.5 8.5 0 1 0 0 17 8.5 8.5 0 0 0 0-17ZM3.6 12h16.8M12 3.5c2.3 2.3 3.6 5.3 3.6 8.5s-1.3 6.2-3.6 8.5c-2.3-2.3-3.6-5.3-3.6-8.5S9.7 5.8 12 3.5Z',
+  tick: 'M5 12.5l4.5 4.5L19 7',
 };
 </script>
 

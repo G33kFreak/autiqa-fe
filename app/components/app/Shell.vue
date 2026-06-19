@@ -67,6 +67,7 @@ watch(() => route.fullPath, closeMobile);
         </div>
 
         <div class="topbar__right">
+          <LangSwitcher align="end" />
           <AppOrgMenu />
         </div>
       </header>
@@ -164,7 +165,16 @@ watch(() => route.fullPath, closeMobile);
 .topbar__right {
   display: flex;
   align-items: center;
+  gap: var(--space-1);
   flex-shrink: 0;
+}
+
+.topbar__right :deep(.lang__trigger) {
+  color: var(--color-muted);
+}
+
+.topbar__right :deep(.lang__trigger):hover {
+  color: var(--color-ink);
 }
 
 /* ── Content ──────────────────────────────────────────────── */

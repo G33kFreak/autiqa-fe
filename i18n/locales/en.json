@@ -412,5 +412,8 @@
       "terms": "Terms"
     },
     "copyright": "© 2025 Autiqa. All rights reserved."
+  },
+  "langSwitcher": {
+    "label": "Language"
   }
 }

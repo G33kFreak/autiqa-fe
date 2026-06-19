@@ -412,5 +412,8 @@
       "terms": "Warunki"
     },
     "copyright": "© 2025 Autiqa. Wszelkie prawa zastrzeżone."
+  },
+  "langSwitcher": {
+    "label": "Język"
   }
 }
