@@ -9,6 +9,18 @@ const props = defineProps<{
 }>();
 
 const { t, locale } = useI18n();
+const localePath = useLocalePath();
+
+function detailPath(id: string): string {
+  return localePath(`/app/fleet/${id}`);
+}
+
+/** Navigate on row click, unless the user clicked a real link/control inside it. */
+function onRowClick(event: MouseEvent, id: string) {
+  const target = event.target as HTMLElement;
+  if (target.closest('a, button')) return;
+  navigateTo(detailPath(id));
+}
 
 const dateFormatter = computed(
   () =>
@@ -84,23 +96,25 @@ function isHighlighted(id: string): boolean {
           <th scope="col">{{ t('app.fleet.table.driver') }}</th>
           <th scope="col">{{ t('app.fleet.table.inspection') }}</th>
           <th scope="col">{{ t('app.fleet.table.insurance') }}</th>
+          <th scope="col"><span class="ft__sr">{{ t('app.fleet.table.open') }}</span></th>
         </tr>
       </thead>
       <tbody>
         <tr
           v-for="{ car, inspection, insurance } in rows"
           :key="car.id"
-          class="ft__row"
+          class="ft__row ft__row--link"
           :class="{ 'ft__row--new': isHighlighted(car.id) }"
+          @click="onRowClick($event, car.id)"
         >
           <td :data-label="t('app.fleet.table.vehicle')">
             <div class="ft__vehicle">
               <span class="ft__vehicle-icon" aria-hidden="true">
                 <AppIcon name="car" :size="20" />
               </span>
-              <span class="ft__vehicle-model">
+              <NuxtLink :to="detailPath(car.id)" class="ft__vehicle-model">
                 {{ car.model || t('app.fleet.table.unknownModel') }}
-              </span>
+              </NuxtLink>
             </div>
           </td>
 
@@ -138,6 +152,12 @@ function isHighlighted(id: string): boolean {
                 {{ insurance.label }}
               </span>
             </div>
+          </td>
+
+          <td class="ft__go" :data-label="t('app.fleet.table.open')">
+            <span class="ft__go-chevron" aria-hidden="true">
+              <AppIcon name="chevron-right" :size="18" />
+            </span>
           </td>
         </tr>
       </tbody>
@@ -233,6 +253,45 @@ function isHighlighted(id: string): boolean {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.ft__row--link {
+  cursor: pointer;
+}
+
+.ft__row--link:hover .ft__vehicle-model {
+  color: var(--color-primary);
+}
+
+.ft__vehicle-model:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ── Open affordance ──────────────────────────────────────── */
+.ft__go {
+  width: 1px;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.ft__go-chevron {
+  display: inline-flex;
+  color: var(--color-muted);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+}
+
+.ft__row--link:hover .ft__go-chevron,
+.ft__row--link:focus-within .ft__go-chevron {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--color-primary);
 }
 
 /* ── Plate / VIN ──────────────────────────────────────────── */
@@ -386,6 +445,11 @@ function isHighlighted(id: string): boolean {
   .ft__compliance {
     align-items: flex-end;
     text-align: right;
+  }
+
+  /* The whole card is tappable on touch — drop the dedicated open cell. */
+  .ft__go {
+    display: none;
   }
 }
 

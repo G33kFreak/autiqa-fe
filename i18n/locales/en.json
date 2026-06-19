@@ -205,7 +205,8 @@
         "inspection": "Inspection",
         "insurance": "Insurance",
         "unassigned": "Unassigned",
-        "unknownModel": "Unnamed vehicle"
+        "unknownModel": "Unnamed vehicle",
+        "open": "Open"
       },
       "compliance": {
         "notSet": "Not set",
@@ -306,6 +307,204 @@
       "settings": {
         "title": "Settings",
         "lede": "Organization, members, and preferences will live here."
+      }
+    },
+    "common": {
+      "close": "Close",
+      "cancel": "Cancel",
+      "save": "Save",
+      "saving": "Saving…",
+      "delete": "Delete",
+      "edit": "Edit",
+      "loading": "Loading…",
+      "retry": "Try again",
+      "actionError": "Something went wrong. Please try again."
+    },
+    "car": {
+      "breadcrumbAria": "Breadcrumb",
+      "tabsAria": "Vehicle sections",
+      "notFoundTitle": "This vehicle isn't here",
+      "notFoundBody": "It may have been removed, or the link is wrong. Head back to your fleet to find it.",
+      "backToFleet": "Back to fleet",
+      "errorTitle": "Couldn't load this vehicle",
+      "errorBody": "Something went wrong fetching the details. Check your connection and try again.",
+      "common": {
+        "noContact": "No contact details"
+      },
+      "header": {
+        "unnamed": "Unnamed vehicle",
+        "added": "Added {date}",
+        "edit": "Edit",
+        "addEntry": "Add entry"
+      },
+      "tabs": {
+        "finances": "Finances",
+        "insurance": "Insurance",
+        "photos": "Photos",
+        "documents": "Documents"
+      },
+      "signal": {
+        "net": "Net result",
+        "income": "Income",
+        "expenses": "Expenses",
+        "compliance": "Compliance",
+        "profit": "In profit",
+        "loss": "At a loss",
+        "allClear": "All clear",
+        "complianceActionNeeded": "Action needed now",
+        "complianceDueSoon": "Renewal due soon",
+        "complianceIncomplete": "Dates not set",
+        "complianceClear": "Inspection and insurance valid"
+      },
+      "editVehicle": {
+        "title": "Edit vehicle",
+        "subtitle": "Update the model, plate, and VIN.",
+        "modelLabel": "Model",
+        "modelRequired": "Enter a model to continue.",
+        "plateLabel": "Plate number",
+        "vinLabel": "VIN",
+        "error": "Couldn't save changes. Please try again."
+      },
+      "assignDriver": {
+        "title": "Assign a driver",
+        "subtitle": "Search your drivers and pick one for this vehicle.",
+        "searchPlaceholder": "Search by name, email, or phone",
+        "noResults": "No drivers match your search.",
+        "error": "Couldn't assign that driver. Please try again."
+      },
+      "driver": {
+        "title": "Assigned driver",
+        "change": "Change",
+        "remove": "Remove driver",
+        "assign": "Assign driver",
+        "emptyCopy": "No driver is assigned to this vehicle yet.",
+        "removeConfirmTitle": "Remove this driver?",
+        "removeConfirmBody": "The vehicle will be left unassigned. You can assign someone again at any time."
+      },
+      "compliance": {
+        "title": "Compliance",
+        "inspection": "Technical inspection",
+        "insurance": "Insurance (OC/AC)",
+        "editInspection": "Edit inspection date",
+        "manageInsurance": "Manage insurance"
+      },
+      "finances": {
+        "title": "Finances",
+        "subtitle": "Income and expenses for this vehicle.",
+        "add": "Add entry",
+        "emptyTitle": "No entries yet",
+        "emptyBody": "Log rentals, fares, fuel, and repairs to see this vehicle’s real economics.",
+        "costBreakdown": "Cost breakdown"
+      },
+      "ledger": {
+        "addTitle": "Add ledger entry",
+        "editTitle": "Edit ledger entry",
+        "subtitle": "Record money in or out for this vehicle.",
+        "directionLabel": "Direction",
+        "income": "Income",
+        "expense": "Expense",
+        "amountLabel": "Amount",
+        "amountRequired": "Enter an amount greater than zero.",
+        "dateLabel": "Date",
+        "categoryLabel": "Category",
+        "noteLabel": "Note",
+        "notePlaceholder": "Optional — what was this for?",
+        "error": "Couldn't save this entry. Please try again.",
+        "deleteConfirmTitle": "Delete this entry?",
+        "deleteConfirmBody": "This removes the entry from the vehicle’s ledger. This cannot be undone.",
+        "categories": {
+          "rental": "Rental",
+          "fare": "Fare",
+          "deposit": "Deposit",
+          "income_other": "Other income",
+          "maintenance": "Maintenance",
+          "fuel": "Fuel",
+          "insurance": "Insurance",
+          "fee": "Fee",
+          "fine": "Fine",
+          "expense_other": "Other expense"
+        }
+      },
+      "insurance": {
+        "title": "Insurance",
+        "sectionSub": "Policies, coverage windows, and payment schedules.",
+        "add": "Add policy",
+        "emptyTitle": "No policy on record",
+        "emptyBody": "Add an insurance policy to track coverage and keep its renewal on the compliance radar.",
+        "addTitle": "Add insurance policy",
+        "subtitle": "Coverage and premium for this vehicle.",
+        "providerLabel": "Provider",
+        "numberLabel": "Policy number",
+        "startLabel": "Coverage start",
+        "endLabel": "Coverage end",
+        "coverageInvalid": "Coverage end must be after the start date.",
+        "premiumLabel": "Premium",
+        "installmentsLabel": "Payment plan",
+        "payInFull": "Pay in full",
+        "installmentsN": "{n} installments",
+        "savePolicy": "Save policy",
+        "error": "Couldn't save the policy. Please try again.",
+        "activePolicy": "Active",
+        "expired": "Expired",
+        "activeFor": "Valid for {n} days",
+        "coverage": "Coverage",
+        "premium": "Premium",
+        "paid": "Paid",
+        "ofInstallments": "{paid} of {total} installments",
+        "schedule": "Payment schedule",
+        "markPaid": "Mark as paid",
+        "markUnpaid": "Mark as unpaid",
+        "statusPaid": "Paid",
+        "statusDue": "Due",
+        "deletePolicy": "Delete policy",
+        "deleteConfirmTitle": "Delete this policy?",
+        "deleteConfirmBody": "The policy and its payment schedule will be removed. This cannot be undone."
+      },
+      "photos": {
+        "title": "Photos",
+        "subtitle": "Document condition before and after each handover.",
+        "upload": "Upload photos",
+        "uploading": "Uploading…",
+        "emptyTitle": "No photos yet",
+        "emptyBody": "Add photos of the bodywork, interior, and odometer. Drag files here or upload.",
+        "view": "View {name}",
+        "cover": "Cover",
+        "setCover": "Set as cover",
+        "coverSet": "Cover photo",
+        "previous": "Previous photo",
+        "next": "Next photo",
+        "deleteConfirmTitle": "Delete this photo?",
+        "deleteConfirmBody": "The photo will be permanently removed from this vehicle."
+      },
+      "documents": {
+        "title": "Documents",
+        "sectionSub": "Registration, policies, inspections, and agreements.",
+        "subtitle": "Attach a file and tag it so it’s easy to find.",
+        "add": "Upload document",
+        "addTitle": "Upload document",
+        "upload": "Upload",
+        "uploading": "Uploading…",
+        "replace": "click to replace",
+        "dropTitle": "Drop a file or click to browse",
+        "dropHint": "PDF, image, or office file",
+        "fileRequired": "Choose a file to upload.",
+        "categoryLabel": "Category",
+        "expiresLabel": "Expires (optional)",
+        "error": "Couldn't upload this document. Please try again.",
+        "emptyTitle": "No documents yet",
+        "emptyBody": "Keep the registration, insurance policy, and inspection report here — ready when you need them.",
+        "expires": "Expires {date}",
+        "download": "Download {name}",
+        "deleteConfirmTitle": "Delete this document?",
+        "deleteConfirmBody": "The document will be permanently removed from this vehicle.",
+        "categories": {
+          "registration": "Registration",
+          "insurance": "Insurance",
+          "inspection": "Inspection",
+          "agreement": "Agreement",
+          "invoice": "Invoice",
+          "other": "Other"
+        }
       }
     }
   },

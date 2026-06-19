@@ -205,7 +205,8 @@
         "inspection": "Przegląd",
         "insurance": "Ubezpieczenie",
         "unassigned": "Nieprzypisany",
-        "unknownModel": "Pojazd bez nazwy"
+        "unknownModel": "Pojazd bez nazwy",
+        "open": "Otwórz"
       },
       "compliance": {
         "notSet": "Brak daty",
@@ -306,6 +307,204 @@
       "settings": {
         "title": "Ustawienia",
         "lede": "Tutaj pojawią się organizacja, członkowie i preferencje."
+      }
+    },
+    "common": {
+      "close": "Zamknij",
+      "cancel": "Anuluj",
+      "save": "Zapisz",
+      "saving": "Zapisywanie…",
+      "delete": "Usuń",
+      "edit": "Edytuj",
+      "loading": "Ładowanie…",
+      "retry": "Spróbuj ponownie",
+      "actionError": "Coś poszło nie tak. Spróbuj ponownie."
+    },
+    "car": {
+      "breadcrumbAria": "Ścieżka nawigacji",
+      "tabsAria": "Sekcje pojazdu",
+      "notFoundTitle": "Nie ma tu tego pojazdu",
+      "notFoundBody": "Mógł zostać usunięty lub link jest błędny. Wróć do floty, aby go znaleźć.",
+      "backToFleet": "Wróć do floty",
+      "errorTitle": "Nie udało się wczytać pojazdu",
+      "errorBody": "Coś poszło nie tak podczas pobierania danych. Sprawdź połączenie i spróbuj ponownie.",
+      "common": {
+        "noContact": "Brak danych kontaktowych"
+      },
+      "header": {
+        "unnamed": "Pojazd bez nazwy",
+        "added": "Dodano {date}",
+        "edit": "Edytuj",
+        "addEntry": "Dodaj wpis"
+      },
+      "tabs": {
+        "finances": "Finanse",
+        "insurance": "Ubezpieczenie",
+        "photos": "Zdjęcia",
+        "documents": "Dokumenty"
+      },
+      "signal": {
+        "net": "Wynik netto",
+        "income": "Przychody",
+        "expenses": "Wydatki",
+        "compliance": "Zgodność",
+        "profit": "Na plusie",
+        "loss": "Na minusie",
+        "allClear": "Wszystko aktualne",
+        "complianceActionNeeded": "Wymaga działania",
+        "complianceDueSoon": "Wkrótce odnowienie",
+        "complianceIncomplete": "Brak dat",
+        "complianceClear": "Przegląd i ubezpieczenie ważne"
+      },
+      "editVehicle": {
+        "title": "Edytuj pojazd",
+        "subtitle": "Zaktualizuj model, numer rejestracyjny i VIN.",
+        "modelLabel": "Model",
+        "modelRequired": "Podaj model, aby kontynuować.",
+        "plateLabel": "Numer rejestracyjny",
+        "vinLabel": "VIN",
+        "error": "Nie udało się zapisać zmian. Spróbuj ponownie."
+      },
+      "assignDriver": {
+        "title": "Przypisz kierowcę",
+        "subtitle": "Wyszukaj kierowcę i przypisz go do tego pojazdu.",
+        "searchPlaceholder": "Szukaj po nazwisku, e-mailu lub telefonie",
+        "noResults": "Brak kierowców pasujących do wyszukiwania.",
+        "error": "Nie udało się przypisać kierowcy. Spróbuj ponownie."
+      },
+      "driver": {
+        "title": "Przypisany kierowca",
+        "change": "Zmień",
+        "remove": "Usuń kierowcę",
+        "assign": "Przypisz kierowcę",
+        "emptyCopy": "Do tego pojazdu nie przypisano jeszcze kierowcy.",
+        "removeConfirmTitle": "Usunąć tego kierowcę?",
+        "removeConfirmBody": "Pojazd pozostanie nieprzypisany. Możesz przypisać kogoś ponownie w każdej chwili."
+      },
+      "compliance": {
+        "title": "Zgodność",
+        "inspection": "Przegląd techniczny",
+        "insurance": "Ubezpieczenie (OC/AC)",
+        "editInspection": "Edytuj datę przeglądu",
+        "manageInsurance": "Zarządzaj ubezpieczeniem"
+      },
+      "finances": {
+        "title": "Finanse",
+        "subtitle": "Przychody i wydatki tego pojazdu.",
+        "add": "Dodaj wpis",
+        "emptyTitle": "Brak wpisów",
+        "emptyBody": "Rejestruj wynajmy, kursy, paliwo i naprawy, aby poznać rzeczywistą ekonomię pojazdu.",
+        "costBreakdown": "Struktura kosztów"
+      },
+      "ledger": {
+        "addTitle": "Dodaj wpis księgowy",
+        "editTitle": "Edytuj wpis księgowy",
+        "subtitle": "Zarejestruj wpływ lub wydatek dla tego pojazdu.",
+        "directionLabel": "Kierunek",
+        "income": "Przychód",
+        "expense": "Wydatek",
+        "amountLabel": "Kwota",
+        "amountRequired": "Podaj kwotę większą od zera.",
+        "dateLabel": "Data",
+        "categoryLabel": "Kategoria",
+        "noteLabel": "Notatka",
+        "notePlaceholder": "Opcjonalnie — czego dotyczy?",
+        "error": "Nie udało się zapisać wpisu. Spróbuj ponownie.",
+        "deleteConfirmTitle": "Usunąć ten wpis?",
+        "deleteConfirmBody": "Wpis zostanie usunięty z księgi pojazdu. Tej operacji nie można cofnąć.",
+        "categories": {
+          "rental": "Wynajem",
+          "fare": "Kurs",
+          "deposit": "Kaucja",
+          "income_other": "Inny przychód",
+          "maintenance": "Serwis",
+          "fuel": "Paliwo",
+          "insurance": "Ubezpieczenie",
+          "fee": "Opłata",
+          "fine": "Mandat",
+          "expense_other": "Inny wydatek"
+        }
+      },
+      "insurance": {
+        "title": "Ubezpieczenie",
+        "sectionSub": "Polisy, okresy ochrony i harmonogramy płatności.",
+        "add": "Dodaj polisę",
+        "emptyTitle": "Brak polisy",
+        "emptyBody": "Dodaj polisę ubezpieczeniową, aby śledzić ochronę i pilnować odnowienia.",
+        "addTitle": "Dodaj polisę ubezpieczeniową",
+        "subtitle": "Ochrona i składka dla tego pojazdu.",
+        "providerLabel": "Ubezpieczyciel",
+        "numberLabel": "Numer polisy",
+        "startLabel": "Początek ochrony",
+        "endLabel": "Koniec ochrony",
+        "coverageInvalid": "Koniec ochrony musi być po dacie początku.",
+        "premiumLabel": "Składka",
+        "installmentsLabel": "Plan płatności",
+        "payInFull": "Płatność jednorazowa",
+        "installmentsN": "{n} rat",
+        "savePolicy": "Zapisz polisę",
+        "error": "Nie udało się zapisać polisy. Spróbuj ponownie.",
+        "activePolicy": "Aktywna",
+        "expired": "Wygasła",
+        "activeFor": "Ważna jeszcze {n} dni",
+        "coverage": "Ochrona",
+        "premium": "Składka",
+        "paid": "Opłacono",
+        "ofInstallments": "{paid} z {total} rat",
+        "schedule": "Harmonogram płatności",
+        "markPaid": "Oznacz jako opłaconą",
+        "markUnpaid": "Oznacz jako nieopłaconą",
+        "statusPaid": "Opłacona",
+        "statusDue": "Do zapłaty",
+        "deletePolicy": "Usuń polisę",
+        "deleteConfirmTitle": "Usunąć tę polisę?",
+        "deleteConfirmBody": "Polisa wraz z harmonogramem płatności zostanie usunięta. Tej operacji nie można cofnąć."
+      },
+      "photos": {
+        "title": "Zdjęcia",
+        "subtitle": "Dokumentuj stan przed i po każdym przekazaniu.",
+        "upload": "Dodaj zdjęcia",
+        "uploading": "Przesyłanie…",
+        "emptyTitle": "Brak zdjęć",
+        "emptyBody": "Dodaj zdjęcia karoserii, wnętrza i licznika. Przeciągnij pliki lub prześlij.",
+        "view": "Zobacz {name}",
+        "cover": "Główne",
+        "setCover": "Ustaw jako główne",
+        "coverSet": "Zdjęcie główne",
+        "previous": "Poprzednie zdjęcie",
+        "next": "Następne zdjęcie",
+        "deleteConfirmTitle": "Usunąć to zdjęcie?",
+        "deleteConfirmBody": "Zdjęcie zostanie trwale usunięte z tego pojazdu."
+      },
+      "documents": {
+        "title": "Dokumenty",
+        "sectionSub": "Dowód rejestracyjny, polisy, przeglądy i umowy.",
+        "subtitle": "Dołącz plik i oznacz go, aby łatwo go znaleźć.",
+        "add": "Dodaj dokument",
+        "addTitle": "Dodaj dokument",
+        "upload": "Prześlij",
+        "uploading": "Przesyłanie…",
+        "replace": "kliknij, aby zmienić",
+        "dropTitle": "Upuść plik lub kliknij, aby wybrać",
+        "dropHint": "PDF, obraz lub plik biurowy",
+        "fileRequired": "Wybierz plik do przesłania.",
+        "categoryLabel": "Kategoria",
+        "expiresLabel": "Wygasa (opcjonalnie)",
+        "error": "Nie udało się przesłać dokumentu. Spróbuj ponownie.",
+        "emptyTitle": "Brak dokumentów",
+        "emptyBody": "Trzymaj tu dowód rejestracyjny, polisę i protokół przeglądu — zawsze pod ręką.",
+        "expires": "Wygasa {date}",
+        "download": "Pobierz {name}",
+        "deleteConfirmTitle": "Usunąć ten dokument?",
+        "deleteConfirmBody": "Dokument zostanie trwale usunięty z tego pojazdu.",
+        "categories": {
+          "registration": "Rejestracja",
+          "insurance": "Ubezpieczenie",
+          "inspection": "Przegląd",
+          "agreement": "Umowa",
+          "invoice": "Faktura",
+          "other": "Inne"
+        }
       }
     }
   },

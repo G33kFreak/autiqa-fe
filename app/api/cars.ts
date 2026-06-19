@@ -30,3 +30,34 @@ export async function createCar(
   if (!created) throw new Error('Car creation returned an empty response.');
   return created;
 }
+
+/** Fetch one car by id. */
+export function getCarById(client: ApiClient, carId: string) {
+  return client<CarDto>(`/cars/${carId}`, { method: 'GET' });
+}
+
+/** Patch a car's editable fields. */
+export function updateCar(
+  client: ApiClient,
+  carId: string,
+  patch: Partial<CreateCarDto>,
+) {
+  return client<CarDto>(`/cars/${carId}`, { method: 'PATCH', body: patch });
+}
+
+/** Assign a driver to a car. */
+export function assignDriverToCar(
+  client: ApiClient,
+  carId: string,
+  driverId: string,
+) {
+  return client<CarDto>(`/cars/${carId}/driver`, {
+    method: 'PUT',
+    body: { driverId },
+  });
+}
+
+/** Remove the assigned driver from a car. */
+export function unassignDriverFromCar(client: ApiClient, carId: string) {
+  return client<CarDto>(`/cars/${carId}/driver`, { method: 'DELETE' });
+}
