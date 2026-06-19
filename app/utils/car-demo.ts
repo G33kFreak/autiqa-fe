@@ -232,7 +232,11 @@ function seedLedger(carId: string): LedgerEntryDto[] {
   }
   push('expense', 'fuel', 240 + Math.round(rand() * 120), 6, 'Fuel top-up');
   push('expense', 'fuel', 210 + Math.round(rand() * 120), 34, 'Fuel top-up');
-  push('expense', 'maintenance', 680 + Math.round(rand() * 400), 21, 'Brake pads & service');
+  // A plausible maintenance history spread across the year.
+  push('expense', 'maintenance', 680 + Math.round(rand() * 400), 21, 'Brake pads & full service');
+  push('expense', 'maintenance', 320 + Math.round(rand() * 120), 96, 'Engine oil & filter change');
+  push('expense', 'maintenance', 1240 + Math.round(rand() * 500), 188, 'New summer tyres + alignment');
+  push('expense', 'maintenance', 260 + Math.round(rand() * 90), 274, 'Pre-inspection check & fixes');
   push('expense', 'fee', 120, 15, 'Cleaning & detailing');
   push('expense', 'fine', 300, 44, 'Parking penalty');
   push('income', 'deposit', 1500, 3, 'Security deposit held');

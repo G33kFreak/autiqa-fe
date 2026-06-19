@@ -44,10 +44,16 @@ function setDirection(next: LedgerDirection) {
   category.value = categories.value[0]!;
 }
 
-function openCreate(presetDirection: LedgerDirection = 'expense') {
+function openCreate(
+  presetDirection: LedgerDirection = 'expense',
+  presetCategory?: LedgerCategory,
+) {
   editingId.value = null;
   direction.value = presetDirection;
-  category.value = categories.value[0]!;
+  category.value =
+    presetCategory && categories.value.includes(presetCategory)
+      ? presetCategory
+      : categories.value[0]!;
   amount.value = '';
   occurredAt.value = todayInput();
   note.value = '';

@@ -177,6 +177,26 @@ export function useCarDetail(carId: Ref<string>) {
   const net = computed(() => totalIncome.value - totalExpense.value);
   const isProfit = computed(() => net.value >= 0);
 
+  /**
+   * Maintenance service history — the `maintenance`-category expenses on their
+   * own, newest first. Same ledger data, read as a service log rather than a
+   * money column; drives the dedicated maintenance timeline.
+   */
+  const maintenance = computed(() =>
+    ledger.value
+      .filter((e) => e.category === 'maintenance')
+      .sort(
+        (a, b) =>
+          new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime(),
+      ),
+  );
+  const maintenanceTotal = computed(() =>
+    maintenance.value.reduce((sum, e) => sum + (Number(e.amount) || 0), 0),
+  );
+  const lastServiceDate = computed(
+    () => maintenance.value[0]?.occurredAt ?? null,
+  );
+
   /** Expense totals per category, descending — drives the cost breakdown. */
   const expenseByCategory = computed(() => {
     const map = new Map<LedgerCategory, number>();
@@ -271,6 +291,9 @@ export function useCarDetail(carId: Ref<string>) {
     totalExpense,
     net,
     isProfit,
+    maintenance,
+    maintenanceTotal,
+    lastServiceDate,
     expenseByCategory,
     activePolicy,
     inspectionDate,

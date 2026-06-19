@@ -339,6 +339,7 @@
       },
       "tabs": {
         "finances": "Finances",
+        "maintenance": "Maintenance",
         "insurance": "Insurance",
         "photos": "Photos",
         "documents": "Documents"
@@ -395,6 +396,20 @@
         "emptyTitle": "No entries yet",
         "emptyBody": "Log rentals, fares, fuel, and repairs to see this vehicle’s real economics.",
         "costBreakdown": "Cost breakdown"
+      },
+      "maintenance": {
+        "title": "Maintenance history",
+        "subtitle": "Every service logged for this vehicle, newest first.",
+        "log": "Log maintenance",
+        "defaultTitle": "Service",
+        "totalSpent": "Total spent",
+        "servicesLogged": "Services logged",
+        "lastService": "Last service",
+        "today": "Today",
+        "yesterday": "Yesterday",
+        "daysAgo": "{n} days ago",
+        "emptyTitle": "No service history yet",
+        "emptyBody": "Log oil changes, brakes, tyres, and repairs to build a service record that travels with the vehicle."
       },
       "ledger": {
         "addTitle": "Add ledger entry",

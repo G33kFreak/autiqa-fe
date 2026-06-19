@@ -339,6 +339,7 @@
       },
       "tabs": {
         "finances": "Finanse",
+        "maintenance": "Serwis",
         "insurance": "Ubezpieczenie",
         "photos": "Zdjęcia",
         "documents": "Dokumenty"
@@ -395,6 +396,20 @@
         "emptyTitle": "Brak wpisów",
         "emptyBody": "Rejestruj wynajmy, kursy, paliwo i naprawy, aby poznać rzeczywistą ekonomię pojazdu.",
         "costBreakdown": "Struktura kosztów"
+      },
+      "maintenance": {
+        "title": "Historia serwisowa",
+        "subtitle": "Każdy serwis tego pojazdu, od najnowszych.",
+        "log": "Dodaj serwis",
+        "defaultTitle": "Serwis",
+        "totalSpent": "Łączny koszt",
+        "servicesLogged": "Liczba serwisów",
+        "lastService": "Ostatni serwis",
+        "today": "Dzisiaj",
+        "yesterday": "Wczoraj",
+        "daysAgo": "{n} dni temu",
+        "emptyTitle": "Brak historii serwisowej",
+        "emptyBody": "Rejestruj wymianę oleju, hamulce, opony i naprawy, aby zbudować historię serwisową, która zostaje z pojazdem."
       },
       "ledger": {
         "addTitle": "Dodaj wpis księgowy",

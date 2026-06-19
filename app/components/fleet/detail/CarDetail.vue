@@ -5,6 +5,7 @@ import CarSignalBar from '~/components/fleet/detail/CarSignalBar.vue';
 import CarDriverCard from '~/components/fleet/detail/CarDriverCard.vue';
 import CarComplianceSnapshot from '~/components/fleet/detail/CarComplianceSnapshot.vue';
 import CarFinances from '~/components/fleet/detail/CarFinances.vue';
+import CarMaintenance from '~/components/fleet/detail/CarMaintenance.vue';
 import CarInsurance from '~/components/fleet/detail/CarInsurance.vue';
 import CarPhotos from '~/components/fleet/detail/CarPhotos.vue';
 import CarDocuments from '~/components/fleet/detail/CarDocuments.vue';
@@ -36,14 +37,96 @@ const complianceSignalLabel = computed(() => {
   return t('app.fleet.compliance.inDays', { n: daysLeft });
 });
 
-type TabKey = 'finances' | 'insurance' | 'photos' | 'documents';
+type TabKey = 'finances' | 'maintenance' | 'insurance' | 'photos' | 'documents';
 const tab = ref<TabKey>('finances');
 const tabs = computed<Array<{ key: TabKey; label: string; icon: IconName; count: number }>>(() => [
   { key: 'finances', label: t('app.car.tabs.finances'), icon: 'wallet', count: d.ledger.value.length },
+  { key: 'maintenance', label: t('app.car.tabs.maintenance'), icon: 'wrench', count: d.maintenance.value.length },
   { key: 'insurance', label: t('app.car.tabs.insurance'), icon: 'shield', count: d.policies.value.length },
   { key: 'photos', label: t('app.car.tabs.photos'), icon: 'image', count: d.photos.value.length },
   { key: 'documents', label: t('app.car.tabs.documents'), icon: 'document', count: d.documents.value.length },
 ]);
+
+// ── Tab bar: scroll + edge-fade + keyboard nav ──
+const tabScroller = ref<HTMLElement | null>(null);
+const canScrollStart = ref(false);
+const canScrollEnd = ref(false);
+
+function prefersReducedMotion(): boolean {
+  return (
+    import.meta.client &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+}
+
+function updateTabFade() {
+  const el = tabScroller.value;
+  if (!el) return;
+  canScrollStart.value = el.scrollLeft > 1;
+  canScrollEnd.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 1;
+}
+
+/** Centre the active tab when the bar scrolls, hinting there's more either side. */
+function scrollTabIntoView(key: TabKey) {
+  const scroller = tabScroller.value;
+  const el = scroller?.querySelector<HTMLElement>(`#cd-tab-${key}`);
+  if (!scroller || !el) return;
+  const scrollerRect = scroller.getBoundingClientRect();
+  const elRect = el.getBoundingClientRect();
+  const offsetInView = elRect.left - scrollerRect.left;
+  const delta = offsetInView - (scroller.clientWidth - el.offsetWidth) / 2;
+  scroller.scrollTo({
+    left: scroller.scrollLeft + delta, // scrollTo clamps to the valid range
+    behavior: prefersReducedMotion() ? 'auto' : 'smooth',
+  });
+}
+
+function selectTab(key: TabKey) {
+  tab.value = key;
+  nextTick(() => scrollTabIntoView(key));
+}
+
+/** Roving-focus arrow-key navigation, per WAI-ARIA tablist. */
+function onTabKeydown(event: KeyboardEvent) {
+  const items = tabs.value;
+  const current = items.findIndex((i) => i.key === tab.value);
+  let next = current;
+  switch (event.key) {
+    case 'ArrowRight':
+      next = (current + 1) % items.length;
+      break;
+    case 'ArrowLeft':
+      next = (current - 1 + items.length) % items.length;
+      break;
+    case 'Home':
+      next = 0;
+      break;
+    case 'End':
+      next = items.length - 1;
+      break;
+    default:
+      return;
+  }
+  event.preventDefault();
+  const key = items[next]!.key;
+  tab.value = key;
+  nextTick(() => {
+    tabScroller.value?.querySelector<HTMLElement>(`#cd-tab-${key}`)?.focus();
+    scrollTabIntoView(key);
+  });
+}
+
+let tabResizeObserver: ResizeObserver | null = null;
+onMounted(() => {
+  updateTabFade();
+  if (import.meta.client && tabScroller.value) {
+    tabResizeObserver = new ResizeObserver(updateTabFade);
+    tabResizeObserver.observe(tabScroller.value);
+  }
+});
+onBeforeUnmount(() => tabResizeObserver?.disconnect());
+// Label widths change with locale — recheck overflow when they do.
+watch(tabs, () => nextTick(updateTabFade));
 
 // ── Dialog refs ──
 const editVehicleDialog = ref<InstanceType<typeof EditVehicleDialog> | null>(null);
@@ -131,6 +214,9 @@ async function onSaveInspection(isoDate: string) {
 // ── Ledger ──
 function onAddEntry(direction: LedgerDirection = 'expense') {
   ledgerDialog.value?.openCreate(direction);
+}
+function onAddMaintenance() {
+  ledgerDialog.value?.openCreate('expense', 'maintenance');
 }
 function onEditEntry(entry: LedgerEntryDto) {
   ledgerDialog.value?.openEdit(entry);
@@ -289,25 +375,36 @@ useSeoMeta({
       <div class="cd__layout">
         <!-- Main: tabbed -->
         <main class="cd__main">
-          <div class="cd__tabs" role="tablist" :aria-label="t('app.car.tabsAria')">
-            <button
-              v-for="item in tabs"
-              :id="`cd-tab-${item.key}`"
-              :key="item.key"
-              type="button"
-              class="ui-tab"
-              :class="{ 'ui-tab--active': tab === item.key }"
-              role="tab"
-              :aria-label="item.label"
-              :aria-selected="tab === item.key"
-              :aria-controls="`cd-panel-${item.key}`"
-              :tabindex="tab === item.key ? 0 : -1"
-              @click="tab = item.key"
+          <div
+            class="cd__tabs"
+            :class="{ 'cd__tabs--fade-start': canScrollStart, 'cd__tabs--fade-end': canScrollEnd }"
+          >
+            <div
+              ref="tabScroller"
+              class="cd__tabscroll"
+              role="tablist"
+              :aria-label="t('app.car.tabsAria')"
+              @scroll="updateTabFade"
+              @keydown="onTabKeydown"
             >
-              <AppIcon :name="item.icon" :size="17" />
-              <span>{{ item.label }}</span>
-              <span v-if="item.count > 0" class="cd__tab-count">{{ item.count }}</span>
-            </button>
+              <button
+                v-for="item in tabs"
+                :id="`cd-tab-${item.key}`"
+                :key="item.key"
+                type="button"
+                class="cd__tab"
+                :class="{ 'cd__tab--active': tab === item.key }"
+                role="tab"
+                :aria-selected="tab === item.key"
+                :aria-controls="`cd-panel-${item.key}`"
+                :tabindex="tab === item.key ? 0 : -1"
+                @click="selectTab(item.key)"
+              >
+                <AppIcon :name="item.icon" :size="17" />
+                <span class="cd__tab-label">{{ item.label }}</span>
+                <span v-if="item.count > 0" class="cd__tab-count">{{ item.count }}</span>
+              </button>
+            </div>
           </div>
 
           <div
@@ -324,6 +421,24 @@ useSeoMeta({
               :total-expense="d.totalExpense.value"
               :expense-by-category="d.expenseByCategory.value"
               @add="onAddEntry('expense')"
+              @edit="onEditEntry"
+              @delete="onDeleteEntry"
+            />
+          </div>
+
+          <div
+            v-show="tab === 'maintenance'"
+            :id="`cd-panel-maintenance`"
+            class="cd__panel"
+            role="tabpanel"
+            aria-labelledby="cd-tab-maintenance"
+          >
+            <CarMaintenance
+              :entries="d.maintenance.value"
+              :currency="d.currency.value"
+              :total="d.maintenanceTotal.value"
+              :last-service-date="d.lastServiceDate.value"
+              @add="onAddMaintenance"
               @edit="onEditEntry"
               @delete="onDeleteEntry"
             />
@@ -496,20 +611,91 @@ useSeoMeta({
   top: var(--space-6);
 }
 
-/* ── Tabs ─────────────────────────────────────────────────── */
+/* ── Tabs ─────────────────────────────────────────────────────
+   Segmented pill track. When the tabs outgrow the track it scrolls
+   horizontally *inside* the track — scrollbar hidden, edges softly
+   faded on whichever side has more, and the active tab is centred on
+   change so it's obvious there are more tabs either way. */
 .cd__tabs {
-  display: flex;
-  gap: 0.2rem;
-  padding: 0.25rem;
+  position: relative;
   margin-bottom: var(--space-5);
+  padding: 0.25rem;
   border-radius: var(--radius-lg);
   background: var(--color-surface-mid);
-  overflow-x: auto;
+  overflow: hidden;
 }
 
-.cd__tabs .ui-tab {
-  flex: 1;
+.cd__tabscroll {
+  display: flex;
+  gap: 0.2rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cd__tabscroll::-webkit-scrollbar {
+  display: none;
+}
+
+/* Fade only the side that actually has hidden tabs. */
+.cd__tabs--fade-start .cd__tabscroll {
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--space-6));
+}
+
+.cd__tabs--fade-end .cd__tabscroll {
+  mask-image: linear-gradient(to left, transparent 0, #000 var(--space-6));
+}
+
+.cd__tabs--fade-start.cd__tabs--fade-end .cd__tabscroll {
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--space-6),
+    #000 calc(100% - var(--space-6)),
+    transparent 100%
+  );
+}
+
+.cd__tab {
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  gap: var(--space-2);
+  flex: 1;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: nowrap;
+  color: var(--color-muted);
+  background: transparent;
+  cursor: pointer;
+  transition: background-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.cd__tab:hover:not(.cd__tab--active) {
+  color: var(--color-ink);
+}
+
+.cd__tab--active {
+  color: var(--color-primary);
+  background: var(--color-bg);
+  box-shadow: var(--shadow-ambient);
+}
+
+.cd__tab :deep(svg) {
+  flex-shrink: 0;
+}
+
+.cd__tab:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
 }
 
 .cd__tab-count {
@@ -527,7 +713,7 @@ useSeoMeta({
   color: var(--color-muted);
 }
 
-.ui-tab--active .cd__tab-count {
+.cd__tab--active .cd__tab-count {
   background: var(--color-primary-subtle);
   color: var(--color-primary);
 }
@@ -648,10 +834,6 @@ useSeoMeta({
 }
 
 @media (max-width: 560px) {
-  .cd__tabs .ui-tab span:not(.cd__tab-count) {
-    display: none;
-  }
-
   .cd__rail {
     flex-direction: column;
   }
@@ -660,6 +842,10 @@ useSeoMeta({
 @media (prefers-reduced-motion: reduce) {
   .cd__sk::after {
     animation: none;
+  }
+
+  .cd__tabscroll {
+    scroll-behavior: auto;
   }
 }
 </style>
